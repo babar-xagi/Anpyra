@@ -9,7 +9,7 @@ from anpyra.scaffold import STARTER_SOURCE
 
 class CompilerTests(unittest.TestCase):
     def test_experiment_sources_remain_compatible(self):
-        for fixture in (Path(__file__).parent / "fixtures").glob("exp*.py"):
+        for fixture in (Path(__file__).parents[1] / "fixtures").glob("exp*.py"):
             with self.subTest(fixture=fixture.name):
                 result = compile_source(fixture.read_text(encoding="utf-8"))
                 self.assertTrue(build_dex(result.ir).data.startswith(b"dex\n035\x00"))

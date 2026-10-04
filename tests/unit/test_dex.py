@@ -59,7 +59,7 @@ def read_methods(data):
 
 class DexTests(unittest.TestCase):
     def setUp(self):
-        source = (Path(__file__).parent / "fixtures/exp008.py").read_text(encoding="utf-8")
+        source = (Path(__file__).parents[1] / "fixtures/exp008.py").read_text(encoding="utf-8")
         self.dex = build_dex(compile_source(source).ir).data
 
     def test_header_integrity_and_map_boundaries(self):
