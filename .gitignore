@@ -218,3 +218,10 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Anpyra local inputs and signing state
+.reference/
+.anpyra/
+.pyandroid/
+*.apk
+*.dex
