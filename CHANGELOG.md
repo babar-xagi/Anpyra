@@ -4,7 +4,20 @@ This file records user-visible milestones. Planned work belongs in the [roadmap]
 
 ## 🛠️ Unreleased
 
+### 🌍 Native platform organization
+
+- Shared source analysis/IR, identity metadata and project paths moved to `common/`.
+- Android authoring/config, DEX, manifest, APK packaging/signing/verification moved to `platforms/mobile/android/`.
+- Reserved native iOS and Windows/macOS/Linux backend packages; no additional target implemented.
+- Native registry, `targets` command and `build`/`check --target`; Android remains the default and planned targets fail before writes.
+- Historical imports preserved through forwarding modules; seven additional boundary/dispatch/compatibility checks.
+- Updated ownership guides, source reference and future native backend phase. Web is outside target scope.
+
 ### 📚 Documentation
+
+- Recommend uv for installation, retain pip alternatives and document activation-free setup and wheel workflows.
+- Clarify that Android builds use Python dependencies without Java/JDK, Kotlin, Android SDK/NDK or Android Studio; adb remains optional.
+- Document emoji prefixes for every new commit subject.
 
 - Modern project README with navigation, badges, pipeline, supported feature summary and alpha limits.
 - Detailed user/developer guides, file/function map, debugging and extension workflows.

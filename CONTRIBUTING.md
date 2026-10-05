@@ -45,6 +45,12 @@ Use `src/` for runtime code, `examples/` for complete application projects, `tes
 
 Do not commit generated APKs/DEX, local environments, caches, or debug/release keys. Preserve experiment fixtures as historical inputs. Maintain public import compatibility deliberately and record any breaking behavior in the changelog.
 
+## 💬 Commit messages
+
+Every new commit subject must begin with a meaningful emoji and describe the concrete change. Use `🐛` for fixes, `✨` for features, `📚` for documentation, `♻️` for refactoring, or `🧪` for tests. For example: `📚 Recommend uv and clarify Android build requirements`.
+
+Apply this convention to new commits without rewriting existing published history.
+
 ## 📝 Review description
 
 Use the [PR template](.github/pull_request_template.md). Explain the original problem, resulting behavior, affected stages, validation, compatibility and remaining limitations. Distinguish tests you ran from CI/device checks still pending. Keep roadmap completion tied to actual evidence.

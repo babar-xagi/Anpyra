@@ -16,6 +16,7 @@ This guide is for people building small Android apps. You do not need to underst
 | 8 | [Python API](python_api.md) | Use Anpyra from your own host tools |
 | 9 | [Troubleshooting](troubleshooting.md) | Setup, compiler, build and installation problems |
 | 10 | [Migration and FAQ](migration.md) | Move experiment apps and understand scope |
+| 11 | [Native targets](platforms.md) | Android availability, future targets and host versus target |
 
 ## 🎯 Buildable examples
 

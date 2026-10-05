@@ -26,7 +26,7 @@ anpyra init myapp --package dev.example.myapp --label "My App"
 ## 🔍 check
 
 ```text
-anpyra check [PROJECT] [--dump-ir] [--dump-dalvik]
+anpyra check [PROJECT] [--target android] [--dump-ir] [--dump-dalvik]
 ```
 
 Loads configuration, compiles source and generates DEX in memory. It creates no artifacts or signing files. `PROJECT` defaults to `.` and accepts a directory or config path.
@@ -38,7 +38,7 @@ anpyra check examples/score --dump-ir --dump-dalvik
 ## 📦 build
 
 ```text
-anpyra build [PROJECT] [--dump-ir] [--dump-dalvik]
+anpyra build [PROJECT] [--target android] [--dump-ir] [--dump-dalvik]
 ```
 
 Compiles and packages the app, loads/creates its debug identity, signs, verifies staged output, then publishes local artifacts. Prints the APK path/size and report path.
@@ -49,6 +49,16 @@ Metadata and output paths come from configuration; there are no `--package`, `--
 anpyra build examples/hello
 anpyra build myapp/anpyra.toml --dump-ir
 ```
+
+Build/check default to Android. `--target android` selects it explicitly. Planned iOS/desktop targets fail before reading project configuration or writing artifacts. `--dump-dalvik` describes Android bytecode.
+
+## 🌍 targets
+
+```powershell
+anpyra targets
+```
+
+Lists native targets and their mobile/desktop family. Android is available; iOS, Windows, macOS and Linux are planned, not implemented. See [native targets](platforms.md) for the host/target distinction.
 
 ## ✅ verify
 

@@ -1,6 +1,6 @@
 # 🤖 Manifest, APK and Signing Backend
 
-Relevant files: [manifest.py](../../src/anpyra/android/manifest.py), [manifest_inspect.py](../../src/anpyra/android/manifest_inspect.py), [signing.py](../../src/anpyra/android/signing.py), [verify.py](../../src/anpyra/android/verify.py), and [build.py](../../src/anpyra/build.py).
+Relevant files: [manifest.py](../../src/anpyra/platforms/mobile/android/manifest.py), [manifest_inspect.py](../../src/anpyra/platforms/mobile/android/manifest_inspect.py), [signing.py](../../src/anpyra/platforms/mobile/android/signing.py), [verify.py](../../src/anpyra/platforms/mobile/android/verify.py), and [build.py](../../src/anpyra/platforms/mobile/android/build.py).
 
 ## 📄 Binary manifest
 

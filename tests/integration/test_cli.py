@@ -17,6 +17,21 @@ class CliTests(unittest.TestCase):
             code = main(args)
         return code, stdout.getvalue(), stderr.getvalue()
 
+    def test_targets_reports_available_and_planned_backends(self):
+        code, output, error = self.call(["targets"])
+        self.assertEqual((code, error), (0, ""))
+        self.assertIn("android  mobile  available", output)
+        self.assertIn("windows  desktop planned (not implemented)", output)
+        self.assertNotIn("web", output)
+
+    def test_planned_target_rejected_for_build_and_check(self):
+        with tempfile.TemporaryDirectory() as directory:
+            for command in ("build", "check"):
+                code, _, error = self.call([command, directory, "--target", "ios"])
+                self.assertEqual(code, 1)
+                self.assertIn("planned but not implemented", error)
+                self.assertEqual(list(Path(directory).iterdir()), [])
+
     def test_check_writes_no_artifacts_or_signing_keys(self):
         with tempfile.TemporaryDirectory() as directory:
             project = init_project(directory)

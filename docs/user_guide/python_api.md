@@ -15,6 +15,8 @@ print(result.verification.v2_signature_ok)
 
 `build_project()` accepts a project directory, configuration file, or `Project` object. It defaults to the current directory.
 
+Its keyword `target="android"` selects the working native backend. Omitting it preserves the default. Planned targets raise `anpyra.platforms.registry.UnsupportedTargetError` before loading/writing a project. `build_apk`, `BuildResult`, `AppConfig`, `Activity` and `TextView` remain Android interfaces.
+
 ## ⚙️ Inspect or adjust project configuration
 
 ```python
@@ -91,4 +93,4 @@ Filesystem, cryptography, backend and subprocess errors can use other exception 
 
 ## 🔒 Public and internal interfaces
 
-The package root exports authoring types, configuration records, compile/build functions and user-facing errors. Modules under `compiler/` and `android/` are implementation details in the alpha series. For example, `anpyra.android.verify.inspect_apk(Path(...))` is currently available internally, but there is no package-root verification function or API stability promise for that module.
+The package root exports authoring types, configuration records, compile/build functions and user-facing errors. Modules under `common/` and `platforms/` are implementation details in the alpha series; historical `compiler/` and `android/` modules forward imports. For example, `anpyra.platforms.mobile.android.verify.inspect_apk(Path(...))` is currently available internally, but there is no package-root verification function or API stability promise for that module.

@@ -1,6 +1,6 @@
 # 🧠 Compiler and DEX Internals
 
-Relevant files: [frontend.py](../../src/anpyra/compiler/frontend.py), [ir.py](../../src/anpyra/compiler/ir.py), [dex.py](../../src/anpyra/compiler/dex.py). See the [source reference](source_reference.md) for every symbol.
+Relevant files: [frontend.py](../../src/anpyra/common/compiler/frontend.py), [ir.py](../../src/anpyra/common/compiler/ir.py), [dex.py](../../src/anpyra/platforms/mobile/android/dex.py). See the [source reference](source_reference.md) for every symbol.
 
 ## 1️⃣ Parse and validate the module
 

@@ -6,13 +6,14 @@
 | --- | --- | --- |
 | Unit | `tests/unit/test_compiler.py` | Types, syntax/rejection, historical source compatibility, initialization and register limits |
 | Unit | `tests/unit/test_config.py` | Settings, relative paths, invalid config, scaffolding and Unicode |
+| Unit | `tests/unit/test_platforms.py` | Shared dependency boundary, target status, early rejection and historical imports |
 | Unit | `tests/unit/test_dex.py` | Selected emitted bytes, frame layout, branch destinations, checksums and MUTF-8 |
 | Integration | `tests/integration/test_build.py` | Build/manifest/signing/report/reproducibility/failure preservation |
 | Integration | `tests/integration/test_cli.py` | Command workflow and mocked device command construction |
 | Regression | `tests/regression/test_functions.py` | Adapted experiment 008 typed-helper contracts |
 | Fixtures | `tests/fixtures/exp005.py` through `exp008.py` | Historical source inputs; not test runners |
 
-The baseline suite contains **41 tests**. Relocation into these groups preserves their behaviors; package `__init__.py` files allow recursive unittest discovery. Some retained regression tests build APKs, so the groups describe intent rather than strict isolation rules.
+The current suite contains **48 tests**: 41 original checks and seven additional native-architecture/CLI checks. Package `__init__.py` files allow recursive unittest discovery. Some retained regression tests build APKs, so the groups describe intent rather than strict isolation rules.
 
 ## ⌨️ Run checks
 

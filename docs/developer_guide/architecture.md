@@ -2,11 +2,14 @@
 
 Anpyra has three main responsibilities: validate application source, emit native Android artifacts, and coordinate a reproducible project build. Source compilation never imports or evaluates the app.
 
+The shared layer is `common/`; the working target layer is `platforms/mobile/android/`. `platforms/registry.py` selects implemented backends. iOS and desktop folders reserve future implementations. Read [native architecture](native_platforms.md) for these boundaries and the Android-shaped source/IR assumptions still to generalize.
+
 ## 🔄 End-to-end build
 
 ```mermaid
 flowchart TD
-    CLI[cli.main] --> Config[load_project → Project + AppConfig]
+    CLI[cli.main] --> Target[registry.get_backend: Android available]
+    Target --> Config[Android load_project → common Project + Android AppConfig]
     Config --> Build[build_project → build_apk]
     Build --> Frontend[compile_file → compile_source]
     Frontend --> IR[CompileResult + AppIR + FunctionIR]
@@ -26,6 +29,7 @@ flowchart TD
 
 | Record | Produced by | Consumer/purpose |
 | --- | --- | --- |
+| `ApplicationMetadata` | Shared common config | Application identity, label and versions without SDK settings |
 | `AppConfig` | Defaults/TOML/direct API | Validated package, labels, versions, SDKs and project path settings |
 | `Project` | Config loader or caller | Resolved entry/output/state paths |
 | `CompileResult` | Front end | Source path, Python AST, typed AppIR |
@@ -61,11 +65,11 @@ The public package root exposes authoring/configuration/compile/build interfaces
 
 | Milestone | Retained contribution | Current location |
 | --- | --- | --- |
-| 001 | DEX container/tables/strings/checksums | `compiler/dex.py` |
-| 002 | Constructors and lifecycle bytecode | `compiler/dex.py` |
+| 001 | DEX container/tables/strings/checksums | `platforms/mobile/android/dex.py` |
+| 002 | Constructors and lifecycle bytecode | `platforms/mobile/android/dex.py` |
 | 003 | Native TextView calls | `api.py`, front end, DEX backend |
-| 004C | Binary manifest, APK and v2 signing | `android/`, `build.py` |
-| 005 | Static Python front end and IR | `compiler/frontend.py`, `ir.py` |
+| 004C | Binary manifest, APK and v2 signing | `platforms/mobile/android/` |
+| 005 | Static Python front end and IR | `common/compiler/frontend.py`, `ir.py` |
 | 006 | Symbols, types, boolean branches | Front end, IR, assembler |
 | 007 | Arithmetic, integer comparisons, nested branches | Front end, IR, assembler |
 | 008 | Typed helpers, parameters, static calls, results | Front end, FunctionIR, DEX method generation |

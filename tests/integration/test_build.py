@@ -7,14 +7,14 @@ from dataclasses import replace
 from pathlib import Path
 
 from anpyra import CompileError, Project, build_apk, build_project
-from anpyra.android.manifest_inspect import inspect_manifest
-from anpyra.android.signing import (
+from anpyra.build import _zip_payload
+from anpyra.platforms.mobile.android.manifest_inspect import inspect_manifest
+from anpyra.platforms.mobile.android.signing import (
     V2SigningError,
     load_or_create_signer_material,
     sign_apk_v2,
 )
-from anpyra.android.verify import ApkV2VerifyError, inspect_apk
-from anpyra.build import _zip_payload
+from anpyra.platforms.mobile.android.verify import ApkV2VerifyError, inspect_apk
 from anpyra.scaffold import init_project
 
 

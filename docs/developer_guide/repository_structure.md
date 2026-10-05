@@ -6,69 +6,61 @@ The repository separates the installable framework, user examples, automated che
 
 ```text
 Anpyra/
-├── README.md                  # Project landing page and quick start
-├── CONTRIBUTING.md            # Contribution process
-├── CHANGELOG.md               # Baseline and unreleased changes
-├── LICENSE                    # Existing Apache-2.0 license
-├── MANIFEST.in                # Include guides/examples/tests in source distributions
-├── pyproject.toml             # Package, dependency, CLI and Ruff configuration
-├── .gitignore                 # Generated files and private local identities
-├── .github/
-│   ├── workflows/tests.yml    # CI matrix and package checks
-│   ├── ISSUE_TEMPLATE/        # Bug and feature report templates
-│   └── pull_request_template.md
+├── README.md, CONTRIBUTING.md, CHANGELOG.md, LICENSE
+├── pyproject.toml, MANIFEST.in, .gitignore
+├── .github/                   # CI, issue and pull request templates
 ├── src/
-│   ├── README.md              # Source navigation
+│   ├── README.md
 │   ├── anpyra/
-│   │   ├── __init__.py        # Public exports and package version
-│   │   ├── __main__.py        # python -m anpyra entry
-│   │   ├── api.py             # Activity/TextView authoring types
-│   │   ├── config.py          # App metadata and project paths
-│   │   ├── scaffold.py        # New app source/configuration
-│   │   ├── cli.py             # CLI parser and command behavior
-│   │   ├── build.py           # Build orchestration and outputs
-│   │   ├── py.typed           # Typing-package marker
-│   │   ├── compiler/
-│   │   │   ├── __init__.py
-│   │   │   ├── frontend.py    # Python AST → checked IR
-│   │   │   ├── ir.py          # Immutable operation/application records
-│   │   │   └── dex.py         # Assembly and DEX writer
-│   │   └── android/
-│   │       ├── __init__.py
-│   │       ├── manifest.py    # Binary XML writer
-│   │       ├── manifest_inspect.py
-│   │       ├── signing.py     # Debug identity and v2 APK signing
-│   │       └── verify.py      # APK/DEX integrity verification
-│   └── pyandroid/__init__.py  # Legacy authoring type exports
-├── examples/
-│   ├── README.md
-│   ├── hello/                 # app.py, anpyra.toml, README.md
-│   └── score/                 # app.py, anpyra.toml, README.md
+│   │   ├── __init__.py, __main__.py, py.typed
+│   │   ├── api.py, config.py   # Public Android-compatible imports
+│   │   ├── cli.py, scaffold.py
+│   │   ├── build.py           # Public build API and target dispatch
+│   │   ├── common/
+│   │   │   ├── config.py      # Shared identity/version validation
+│   │   │   ├── project.py     # Shared project path rules
+│   │   │   └── compiler/
+│   │   │       ├── frontend.py  # Python AST analysis/lowering
+│   │   │       └── ir.py        # Operation/function/app records
+│   │   ├── platforms/
+│   │   │   ├── registry.py    # Available/planned native targets
+│   │   │   ├── mobile/
+│   │   │   │   ├── android/   # Working backend
+│   │   │   │   │   ├── api.py, config.py, backend.py
+│   │   │   │   │   ├── build.py, dex.py
+│   │   │   │   │   ├── manifest.py, manifest_inspect.py
+│   │   │   │   │   └── signing.py, verify.py
+│   │   │   │   └── ios/       # Future backend; not implemented
+│   │   │   └── desktop/
+│   │   │       ├── windows/   # Future backend; not implemented
+│   │   │       ├── macos/     # Future backend; not implemented
+│   │   │       └── linux/     # Future backend; not implemented
+│   │   ├── compiler/         # Historical import forwarding only
+│   │   └── android/          # Historical import forwarding only
+│   └── pyandroid/__init__.py  # Legacy authoring imports
+├── examples/                 # Complete hello and score projects
 ├── tests/
-│   ├── README.md
-│   ├── __init__.py
-│   ├── unit/                  # Compiler/config/DEX behavior
-│   ├── integration/           # CLI/build/signing workflows
-│   ├── regression/            # Experiment 008 contract
-│   └── fixtures/              # Original experiment 005–008 source
+│   ├── unit/                 # Source/config/DEX/native-boundary checks
+│   ├── integration/          # CLI/build/signing workflows
+│   ├── regression/           # Experiment 008 contract
+│   └── fixtures/             # Historical source inputs
 ├── docs/
-│   ├── README.md
-│   ├── architecture.md        # Compatibility pointer to developer architecture
-│   ├── roadmap.md
-│   ├── user_guide/            # End-user tasks and concepts
-│   └── developer_guide/       # Maintenance and internals
-└── scripts/
-    ├── README.md
-    └── check_docs.py          # Local docs links, emoji headings and Python snippets
+│   ├── user_guide/
+│   ├── developer_guide/
+│   └── roadmap.md
+└── scripts/check_docs.py      # Documentation and app-snippet checks
 ```
 
 ## 📦 What belongs where?
 
 | Work | Location |
 | --- | --- |
-| New source language rule | `src/anpyra/compiler/frontend.py`, IR/backend if needed |
-| Dalvik opcode or DEX fix | `src/anpyra/compiler/dex.py` |
-| Android XML/package/signature change | `src/anpyra/android/` and build orchestration |
+| New source language rule | `src/anpyra/common/compiler/frontend.py`, IR/backend if needed |
+| Dalvik opcode or DEX fix | `src/anpyra/platforms/mobile/android/dex.py` |
+| Android XML/package/signature change | `src/anpyra/platforms/mobile/android/` |
+| Shared project paths/metadata | `src/anpyra/common/project.py`, `common/config.py` |
+| Native target selection | `src/anpyra/platforms/registry.py` |
+| Future iOS/desktop implementation | Respective target directory under `platforms/` |
 | Public API/CLI/config change | Relevant top-level `src/anpyra/` file |
 | Small isolated contract test | `tests/unit/` |
 | Cross-module output/workflow test | `tests/integration/` |
@@ -77,6 +69,8 @@ Anpyra/
 | User task/concept | `docs/user_guide/` |
 | Maintenance explanation/file map | `docs/developer_guide/` |
 | Future feature proposal | `docs/roadmap.md` and issue discussion |
+
+Android is the only implemented target. Planned packages contain a marker and README, not a compiler. Web is outside target scope. Package markers and target ownership READMEs supplement the tree above. Read [native platform architecture](native_platforms.md) before adding a backend.
 
 Keep generated app state out of `src/`. Keep host scripts separate from the restricted app source. Avoid large file moves solely to change appearance; module boundaries should follow actual responsibilities.
 

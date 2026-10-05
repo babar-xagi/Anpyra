@@ -2,6 +2,8 @@
 
 **Snapshot:** October 4, 2026 · **Current package:** v0.1.0 alpha · **Direction:** Python source → typed IR → native DEX → signed APK.
 
+**Future direction:** native mobile and desktop applications. Android is the only implemented target; iOS, Windows, macOS and Linux have reserved folders. Web is outside scope. This organization does not change the immediate priority of Android validation and features.
+
 This roadmap records completed work, validation gaps and proposed future phases. Future phases describe intended work, not available APIs or promised release dates. Priorities can change with evidence; phases that depend on new language/runtime semantics must not be marked complete from documentation alone.
 
 ## 🧭 Status and evidence
@@ -58,6 +60,17 @@ The original experiments were reported successful on a phone by the author. The 
 - [x] Local docs checks for links, emoji titles and Python/app snippets.
 - [x] Source-distribution inclusion rules for project guidance and examples.
 
+### 🌍 Native platform foundation
+
+- [x] Common source analysis/IR, application metadata and project path code separated from target packaging.
+- [x] Android SDK configuration, authoring API, DEX, manifest, APK, signing and verification owned by the Android backend.
+- [x] Separate native mobile Android/iOS and desktop Windows/macOS/Linux directories.
+- [x] Explicit available/planned target registry, `targets` listing and build/check target selection.
+- [x] Historical imports retained through compatibility modules.
+- [x] Boundary/dispatch/compatibility checks added; current suite contains 48 tests.
+- [ ] Generalize the current Android-shaped source/UI/IR/register contracts for another backend.
+- [ ] Implement, package and runtime-validate any additional native target.
+
 ## 🧱 Phase overview
 
 | Phase | Focus | Status | Depends on |
@@ -73,6 +86,7 @@ The original experiments were reported successful on a phone by the author. The 
 | 8 | Assets/resources and package expansion | 📋 Planned | 5, 7 where required |
 | 9 | Release identity and distribution | 📋 Planned | Validated runtime/package contracts |
 | 10 | Tooling, platform coverage and ecosystem | 📋 Planned, incremental | Relevant earlier phases |
+| 11 | Additional native mobile/desktop backends | 📋 Planned; folder/dispatch foundation exists | Proven shared semantics and target-specific toolchains |
 
 Phases are a dependency-oriented plan, not a fixed schedule. Small independent tooling improvements can happen earlier. General-purpose Python compatibility is not promised by completing this list.
 
@@ -96,7 +110,7 @@ Phases are a dependency-oriented plan, not a fixed schedule. Small independent t
 
 **Deliverables:** professional landing page, user/developer navigation, supported syntax examples, every source file's responsibilities, bug-to-file map, testing/release practices, grouped tests, example walkthroughs and document checks.
 
-**Acceptance:** local documentation links resolve, Python snippets parse, supported app snippets compile, test discovery still finds 41 tests, and existing examples/public module paths continue to work. Guides describe current code rather than fictional APIs.
+**Acceptance:** local documentation links resolve, Python snippets parse, supported app snippets compile, test discovery retains the 41 original checks plus new native-architecture checks, and existing examples/public module paths continue to work. Guides describe current code rather than fictional APIs.
 
 ## 3️⃣ Phase 3 — Validation and binary hardening
 
@@ -212,6 +226,25 @@ Phases are a dependency-oriented plan, not a fixed schedule. Small independent t
 - [ ] Versioned learning examples and contributor onboarding improvements.
 
 **Exit criteria:** each tool solves a measured task, preserves the build contract and has appropriate checks. These items can be delivered independently; no plugin system or IDE integration exists yet.
+
+## 🌍 Phase 11 — Additional native platforms
+
+**Outcome:** implement genuine native mobile/desktop targets after establishing reusable application semantics. Directory creation is a foundation, not completion of this phase. No fixed target delivery order or dates are promised.
+
+- [x] Reserve `platforms/mobile/ios/` and `platforms/desktop/{windows,macos,linux}/`; keep Android code isolated.
+- [x] Add target inventory/dispatch with honest availability and early rejection for unavailable targets.
+- [ ] Generalize lifecycle/widget operations and Android-specific descriptor/register assumptions in the shared front end/IR.
+- [ ] Define platform capability checks, target configuration and backend/result contracts around an actual second implementation.
+- [ ] Choose a first additional native platform based on real host/toolchain and UI requirements.
+- [ ] Implement its native code generation, UI bindings, packaging and applicable signing/distribution workflow inside its target folder.
+- [ ] Add target-specific examples, native runtime acceptance, isolated package checks and CI where feasible.
+- [ ] Extend subsequent native targets independently while preserving Android behavior.
+
+**Dependencies:** validated Android baseline; defined shared language/UI behavior; researched target-native runtime, format, host and toolchain constraints. Android's Python-only build does not prove the same dependency model for iOS or desktop.
+
+**Exit criteria per target:** real native artifacts build, supported source behavior is documented, an example runs correctly on that platform, failures are tested and CLI status reflects proven capability. Web remains outside target scope.
+
+Implementation details: [native platform architecture](developer_guide/native_platforms.md).
 
 ## 🎯 Next practical milestone
 

@@ -8,7 +8,7 @@ Use this map to locate the code responsible for a feature or failure. Paths link
 | --- | --- | --- |
 | [anpyra/__init__.py](../../src/anpyra/__init__.py) | Public exports and `__version__ = "0.1.0"` | Import failures, public API/version consistency |
 | [anpyra/__main__.py](../../src/anpyra/__main__.py) | Runs CLI `main()` and uses its result as process status | `python -m anpyra` behavior |
-| [api.py](../../src/anpyra/api.py) | Editor-facing `Activity`, `TextView`; methods raise a host RuntimeError | Authoring type signatures and host-execution message |
+| [platforms/mobile/android/api.py](../../src/anpyra/platforms/mobile/android/api.py) | Editor-facing `Activity`, `TextView`; methods raise a host RuntimeError | Authoring type signatures and host-execution message |
 | [pyandroid/__init__.py](../../src/pyandroid/__init__.py) | Re-exports the same Activity/TextView objects | Legacy import compatibility |
 | [py.typed](../../src/anpyra/py.typed) | Marker indicating typing information ships with package | Missing marker/package-data configuration |
 | [compiler/__init__.py](../../src/anpyra/compiler/__init__.py) | Compiler package marker/docstring | Package imports only; no engine logic |
@@ -16,13 +16,15 @@ Use this map to locate the code responsible for a feature or failure. Paths link
 
 The authoring methods are `Activity.set_content_view`, `TextView.__init__` and `TextView.set_text`. Their Android behavior is emitted by the compiler, not implemented by those host bodies. Test: `tests/unit/test_compiler.py` checks legacy identity and the host error.
 
-## ⚙️ config.py
+## ⚙️ Common metadata and Android configuration
 
-File: [config.py](../../src/anpyra/config.py). Tests: [test_config.py](../../tests/unit/test_config.py).
+Files: [common/config.py](../../src/anpyra/common/config.py), [common/project.py](../../src/anpyra/common/project.py), [Android config.py](../../src/anpyra/platforms/mobile/android/config.py). Tests: [test_config.py](../../tests/unit/test_config.py).
 
 | Symbol | What it implements |
 | --- | --- |
 | `ConfigError` | User-facing invalid configuration exception |
+| `ApplicationMetadata` | Shared frozen application ID, label and version fields; no SDK settings |
+| `ProjectSettings` | Protocol for backend-provided entry/output settings |
 | `AppConfig` | Frozen package/label/version/SDK/entry/output metadata with defaults |
 | `AppConfig.__post_init__` | Nonempty strings/no NUL, package pattern, exact integer types/range, min SDK and target relationship |
 | `Project` | Root + configuration object, with normalized absolute root |
@@ -31,7 +33,7 @@ File: [config.py](../../src/anpyra/config.py). Tests: [test_config.py](../../tes
 | `source_path`, `output_path`, `state_path` | Entry, configured output, `.anpyra` directory |
 | `load_project` | Read TOML, require one `[app]` table, reject unknown keys, create Project |
 
-Defaults are documented in the user guide. This module does not compile source or accept arbitrary new TOML keys. Add a configuration feature here, propagate it through scaffold/build, and update tests and reference tables.
+Common metadata validates identity/version fields. Android AppConfig inherits it and adds SDK/path settings. Shared Project validates paths; Android load_project reads the current TOML format. Public config.py re-exports these objects for compatibility. Add shared fields to common metadata and Android-specific fields to Android config; propagate changes through scaffold/build and tests.
 
 ## 🏗️ scaffold.py
 
@@ -45,15 +47,17 @@ If generated projects fail but hand-written projects work, inspect this template
 
 File: [cli.py](../../src/anpyra/cli.py). Tests: [test_cli.py](../../tests/integration/test_cli.py).
 
-`main(argv)` creates the parser and dispatches all six commands. `_dump` prints IR and per-method assembly when requested. The `check` branch runs compile + DEX in memory; `build` uses project orchestration; `verify` prints an `ApkReport` or JSON; `doctor` reports host versions and adb availability.
+`main(argv)` creates the parser and dispatches seven commands. `_dump` prints IR and per-method assembly when requested. The `check` branch runs compile + DEX in memory; `build` uses project orchestration; `verify` prints an `ApkReport` or JSON; `doctor` reports host versions and adb availability.
+
+`targets` lists registered native targets. Build/check accept `--target`, reject unavailable backends, and delegate loading/checking/building to Android.
 
 `install` verifies before invoking subprocesses. It constructs argument lists for adb, optional `-s`, `install -r`, and `am start -W -n`; it does not execute a shell command assembled from user text. `main` catches command exceptions, writes stderr and returns `1`; keyboard interruption returns `130`. Argument errors are handled by argparse before dispatch.
 
 Inspect this file for a wrong flag, missing command, incorrect printed path or adb argument. Compiler semantics should stay in the compiler rather than become CLI-specific rules.
 
-## 📦 build.py
+## 📦 Android build.py and public dispatcher
 
-File: [build.py](../../src/anpyra/build.py). Tests: [test_build.py](../../tests/integration/test_build.py), CLI and helper regression builds.
+Implementation: [Android build.py](../../src/anpyra/platforms/mobile/android/build.py). Public dispatcher: [build.py](../../src/anpyra/build.py). Tests: [test_build.py](../../tests/integration/test_build.py), CLI and helper regression builds.
 
 | Symbol | What it implements |
 | --- | --- |
@@ -64,11 +68,13 @@ File: [build.py](../../src/anpyra/build.py). Tests: [test_build.py](../../tests/
 
 `build_apk` rejects output containing source and overlap with signing state. It writes a report with metadata, APK/certificate fingerprints, verification and listings. Artifact publication occurs after verification; each `.replace()` is atomic but the multi-file set is not.
 
-Look here for wrong output names, report fields, ordering of stages, signer directory, reproducibility or failure-preservation problems. It currently supports exactly one DEX and manifest; resources/assets or new artifacts require packaging and verifier changes too.
+The public build_project accepts keyword target="android" and resolves the registry before delegating. Public build_apk, BuildResult and historical _zip_payload imports refer to Android implementations.
 
-## 🧠 compiler/frontend.py
+Look in Android build.py for wrong output names, report fields, ordering of stages, signer directory, reproducibility or failure-preservation problems. It currently supports exactly one DEX and manifest; resources/assets or new artifacts require packaging and verifier changes too.
 
-File: [frontend.py](../../src/anpyra/compiler/frontend.py). Tests: [test_compiler.py](../../tests/unit/test_compiler.py), historical fixtures and [test_functions.py](../../tests/regression/test_functions.py).
+## 🧠 common/compiler/frontend.py
+
+File: [frontend.py](../../src/anpyra/common/compiler/frontend.py). Tests: [test_compiler.py](../../tests/unit/test_compiler.py), historical fixtures and [test_functions.py](../../tests/regression/test_functions.py).
 
 | Symbol/group | What it implements |
 | --- | --- |
@@ -94,9 +100,9 @@ File: [frontend.py](../../src/anpyra/compiler/frontend.py). Tests: [test_compile
 
 Read this file first for accepted/rejected syntax, undefined names, incorrect inferred types, wrong diagnostics or missing IR operations. Its narrow helper/lifecycle models are intentional v0.1 limits.
 
-## 🧱 compiler/ir.py
+## 🧱 common/compiler/ir.py
 
-File: [ir.py](../../src/anpyra/compiler/ir.py). Tests: compiler/helper tests inspect emitted records.
+File: [ir.py](../../src/anpyra/common/compiler/ir.py). Tests: compiler/helper tests inspect emitted records.
 
 | Record | Meaning |
 | --- | --- |
@@ -114,9 +120,9 @@ File: [ir.py](../../src/anpyra/compiler/ir.py). Tests: compiler/helper tests ins
 
 `IROp` is the union of supported operation records. New IR must also be handled by traversals and backend emitters. A dataclass alone does not implement code generation.
 
-## ⚙️ compiler/dex.py
+## ⚙️ platforms/mobile/android/dex.py
 
-File: [dex.py](../../src/anpyra/compiler/dex.py). Tests: [test_dex.py](../../tests/unit/test_dex.py), helper regression and builds.
+File: [dex.py](../../src/anpyra/platforms/mobile/android/dex.py). Tests: [test_dex.py](../../tests/unit/test_dex.py), helper regression and builds.
 
 | Symbol/group | What it implements |
 | --- | --- |
@@ -138,9 +144,9 @@ The writer then emits header, string/type/proto/method/class sections, type list
 
 Fix this file for malformed bytes, wrong registers, branch destinations, table indexes, incoming parameter layout, opcode encoding or string ordering. The [compiler guide](compiler.md) explains the stages and invariants.
 
-## 📄 android/manifest.py
+## 📄 platforms/mobile/android/manifest.py
 
-File: [manifest.py](../../src/anpyra/android/manifest.py). Tests: build metadata/Unicode roundtrip and every verified APK build.
+File: [manifest.py](../../src/anpyra/platforms/mobile/android/manifest.py). Tests: build metadata/Unicode roundtrip and every verified APK build.
 
 `_chunk_header` and `_enc_len8` encode XML/string-pool structures. `StringPool` collects resource-backed attribute names and ordinary strings, writes UTF-8 pools with UTF-16 lengths, and emits the resource map. `Attr` represents namespace/name/type/value.
 
@@ -148,17 +154,17 @@ File: [manifest.py](../../src/anpyra/android/manifest.py). Tests: build metadata
 
 Inspect for bad manifest attributes, labels/Unicode, SDK/version values, namespace/resource IDs or chunk lengths. Permissions, icons, resource references and multiple Activities are not implemented.
 
-## 🔍 android/manifest_inspect.py
+## 🔍 platforms/mobile/android/manifest_inspect.py
 
-File: [manifest_inspect.py](../../src/anpyra/android/manifest_inspect.py).
+File: [manifest_inspect.py](../../src/anpyra/platforms/mobile/android/manifest_inspect.py).
 
 `AxmlError` identifies parsing failures. `_read_len8` decodes pool lengths; `_parse_string_pool` reads the expected UTF-8/no-style pool; `inspect_manifest` reads chunk bounds, attributes and balanced elements, then returns package, versions, SDKs, label, Activity and exported metadata.
 
 It is a reader for the generated profile rather than a general Android XML parser. If writer and reader agree on the same incorrect format, self-verification can miss a bug; independent Android inspection is a release objective. Add focused malformed-input/roundtrip tests when changing it.
 
-## 🔑 android/signing.py
+## 🔑 platforms/mobile/android/signing.py
 
-File: [signing.py](../../src/anpyra/android/signing.py). Tests: build/identity/reproducibility/tamper workflows.
+File: [signing.py](../../src/anpyra/platforms/mobile/android/signing.py). Tests: build/identity/reproducibility/tamper workflows.
 
 | Symbol/group | What it implements |
 | --- | --- |
@@ -176,19 +182,38 @@ File: [signing.py](../../src/anpyra/android/signing.py). Tests: build/identity/r
 
 The algorithm is RSA PKCS#1 v1.5 with SHA-256. The low-level signer can generate ephemeral material if none is passed; build orchestration always supplies the retained project signer. There is no release key import/encryption/rotation workflow in v0.1.
 
-## ✅ android/verify.py
+## ✅ platforms/mobile/android/verify.py
 
-File: [verify.py](../../src/anpyra/android/verify.py). Tests: signature/content corruption and bad DEX checksum in [test_build.py](../../tests/integration/test_build.py).
+File: [verify.py](../../src/anpyra/platforms/mobile/android/verify.py). Tests: signature/content corruption and bad DEX checksum in [test_build.py](../../tests/integration/test_build.py).
 
 `ApkV2VerifyError` represents profile/integrity failures; `ApkReport` carries parsed metadata and successful checks. `_u32`, `_u64`, `_take_lp32`, `_iter_lp32_sequence` read bounded binary fields. `_locate_signing_block` validates ZIP/block relationships and finds the v2 pair. `_parse_v2_signer` enforces one signer/algorithm/certificate, checks public-key agreement and verifies its signature.
 
 `inspect_apk(Path)` recomputes the protected content digest with the required EOCD adjustment, reads exactly two ZIP entries, decodes the manifest, and checks DEX magic/SHA-1/Adler-32. Successful flags are true because a failed check raises. It does not perform Android runtime verification, trust-chain validation, arbitrary signer/package auditing or device installation.
+
+## 🌍 Native registry, dispatch and reserved packages
+
+| File/group | Implemented responsibility |
+| --- | --- |
+| [platforms/registry.py](../../src/anpyra/platforms/registry.py) | TargetInfo/name/family/module inventory; list_targets, get_target, get_backend; UnsupportedTargetError for unknown/planned targets |
+| [Android backend.py](../../src/anpyra/platforms/mobile/android/backend.py) | Exposes loading/build entry points; check_project returns CompileResult/DexBuild without writes |
+| [common/__init__.py](../../src/anpyra/common/__init__.py), [common/compiler/__init__.py](../../src/anpyra/common/compiler/__init__.py) | Shared package markers |
+| [platforms/__init__.py](../../src/anpyra/platforms/__init__.py), [mobile/__init__.py](../../src/anpyra/platforms/mobile/__init__.py), [desktop/__init__.py](../../src/anpyra/platforms/desktop/__init__.py) | Native target family package markers |
+| [Android __init__.py](../../src/anpyra/platforms/mobile/android/__init__.py) | Implemented target package marker; entry points live in backend.py |
+| [iOS __init__.py](../../src/anpyra/platforms/mobile/ios/__init__.py) | Reserved package marker only; no iOS implementation |
+| [Windows __init__.py](../../src/anpyra/platforms/desktop/windows/__init__.py), [macOS __init__.py](../../src/anpyra/platforms/desktop/macos/__init__.py), [Linux __init__.py](../../src/anpyra/platforms/desktop/linux/__init__.py) | Reserved desktop markers only; no native desktop implementation |
+| [Public api.py](../../src/anpyra/api.py), [config.py](../../src/anpyra/config.py) | Re-export Android authoring/config and common path/error records |
+| [compiler/frontend.py](../../src/anpyra/compiler/frontend.py), [compiler/ir.py](../../src/anpyra/compiler/ir.py), [compiler/dex.py](../../src/anpyra/compiler/dex.py) | Historical import forwarding; __getattr__ delegates named symbols, __dir__ exposes implementation names |
+| [android/manifest.py](../../src/anpyra/android/manifest.py), [manifest_inspect.py](../../src/anpyra/android/manifest_inspect.py), [signing.py](../../src/anpyra/android/signing.py), [verify.py](../../src/anpyra/android/verify.py) | Historical import forwarding to canonical Android modules |
+| Common/platform/target READMEs | Ownership/status notes; no executable implementation |
+
+See [native platform architecture](native_platforms.md) for current Android-shaped IR limitations and future backend steps. Test: [test_platforms.py](../../tests/unit/test_platforms.py).
 
 ## 🧪 Tests, examples and repository tooling
 
 | File/group | Implemented check or purpose |
 | --- | --- |
 | [test_compiler.py](../../tests/unit/test_compiler.py) | Historical app acceptance, rejection diagnostics, initialization, reserved names, literal range, register budget and host stubs |
+| [test_platforms.py](../../tests/unit/test_platforms.py) | Shared dependency boundaries, native availability, rejection before writes and import compatibility |
 | [test_config.py](../../tests/unit/test_config.py) | Invalid metadata/types/paths, scaffold protection, TOML roundtrip and Unicode |
 | [test_dex.py](../../tests/unit/test_dex.py) | Independent byte-level header/map/helper/invoke/branch/MUTF-8 checks |
 | [test_build.py](../../tests/integration/test_build.py) | Metadata, rebuild bytes, failure preservation, identity safeguards, tamper/checksum rejection |
