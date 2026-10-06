@@ -24,3 +24,9 @@ python scripts/check_release.py --tag v0.1.0 --dist dist/pypi/0.1.0
 `check_version` reads pyproject.toml and parses the package __version__ assignment without importing framework code. The optional tag must equal vVERSION. `check_distributions` requires one wheel and one source archive, checks name/version metadata and required package/release files, and rejects duplicate/unsafe paths, tar links, common key/signing state and generated artifacts.
 
 This read-only guard does not build, extract, upload, change versions or access credentials. `main` returns 1 with a diagnostic on failure. See [publishing](../docs/developer_guide/publishing.md) for build/upload commands and account configuration.
+
+## 📱 check_screen_device.py
+
+Opt-in real-device pixel matrix for Screen color/gradient/image/fit/alpha behavior. Run `python scripts/check_screen_device.py --serial DEVICE_ID` with an unlocked portrait device. It builds/installs its named test package, saves screenshots/results under build/, and leaves the test app installed. --adb, --package and --work-dir configure the target/tool/project; it does not uninstall apps or change device settings. Preserve its signing identity for future updates.
+
+See [implementation and runtime evidence](../docs/developer_guide/screen_styling.md). The ordinary CI suite does not run this script.

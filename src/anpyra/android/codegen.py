@@ -4,7 +4,19 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from ..compiler.ir import AppIR, CallFunction, IfBool, IfCompare, IntBinary, LoadConst, ReturnValue
+from ..compiler.ir import (
+    AppIR,
+    ApplyScreenBackground,
+    CallFunction,
+    IfBool,
+    IfCompare,
+    IntBinary,
+    LoadConst,
+    NewScreen,
+    ReturnValue,
+    SetTextColor,
+)
+from .backgrounds import emit_background
 from .dalvik import (
     OP_ADD_INT,
     OP_IF_EQ,
@@ -18,6 +30,8 @@ from .dalvik import (
     OP_RETURN_VOID,
     OP_SUB_INT,
     Assembler,
+    emit_const,
+    emit_invoke,
     encode_invoke_35c,
     make_code_item,
 )
@@ -44,16 +58,22 @@ def _walk_ops(ops):
             yield from _walk_ops(op.else_ops)
 
 
-def generate_methods(app: AppIR, tidx, sidx, midx, helper_keys, screen_refs) -> GeneratedMethods:
+def generate_methods(
+    app: AppIR, tidx, sidx, midx, helper_keys, screen_refs, field_indexes=None
+) -> GeneratedMethods:
     act_ctor = screen_refs["activity_constructor"]
     # Main register map.
     symbols = list(app.symbol_types)
     if len(symbols) + 2 > 16:
         raise ValueError("Anpyra v0.1 on_create supports at most 14 locals")
-    reg_of = {n: i for i, (n, _) in enumerate(symbols)}
-    this_reg = len(symbols)
-    state_reg = len(symbols) + 1
-    main_regs = len(symbols) + 2
+    wide = any(isinstance(op, (NewScreen, SetTextColor)) for op in _walk_ops(app.operations))
+    offset = 2 if wide else 0
+    reg_of = {n: i + offset for i, (n, _) in enumerate(symbols)}
+    scratch = tuple(range(offset + len(symbols), offset + len(symbols) + 7)) if wide else ()
+    argument_base = offset + len(symbols) + 7 if wide else None
+    this_reg = argument_base + 5 if wide else len(symbols)
+    state_reg = this_reg + 1
+    main_regs = state_reg + 1
     main_asm = Assembler()
     inverse = {
         "==": (OP_IF_NE, "if-ne"),
@@ -66,8 +86,33 @@ def generate_methods(app: AppIR, tidx, sidx, midx, helper_keys, screen_refs) -> 
 
     def emit_main(ops):
         for op in ops:
+            if isinstance(op, ApplyScreenBackground):
+                emit_background(
+                    op,
+                    main_asm,
+                    reg_of,
+                    this_reg,
+                    tidx,
+                    sidx,
+                    midx,
+                    field_indexes or {},
+                    screen_refs,
+                    scratch,
+                    argument_base,
+                )
+                continue
             if emit_screen_operation(
-                op, main_asm, reg_of, this_reg, state_reg, tidx, midx, screen_refs
+                op,
+                main_asm,
+                reg_of,
+                this_reg,
+                state_reg,
+                tidx,
+                midx,
+                screen_refs,
+                argument_base,
+                scratch,
+                field_indexes,
             ):
                 continue
             elif isinstance(op, LoadConst):
@@ -75,11 +120,9 @@ def generate_methods(app: AppIR, tidx, sidx, midx, helper_keys, screen_refs) -> 
                 if op.type_name == "str":
                     main_asm.emit("const_string", r, sidx[op.value], op.value, size=2)
                 elif op.type_name == "bool":
-                    main_asm.emit("const4", r, 1 if op.value else 0, size=1)
+                    emit_const(main_asm, r, 1 if op.value else 0)
                 elif op.type_name == "int":
-                    main_asm.emit(
-                        "const4", r, op.value, size=1
-                    ) if -8 <= op.value <= 7 else main_asm.emit("const16", r, op.value, size=2)
+                    emit_const(main_asm, r, op.value)
             elif isinstance(op, IntBinary):
                 main_asm.emit(
                     "int_binop",
@@ -93,13 +136,14 @@ def generate_methods(app: AppIR, tidx, sidx, midx, helper_keys, screen_refs) -> 
             elif isinstance(op, CallFunction):
                 key = helper_keys[op.function_name]
                 regs = tuple(reg_of[x] for x in op.args)
-                main_asm.emit(
-                    "invoke",
+                emit_invoke(
+                    main_asm,
                     OP_INVOKE_STATIC,
                     midx[key],
                     regs,
+                    key.parameters,
+                    argument_base,
                     f"{op.function_name}(" + ",".join("I" for _ in regs) + ")I",
-                    size=3,
                 )
                 main_asm.emit("move_result", reg_of[op.target], size=1)
             elif isinstance(op, IfBool):
@@ -143,6 +187,8 @@ def generate_methods(app: AppIR, tidx, sidx, midx, helper_keys, screen_refs) -> 
     main_outs = max(
         [2] + [len(op.args) for op in _walk_ops(app.operations) if isinstance(op, CallFunction)]
     )
+    if wide:
+        main_outs = max(main_outs, 5)
     main_code = make_code_item(
         registers_size=main_regs, ins_size=2, outs_size=main_outs, insns=main_words
     )

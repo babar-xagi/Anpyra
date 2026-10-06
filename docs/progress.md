@@ -70,6 +70,17 @@ Files: [manifest](../src/anpyra/android/manifest.py), [packaging](../src/anpyra/
 - uv-recommended installation with pip alternatives and separate user/developer guides.
 - Manual release pipeline, version/tag/archive/description checks, isolated wheel smoke and Trusted Publishing.
 
+## 🎨 New Screen component (unreleased)
+
+- Implemented components/screen.py and component imports, with declarative style.bg color/image/gradient/opacity/transparent values and one TextView foreground child.
+- Support RGB/ARGB/CSS colors, seven native image fit modes, linear directions, radial/sweep and layered/group transparency; foreground text color is configurable.
+- Validate project-local images, static frames, orientation/profiles/alpha; package normalized PNGs by content hash and verify their signed payload/digests.
+- Extend DEX fields, constants, arrays, object returns, typed register copies and range calls; preserve legacy DEX hashes.
+- 76 host tests pass. On the author's Android API 33 phone, 25 native pixel cases passed (base, RGB/ARGB/group/transparent/image alpha, eight linear directions, radial/sweep and seven fit modes). Combined image/gradient/text rendering was visually confirmed.
+- Native API 24–28 and additional devices still need separate runtime coverage. General layouts/events, remote/vector images and animation playback remain outside this first component contract.
+
+Details: [user API/options](user_guide/screen.md), [implementation/tests](developer_guide/screen_styling.md), [runnable example](../examples/screen_style/README.md).
+
 ## 🧹 What changed in the cleanup?
 
 The active source tree now has `compiler/` and `android/`, with ordinary root API/config/build/CLI files. Common/platform registry layers and desktop/iOS placeholders were removed. DEX container writing, method generation, instruction assembly, native screen bindings and APK ZIP packaging have separate owners.

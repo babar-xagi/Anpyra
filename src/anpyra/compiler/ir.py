@@ -3,6 +3,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from ..components.screen import Background
+
 
 @dataclass(frozen=True)
 class CallSuperOnCreate:
@@ -53,6 +55,30 @@ class SetContentView:
 
 
 @dataclass(frozen=True)
+class NewScreen:
+    target: str
+
+
+@dataclass(frozen=True)
+class SetScreenContent:
+    receiver: str
+    view: str
+
+
+@dataclass(frozen=True)
+class ApplyScreenBackground:
+    receiver: str
+    background: Background
+    image_asset: str | None = None
+
+
+@dataclass(frozen=True)
+class SetTextColor:
+    receiver: str
+    color: int
+
+
+@dataclass(frozen=True)
 class IfBool:
     condition_var: str
     then_ops: tuple["IROp", ...]
@@ -77,6 +103,10 @@ IROp = (
     | NewTextView
     | SetText
     | SetContentView
+    | NewScreen
+    | SetScreenContent
+    | ApplyScreenBackground
+    | SetTextColor
     | IfBool
     | IfCompare
 )

@@ -9,6 +9,7 @@ Anpyra's current Android pipeline builds apps using **Python and its Python depe
 | Python 3.11+ | Run the compiler and build pipeline; examples below use Python 3.12 |
 | **uv, recommended**, or pip | Create the environment and install Anpyra |
 | Git/source checkout, optional | Needed for development and repository examples; not for PyPI installation |
+| `Pillow>=11.3.0` | Screen color/image parsing, conversion and validation; installed automatically |
 | `cryptography>=46.0.0` | Keys, certificates and APK signatures; installed automatically with Anpyra |
 | Android API 24+ device, for running/testing | Run the generated APK; not needed to build on your computer |
 | Platform-tools, optional | Supply `adb` for device installation |
@@ -19,7 +20,7 @@ Anpyra's current Android pipeline builds apps using **Python and its Python depe
 
 The `min_sdk` and `target_sdk` settings are Android compatibility metadata written into the manifest. They do not require installing an SDK. The minimum API level follows [Android's v2 signing support](https://source.android.com/docs/security/features/apksigning/v2). Optional adb comes from Android platform-tools; it is used to install/run an already-built APK.
 
-These requirements describe the Android-only build pipeline. See [Android scope](android.md) for build computers versus the device that runs the APK.
+The current source Screen styling component is not included in published 0.1.0; use its editable checkout installation below. These requirements describe the Android-only build pipeline. See [Android scope](android.md) for build computers versus the device that runs the APK.
 
 ## 📦 Install from PyPI
 

@@ -145,6 +145,8 @@ Phases are a dependency-oriented plan, not a fixed schedule. Small independent t
 
 ## 5️⃣ Phase 5 — Native layouts and widgets
 
+**Source milestone delivered:** Screen container/background color, packaged raster image/fit/alpha and linear/radial/sweep gradients, with one TextView child. 25 API 33 native pixel cases passed. General multiple-child layouts, buttons/input and events remain planned; see [Screen guide](user_guide/screen.md).
+
 **Outcome:** display a useful screen with more than one standalone text view.
 
 - [ ] Design layout/child-view authoring APIs and Android method mappings.
@@ -189,10 +191,11 @@ Phases are a dependency-oriented plan, not a fixed schedule. Small independent t
 
 **Outcome:** package application content beyond the original two-entry profile.
 
-- [ ] Add asset selection/path validation and deterministic packaging.
+- [x] Add project-local Screen image selection, validation/conversion and deterministic digest-named PNG asset packaging.
+- [ ] Expand asset types and resource tables deliberately beyond the Screen PNG profile.
 - [ ] Design resource IDs/tables and image/string/icon references where needed.
 - [ ] Expand manifest metadata such as permissions/theme only with tests and a clear model.
-- [ ] Update APK verification to the intended expanded profile.
+- [x] Update verification for signed digest-named screen PNGs; broader resource/package profiles remain future work.
 - [ ] Evaluate compression/alignment, larger ZIPs and multi-DEX constraints as actual needs arise.
 
 **Dependencies:** widget/application features using these resources and a documented package contract.

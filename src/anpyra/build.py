@@ -8,6 +8,7 @@ import tempfile
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
+from .android.assets import prepare_assets
 from .android.dex import DexBuild, build_dex
 from .android.manifest import build_manifest
 from .android.packaging import build_unsigned_apk as _zip_payload
@@ -41,13 +42,17 @@ def build_apk(
     min_sdk: int = 24,
     target_sdk: int = 36,
     state_dir: str | Path | None = None,
+    asset_root: str | Path | None = None,
 ) -> BuildResult:
     config = AppConfig(package, label, version_code, version_name, min_sdk, target_sdk)
     source_path, out_dir = Path(source_path).resolve(), Path(out_dir).resolve()
     if source_path.is_relative_to(out_dir):
         raise ValueError("output directory cannot contain the source file")
     compiled = compile_file(source_path, package=config.package, label=config.label)
-    app = compiled.ir
+    assets = prepare_assets(
+        compiled.ir, Path(asset_root) if asset_root is not None else source_path.parent
+    )
+    app = assets.ir
     manifest = build_manifest(
         app.package,
         app.qualified_activity,
@@ -58,7 +63,7 @@ def build_apk(
         target_sdk=config.target_sdk,
     )
     dex_build = build_dex(app)
-    unsigned = _zip_payload(manifest, dex_build.data)
+    unsigned = _zip_payload(manifest, dex_build.data, assets.entries)
     state = Path(state_dir).resolve() if state_dir is not None else source_path.parent / ".anpyra"
     if state == out_dir or state.is_relative_to(out_dir) or out_dir.is_relative_to(state):
         raise ValueError("signing state and output directory must be separate")
@@ -87,6 +92,7 @@ def build_apk(
             "certificate_sha256": hashlib.sha256(signer.certificate_der).hexdigest(),
             "verification": asdict(verification),
             "methods": [asdict(method) for method in dex_build.methods],
+            "assets": assets.report,
         }
         payloads = {
             "AndroidManifest.xml": manifest,
@@ -128,4 +134,5 @@ def build_project(project: str | Path | Project = ".", *, target: str = "android
         min_sdk=c.min_sdk,
         target_sdk=c.target_sdk,
         state_dir=project.state_path,
+        asset_root=project.root,
     )

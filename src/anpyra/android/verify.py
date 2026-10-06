@@ -12,7 +12,9 @@ from cryptography import x509
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import padding
 
+from .assets import AssetError, validate_png
 from .manifest_inspect import inspect_manifest
+from .packaging import valid_asset_entry
 from .signing import (
     APK_SIG_BLOCK_MAGIC,
     APK_SIGNATURE_SCHEME_V2_ID,
@@ -236,8 +238,25 @@ def inspect_apk(path: Path) -> ApkReport:
     # Standard ZIP readers use the final patched CD offset.
     with zipfile.ZipFile(path, "r") as zf:
         names = tuple(zf.namelist())
-        if len(names) != 2 or set(names) != {"AndroidManifest.xml", "classes.dex"}:
+        required = {"AndroidManifest.xml", "classes.dex"}
+        assets = set(names) - required
+        if (
+            len(names) != len(set(names))
+            or not required.issubset(names)
+            or any(not valid_asset_entry(name) for name in assets)
+        ):
             raise ApkV2VerifyError(f"unexpected APK entries: {names}")
+        for name in assets:
+            payload = zf.read(name)
+            if (
+                not payload.startswith(b"\x89PNG\r\n\x1a\n")
+                or hashlib.sha256(payload).hexdigest() != name.rsplit("/", 1)[1][:-4]
+            ):
+                raise ApkV2VerifyError(f"invalid screen image digest/profile: {name}")
+            try:
+                validate_png(payload)
+            except AssetError as exc:
+                raise ApkV2VerifyError(f"invalid screen image payload: {name}: {exc}") from exc
         manifest = zf.read("AndroidManifest.xml")
         dex = zf.read("classes.dex")
 

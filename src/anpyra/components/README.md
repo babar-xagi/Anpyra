@@ -1,0 +1,7 @@
+# 🧩 Android Components
+
+`screen.py` contains the Screen authoring API, validated Background/Image/Gradient value objects and color/opacity parsing. Applications import these through `anpyra.components` or the package root.
+
+Screen is an Android content-area container. Styles are compiled declarations; the host does not preview the UI. Compiler parsing lives in `compiler/screen_style.py`, native bindings in `android/screen.py` and background emission in `android/backgrounds.py`. Image validation/conversion/packaging lives in `android/assets.py`.
+
+See the [screen guide](../../../docs/user_guide/screen.md), [native component internals](../../../docs/developer_guide/screen_styling.md) and [runnable example](../../../examples/screen_style/README.md).

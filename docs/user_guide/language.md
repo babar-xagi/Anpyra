@@ -1,5 +1,7 @@
 # 🐍 Supported Language and UI
 
+Screen style declarations extend the source subset as described in [Screen styling](screen.md). They accept component literals/lists/float options without providing general runtime list/float support.
+
 This reference describes the implementation in `compiler/frontend.py` and `android/dex.py`. A feature appearing in the roadmap does not make it available in source today.
 
 ## 🧩 Application shape

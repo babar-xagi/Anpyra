@@ -53,6 +53,10 @@ New records need front-end lowering, traversals, emitter handling and tests; a d
 
 ## 📺 Screen bindings and method code
 
+New source components are documented in [Screen styling internals](screen_styling.md): [components/screen.py](../../src/anpyra/components/screen.py) owns Screen/value objects and color/opacity validation; [compiler/screen_style.py](../../src/anpyra/compiler/screen_style.py) parses declarative values; [android/backgrounds.py](../../src/anpyra/android/backgrounds.py) emits native layers/gradient/image operations; [android/assets.py](../../src/anpyra/android/assets.py) validates, normalizes and maps local image assets.
+
+IR now includes NewScreen, SetScreenContent, ApplyScreenBackground and SetTextColor. Styled methods have reserved low array registers, rendering scratch and a high invocation bank. FieldKey/external field ID pools support native enum/SDK references. New Dalvik forms cover full constants, arrays, static fields, object results, move-from16 and invoke-range. Legacy method frames/DEX bytes remain unchanged.
+
 | File | Symbols and responsibility |
 | --- | --- |
 | [screen.py](../../src/anpyra/android/screen.py) | Android Activity/Bundle/Context/TextView/CharSequence/View descriptor constants; screen_methods declares native/generated method references; emit_screen_operation emits super lifecycle, view construction, text and content attachment |
@@ -86,7 +90,7 @@ Fix container offsets/indexes/class metadata here; fix instruction words in dalv
 | --- | --- |
 | [manifest.py](../../src/anpyra/android/manifest.py) | _chunk_header/_enc_len8; StringPool; Attr; BinaryXmlBuilder; build_manifest |
 | [manifest_inspect.py](../../src/anpyra/android/manifest_inspect.py) | AxmlError; _read_len8/_parse_string_pool; inspect_manifest |
-| [packaging.py](../../src/anpyra/android/packaging.py) | build_unsigned_apk: exactly manifest/DEX entries, fixed timestamp, compression/permissions |
+| [packaging.py](../../src/anpyra/android/packaging.py) | build_unsigned_apk: manifest/DEX plus optional validated PNG assets, fixed timestamp, compression/permissions |
 | [signing.py](../../src/anpyra/android/signing.py) | V2SigningError; ZipSections/V2SignerMaterial/V2SignResult; ZIP slicing, retained identity, digest and APK signing |
 | [verify.py](../../src/anpyra/android/verify.py) | ApkV2VerifyError/ApkReport; bounded signer parsing and inspect_apk |
 
@@ -94,7 +98,7 @@ BinaryXmlBuilder creates namespace/string/resource-map chunks and typed attribut
 
 Signing helpers _u32/_u64/lp32/seq32 build binary fields. find_eocd/split_zip_sections/patch_eocd_central_directory_offset manage ZIP sections. compute_chunked_content_digest protects ZIP regions with the v2 EOCD adjustment. generate_signer_material creates RSA-2048/self-signed debug material; load_or_create_signer_material retains the pair and rejects partial/non-RSA/mismatched identities. build_v2_value/build_apk_signing_block/sign_apk_v2 build and insert the signed block. No release-key import/encryption/rotation workflow exists yet.
 
-Verification's _take_lp32/_iter_lp32_sequence/_locate_signing_block/_parse_v2_signer enforce the generated single-signer profile, signature/public-key agreement and protected content digest. inspect_apk checks the two entries, manifest, DEX magic/SHA-1/Adler-32. Failed checks raise; successful report flags do not represent runtime validation or trust-chain/device certification.
+Verification's _take_lp32/_iter_lp32_sequence/_locate_signing_block/_parse_v2_signer enforce the generated single-signer profile, signature/public-key agreement and protected content digest. inspect_apk checks manifest/DEX, optional PNG asset digests/structure, and DEX magic/SHA-1/Adler-32. Failed checks raise; successful report flags do not represent runtime validation or trust-chain/device certification.
 
 ## 🧪 Tests and repository files
 

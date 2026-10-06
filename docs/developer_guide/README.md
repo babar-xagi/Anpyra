@@ -19,6 +19,10 @@ This guide is for maintainers and contributors extending or fixing Anpyra. It de
 | [Release checklist](release.md) | Version, packaging, validation and distribution gates |
 | [PyPI publishing](publishing.md) | Account setup, manual CI pipeline, version tags and release commands |
 
+## 🎨 Screen styling
+
+[Implementation and native pixel testing](screen_styling.md) maps the component/parser/assets/DEX changes and exact validation.
+
 ## 🎯 Start with the problem
 
 For a source error, begin in `compiler/frontend.py`. For wrong DEX, compare IR with `android/dex.py`. For installation/signature issues, trace `android/` and its `build.py`. The [debugging guide](debugging.md) maps specific symptoms to methods and tests.

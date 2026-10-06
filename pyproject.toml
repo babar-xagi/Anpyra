@@ -9,7 +9,7 @@ description = "Compile a typed Python subset directly to Android DEX and signed 
 readme = "docs/pypi_readme.md"
 requires-python = ">=3.11"
 license = "Apache-2.0"
-dependencies = ["cryptography>=46.0.0"]
+dependencies = ["cryptography>=46.0.0", "Pillow>=11.3.0"]
 keywords = ["android", "python", "compiler", "dex", "apk", "native"]
 classifiers = [
     "Development Status :: 3 - Alpha",

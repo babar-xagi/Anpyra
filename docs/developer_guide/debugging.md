@@ -22,7 +22,8 @@ Use evidence at each stage to locate a failure rather than modifying several sta
 | v2 content digest mismatch | `android/signing.py`, `verify.py` | section offsets, EOCD adjustment, chunk digest |
 | Previous APK lost after failure | `build.py` | staging/publication ordering; failure-preservation test |
 | Wrong native view/context/text receiver | `android/screen.py`, `android/codegen.py` | Native method binding and register map |
-| Wrong unsigned ZIP entries | `android/packaging.py` | Deterministic two-entry packaging |
+| Wrong image/crop/gradient/opacity | android/backgrounds.py, components/screen.py, android/assets.py | Style values, native calls, fit and asset mapping |
+| Wrong unsigned ZIP entries | `android/packaging.py` | Deterministic manifest/DEX plus validated PNG assets |
 | APK installs but app crashes | Front end/backend + device logs | Find runtime instruction/type failure and reproduce minimally |
 | Documentation link/example broken | `scripts/check_docs.py`, guide page | Run docs checks; compare language reference to compiler |
 

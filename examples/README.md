@@ -15,3 +15,7 @@ anpyra build examples/score
 ```
 
 Each project has source, configuration and a walkthrough. `build/` and `.anpyra/` appear locally after building and stay out of Git. Phone behavior is verified manually using the [device checklist](../docs/developer_guide/testing.md).
+
+## 🎨 Screen styling
+
+The source-only [screen_style example](screen_style/README.md) uses color, a diagonal gradient, a packaged image, fit and opacity with foreground text. It is built/verified in CI and needs the current editable checkout.

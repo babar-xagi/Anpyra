@@ -5,8 +5,10 @@ import ast
 from dataclasses import dataclass
 from pathlib import Path
 
+from ..components.screen import Background, StyleError, parse_color
 from .ir import (
     AppIR,
+    ApplyScreenBackground,
     CallFunction,
     CallSuperOnCreate,
     FunctionIR,
@@ -14,11 +16,15 @@ from .ir import (
     IfCompare,
     IntBinary,
     LoadConst,
+    NewScreen,
     NewTextView,
     ReturnValue,
     SetContentView,
+    SetScreenContent,
     SetText,
+    SetTextColor,
 )
+from .screen_style import background_assignment, style_value
 
 
 class CompileError(ValueError):
@@ -41,24 +47,42 @@ def _is_name(node: ast.AST, name: str) -> bool:
     return isinstance(node, ast.Name) and node.id == name
 
 
-def _require_imports(tree: ast.Module) -> None:
+API_NAMES = {"Activity", "TextView", "Screen", "Image", "Gradient", "Background"}
+
+
+def _require_imports(tree: ast.Module) -> set[str]:
     imported = set()
     for node in tree.body:
         if isinstance(node, ast.ImportFrom):
-            if node.level or node.module not in {"anpyra", "pyandroid"}:
+            modules = {
+                "anpyra": API_NAMES,
+                "pyandroid": {"Activity", "TextView"},
+                "anpyra.components": API_NAMES - {"Activity", "TextView"},
+                "anpyra.components.screen": API_NAMES - {"Activity", "TextView"},
+            }
+            if node.level or node.module not in modules:
                 raise CompileError(
-                    f"{_line(node)}only imports from anpyra or pyandroid are supported"
+                    f"{_line(node)}only imports from anpyra, pyandroid or anpyra.components are supported"
                 )
             for alias in node.names:
-                if alias.asname or alias.name not in {"Activity", "TextView"}:
-                    raise CompileError(f"{_line(node)}import Activity and TextView without aliases")
+                if alias.asname or alias.name not in modules[node.module]:
+                    raise CompileError(
+                        f"{_line(node)}import supported authoring types without aliases"
+                    )
                 imported.add(alias.name)
         elif not isinstance(node, (ast.FunctionDef, ast.ClassDef)) and not _is_docstring(node):
             raise CompileError(f"{_line(node)}unsupported module statement: {type(node).__name__}")
-    if {"Activity", "TextView"} - imported:
-        raise CompileError(
-            "app source must import Activity and TextView from anpyra (or pyandroid)"
-        )
+    if "Activity" not in imported:
+        raise CompileError("app source must import Activity from anpyra (or pyandroid)")
+    for node in ast.walk(tree):
+        if (
+            isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Name)
+            and node.func.id in API_NAMES
+            and node.func.id not in imported
+        ):
+            raise CompileError(f"{_line(node)}import {node.func.id} before using it")
+    return imported
 
 
 def _is_docstring(node):
@@ -160,7 +184,7 @@ def _collect_function_signatures(tree: ast.Module) -> dict[str, FunctionSignatur
             continue
         if node.decorator_list or getattr(node, "type_params", []):
             raise CompileError(f"{_line(node)}decorators are not supported in Anpyra v0.1")
-        if node.name in {"Activity", "TextView"}:
+        if node.name in API_NAMES:
             raise CompileError(f"{_line(node)}function name {node.name!r} shadows the Android API")
         if node.name in out:
             raise CompileError(f"{_line(node)}duplicate function {node.name!r}")
@@ -262,13 +286,19 @@ class HelperCompiler:
 
 
 class FunctionCompiler:
-    def __init__(self, functions: dict[str, FunctionSignature]):
+    def __init__(self, functions: dict[str, FunctionSignature], imported: set[str]):
         self.functions = functions
         self.symbols: dict[str, str] = {}
         self.synthetic_counter = 0
+        self.imported = imported
+        self.constants = {}
+        self.backgrounds = {}
+        self.screen_contents = {}
+        self.attached = set()
+        self.branch_depth = 0
 
     def declare(self, name, typ, node):
-        if name in {"self", "state", "Activity", "TextView"} or name in self.functions:
+        if name in {"self", "state", *API_NAMES} or name in self.functions:
             raise CompileError(f"{_line(node)}variable {name!r} shadows a reserved name")
         if name in self.symbols:
             raise CompileError(f"{_line(node)}variable {name!r} is already declared")
@@ -356,13 +386,65 @@ class FunctionCompiler:
         if actual != typ:
             raise CompileError(f"{_line(node)}cannot assign {actual} to {name}: {typ}")
         self.declare(name, typ, node)
+        self.constants[name] = node.value.value
         return (LoadConst(name, typ, node.value.value),)
 
     def compile_assignment(self, node):
+        if len(node.targets) == 1 and isinstance(node.targets[0], ast.Attribute):
+            target = node.targets[0]
+            chain = []
+            while isinstance(target, ast.Attribute):
+                chain.insert(0, target.attr)
+                target = target.value
+            if isinstance(target, ast.Name) and target.id in self.backgrounds:
+                if self.branch_depth or target.id in self.attached:
+                    raise CompileError(
+                        f"{_line(node)}configure screen styles before attaching, outside branches"
+                    )
+                if chain == ["style", "bg"] or chain == ["bg"]:
+                    value = style_value(node.value, self.constants)
+                    if not isinstance(value, Background):
+                        raise StyleError("screen background must be Background(...)")
+                    self.backgrounds[target.id] = value
+                elif len(chain) >= 2 and chain[:-1] in (["style", "bg"], ["bg"]):
+                    self.backgrounds[target.id] = background_assignment(
+                        self.backgrounds[target.id],
+                        chain[-1],
+                        style_value(node.value, self.constants),
+                    )
+                elif (
+                    len(chain) >= 3
+                    and chain[:-2] in (["style", "bg"], ["bg"])
+                    and chain[-2] == "image"
+                ):
+                    attribute = {"fit": "fit", "opacity": "image_opacity", "frame": "frame"}.get(
+                        chain[-1]
+                    )
+                    if attribute is None:
+                        raise StyleError("image properties are fit, opacity and frame")
+                    self.backgrounds[target.id] = background_assignment(
+                        self.backgrounds[target.id],
+                        attribute,
+                        style_value(node.value, self.constants),
+                    )
+                else:
+                    raise CompileError(f"{_line(node)}use screen.style.bg.PROPERTY")
+                return ()
         if len(node.targets) != 1 or not isinstance(node.targets[0], ast.Name):
             raise CompileError(f"{_line(node)}simple assignments only")
         target = node.targets[0].id
         call = node.value
+        if isinstance(call, ast.Call) and _is_name(call.func, "Screen"):
+            if (
+                "Screen" not in self.imported
+                or len(call.args) != 1
+                or not _is_name(call.args[0], "self")
+                or call.keywords
+            ):
+                raise CompileError(f"{_line(node)}import Screen and construct Screen(self)")
+            self.declare(target, "Screen", node)
+            self.backgrounds[target] = Background()
+            return (NewScreen(target),)
         if not (
             isinstance(call, ast.Call)
             and _is_name(call.func, "TextView")
@@ -372,6 +454,8 @@ class FunctionCompiler:
         ):
             raise CompileError(f"{_line(node)}supported untyped assignment: name = TextView(self)")
         self.declare(target, "TextView", node)
+        if "TextView" not in self.imported:
+            raise CompileError(f"{_line(node)}import TextView before using it")
         return (NewTextView(target),)
 
     def compile_expr(self, node):
@@ -380,6 +464,37 @@ class FunctionCompiler:
             raise CompileError(f"{_line(node)}unsupported expression")
         receiver = call.func.value
         attr = call.func.attr
+        if (
+            attr == "set_text_color"
+            and isinstance(receiver, ast.Name)
+            and len(call.args) == 1
+            and not call.keywords
+        ):
+            self.require(receiver.id, "TextView", node)
+            return (
+                SetTextColor(receiver.id, parse_color(style_value(call.args[0], self.constants))),
+            )
+        if (
+            attr == "set_content"
+            and isinstance(receiver, ast.Name)
+            and len(call.args) == 1
+            and isinstance(call.args[0], ast.Name)
+            and not call.keywords
+        ):
+            self.require(receiver.id, "Screen", node)
+            self.require(call.args[0].id, "TextView", node)
+            if (
+                self.branch_depth
+                or receiver.id in self.attached
+                or receiver.id in self.screen_contents
+            ):
+                raise CompileError(
+                    f"{_line(node)}set screen content once before attachment, outside branches"
+                )
+            if call.args[0].id in self.screen_contents.values():
+                raise CompileError(f"{_line(node)}a view cannot belong to two screens")
+            self.screen_contents[receiver.id] = call.args[0].id
+            return (SetScreenContent(receiver.id, call.args[0].id),)
         if (
             attr == "set_text"
             and isinstance(receiver, ast.Name)
@@ -402,7 +517,17 @@ class FunctionCompiler:
             and isinstance(call.args[0], ast.Name)
             and not call.keywords
         ):
-            self.require(call.args[0].id, "TextView", node)
+            view = call.args[0].id
+            if self.symbols.get(view) == "Screen":
+                if self.branch_depth:
+                    raise CompileError(f"{_line(node)}screen attachment must be outside branches")
+                self.attached.add(view)
+                return (ApplyScreenBackground(view, self.backgrounds[view]), SetContentView(view))
+            self.require(view, "TextView", node)
+            if view in self.screen_contents.values():
+                raise CompileError(
+                    f"{_line(node)}attach the screen rather than its already-parented content"
+                )
             return (SetContentView(call.args[0].id),)
         raise CompileError(f"{_line(node)}unsupported method call")
 
@@ -439,6 +564,7 @@ class FunctionCompiler:
         raise CompileError(f"{_line(node)}if condition must be bool or int comparison")
 
     def compile_branch(self, stmts):
+        self.branch_depth += 1
         ops = []
         for s in stmts:
             if isinstance(s, ast.Pass):
@@ -450,9 +576,16 @@ class FunctionCompiler:
                 ops.extend(self.compile_condition(s.test, s.body, s.orelse))
                 continue
             raise CompileError(f"{_line(s)}branches support method calls and nested if/elif")
+        self.branch_depth -= 1
         return ops
 
     def compile_statement(self, node):
+        try:
+            return self._compile_statement(node)
+        except StyleError as exc:
+            raise CompileError(f"{_line(node)}{exc}") from exc
+
+    def _compile_statement(self, node):
         if isinstance(node, ast.AnnAssign):
             return self.compile_ann_assign(node)
         if isinstance(node, ast.Assign):
@@ -481,7 +614,7 @@ def _compile_source(source: str, *, source_path: Path, package: str, label: str)
         tree = ast.parse(source, filename=str(source_path))
     except SyntaxError as exc:
         raise CompileError(f"Python syntax error: {exc}") from exc
-    _require_imports(tree)
+    imported = _require_imports(tree)
     signatures = _collect_function_signatures(tree)
     class_node = _find_activity_class(tree)
     if class_node.name in signatures:
@@ -493,7 +626,7 @@ def _compile_source(source: str, *, source_path: Path, package: str, label: str)
         if isinstance(node, ast.FunctionDef):
             helper_irs.append(HelperCompiler(signatures[node.name]).compile(node))
 
-    fc = FunctionCompiler(signatures)
+    fc = FunctionCompiler(signatures, imported)
     operations = [CallSuperOnCreate()]
     for node in on_create.body:
         operations.extend(fc.compile_statement(node))
@@ -503,8 +636,8 @@ def _compile_source(source: str, *, source_path: Path, package: str, label: str)
         raise CompileError(
             "on_create must call self.set_content_view(view) exactly once, outside branches"
         )
-    if "TextView" not in fc.symbols.values():
-        raise CompileError("on_create must create at least one TextView")
+    if not {"TextView", "Screen"}.intersection(fc.symbols.values()):
+        raise CompileError("on_create must create a TextView or Screen")
     if len(fc.symbols) > 14:
         raise CompileError(
             "on_create exceeds 14 registers for locals and temporary values in Anpyra v0.1"
@@ -532,7 +665,7 @@ def compile_source(
     AppConfig(package=package, label=label)
     try:
         return _compile_source(source, source_path=Path(source_path), package=package, label=label)
-    except CompileError as exc:
+    except (CompileError, StyleError) as exc:
         raise CompileError(f"{source_path}: {exc}") from exc
 
 

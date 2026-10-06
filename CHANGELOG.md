@@ -4,6 +4,16 @@ This file records user-visible milestones. Planned work belongs in the [roadmap]
 
 ## 🛠️ Unreleased
 
+### 🎨 Native Screen styling
+
+- Add components/screen.py with Screen, Background, Image and Gradient; compile declarative bg properties and native text color.
+- Support arbitrary declared ARGB/CSS colors, group transparency, seven image fits, static frame selection and linear/radial/sweep gradients.
+- Normalize local image assets with EXIF/ICC/alpha handling and metadata stripping; sign and validate digest-named PNG entries.
+- Extend DEX for native enum/static fields, arrays, full constants, object results and safe wide invocations; preserve legacy DEX output.
+- Add runnable source example, option/implementation docs, opt-in device test script and 76 host tests.
+- Verify 25 real-device pixel cases on Android API 33 plus combined image/gradient/text rendering.
+- Feature remains unreleased; published PyPI 0.1.0 is unchanged.
+
 ### 🧹 Android-only component cleanup
 
 - Remove common/platform registry packages and future desktop/iOS placeholders.

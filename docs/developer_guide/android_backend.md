@@ -22,7 +22,7 @@ If adding a permission, icon, theme, resource or Activity, account for resource 
 
 ## 📦 Unsigned packaging
 
-`_zip_payload` creates exactly two entries in a stable order: binary `AndroidManifest.xml` and `classes.dex`. It fixes ZIP timestamps and file permission metadata and uses deflate compression. ZIP64, resources, assets and multiple DEX files are unsupported.
+`_zip_payload` delegates to packaging.py and writes manifest/DEX first, followed by sorted digest-named PNG image assets where declared. It fixes ZIP timestamps and file permission metadata and uses deflate compression. ZIP64, Android resource tables and multiple DEX remain unsupported; Screen raster assets are now supported.
 
 The filename/ZIP entry order is part of current reproducibility behavior. New artifacts need an explicit packaging contract and an updated verifier profile rather than an extra `writestr` alone.
 
@@ -52,7 +52,7 @@ The bytes used for the content digest and the bytes stored in the final EOCD dif
 
 `inspect_apk` locates and parses the block, enforces one signer and the supported algorithm, checks certificate/public-key consistency and verifies the signature. It recomputes content digest with the signing-block-start offset treatment.
 
-It then reads exactly the expected two entries, decodes manifest metadata, and checks DEX magic/SHA-1/Adler-32. A failed check raises; a returned `ApkReport` contains successful flags.
+It then reads the manifest/DEX and allowed digest-named PNG assets, validates image digests/structure, decodes manifest metadata, and checks DEX magic/SHA-1/Adler-32. A failed check raises; a returned `ApkReport` contains successful flags.
 
 This verifies the generated profile's integrity. It does not certify signer trust, app store acceptance, all DEX instruction constraints, device installability, or arbitrary APKs. Writer/reader share code and assumptions, so independent verification is needed before a stronger release claim.
 

@@ -68,7 +68,7 @@ Prints `android  available`. There are no additional target packages or dispatch
 anpyra verify APK [--json]
 ```
 
-Checks the framework's single-signer APK v2 profile, protected content, DEX magic, SHA-1 and Adler-32. It expects exactly the manifest and DEX entries. It is not a general verifier for arbitrary APKs with assets, resources or multiple signers.
+Checks the framework's single-signer APK v2 profile, protected content, DEX magic, SHA-1 and Adler-32. It expects manifest and DEX plus optional validated digest-named screen PNG assets in the current source feature. It is not a general verifier for arbitrary APKs with assets, resources or multiple signers.
 
 ```powershell
 anpyra verify examples/hello/build/dev.anpyra.hello.apk
@@ -83,7 +83,7 @@ JSON includes package, Activity, label, SDKs, exported flag, integrity flags, ce
 anpyra doctor
 ```
 
-Reports Anpyra/Python/cryptography versions, Python executable, and optional adb path. It does not perform network checks, device discovery, or runtime validation. Missing adb does not prevent builds.
+Reports Anpyra/Python/cryptography/Pillow versions, Python executable, and optional adb path. It does not perform network checks, device discovery, or runtime validation. Missing adb does not prevent builds.
 
 ## 📱 install
 

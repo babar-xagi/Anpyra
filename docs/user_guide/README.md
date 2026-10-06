@@ -18,6 +18,10 @@ This guide is for people building small Android apps. You do not need to underst
 | 10 | [Migration and FAQ](migration.md) | Move experiment apps and understand scope |
 | 11 | [Android scope](android.md) | Android-only focus, build computers and device evidence |
 
+## 🎨 Screen component
+
+[Screen backgrounds/images/gradients](screen.md) documents the new source API, options and verified behavior.
+
 ## 🎯 Buildable examples
 
 The included [hello](../../examples/hello/README.md) and [score](../../examples/score/README.md) projects demonstrate one native Activity, TextView content, typed values, branches, arithmetic, and simple helpers.

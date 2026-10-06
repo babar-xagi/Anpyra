@@ -12,6 +12,7 @@ from importlib.metadata import version
 from pathlib import Path
 
 from . import __version__
+from .android.assets import prepare_assets
 from .android.dex import build_dex
 from .android.verify import inspect_apk
 from .build import build_project
@@ -80,7 +81,8 @@ def main(argv: list[str] | None = None) -> int:
                 compiled = compile_file(
                     project.source_path, package=project.config.package, label=project.config.label
                 )
-                dex = build_dex(compiled.ir)
+                assets = prepare_assets(compiled.ir, project.root)
+                dex = build_dex(assets.ir)
                 print(f"Valid: {project.source_path}; {len(dex.methods)} method listings")
                 _dump(dex, compiled.ir, args)
         elif args.command == "targets":
@@ -95,6 +97,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"Anpyra: {__version__}")
             print(f"Python: {sys.version.split()[0]} ({sys.executable})")
             print(f"cryptography: {version('cryptography')}")
+            print(f"Pillow: {version('Pillow')}")
             print("Build prerequisites: OK")
             print(f"adb (optional for install): {shutil.which('adb') or 'not found'}")
         elif args.command == "install":

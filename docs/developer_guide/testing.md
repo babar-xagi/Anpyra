@@ -5,17 +5,19 @@
 | Layer | Files | Purpose |
 | --- | --- | --- |
 | Unit | `tests/unit/test_compiler.py` | Types, syntax/rejection, historical source compatibility, initialization and register limits |
+| Unit | `tests/unit/test_screen.py` | Component values, source diagnostics, native fields and wide instruction words |
 | Unit | `tests/unit/test_config.py` | Settings, relative paths, invalid config, scaffolding and Unicode |
 | Unit | `tests/unit/test_architecture.py` | Android-only package ownership, screen descriptors, early target rejection and historical imports |
 | Unit | `tests/unit/test_release.py` | Release version/tag consistency, stale artifacts, metadata/private-path/link rejection |
 | Unit | `tests/unit/test_dex.py` | Selected emitted bytes, frame layout, branch destinations, checksums and MUTF-8 |
 | Integration | `tests/integration/test_build.py` | Build/manifest/signing/report/reproducibility/failure preservation |
+| Integration | `tests/integration/test_screen_assets.py` | Real image assets/signatures, alpha/frames/formats, metadata and error preservation |
 | Integration | `tests/integration/test_cli.py` | Command workflow and mocked device command construction |
 | Regression | `tests/regression/test_android_output.py` | Exact experiment 005–008 DEX hashes from the pre-cleanup implementation |
 | Regression | `tests/regression/test_functions.py` | Adapted experiment 008 typed-helper contracts |
 | Fixtures | `tests/fixtures/exp005.py` through `exp008.py` | Historical source inputs; not test runners |
 
-The current suite contains **55 tests**. One exact-output regression checks all four experiment DEX hashes captured before Android component cleanup. Package `__init__.py` files allow recursive unittest discovery. Some retained regression tests build APKs, so the groups describe intent rather than strict isolation rules.
+The current suite contains **76 tests**. One exact-output regression checks all four experiment DEX hashes captured before Android component cleanup. Package `__init__.py` files allow recursive unittest discovery. Some retained regression tests build APKs, so the groups describe intent rather than strict isolation rules.
 
 ## ⌨️ Run checks
 

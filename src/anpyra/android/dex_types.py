@@ -18,6 +18,13 @@ class MethodKey:
 
 
 @dataclass(frozen=True)
+class FieldKey:
+    owner: str
+    name: str
+    type_name: str
+
+
+@dataclass(frozen=True)
 class MethodListing:
     name: str
     registers: tuple[tuple[str, str, int], ...]

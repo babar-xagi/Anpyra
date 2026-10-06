@@ -6,7 +6,8 @@ import hashlib
 import struct
 import zlib
 
-from ..compiler.ir import AppIR, LoadConst
+from ..compiler.ir import AppIR, ApplyScreenBackground, LoadConst
+from .backgrounds import background_fields
 from .codegen import _walk_ops, generate_methods
 from .dex_types import DexBuild, MethodKey, ProtoKey
 from .encoding import align, dex_string_sort_key, mutf8_encode, uleb128, utf16_code_units
@@ -25,6 +26,7 @@ TYPE_HEADER_ITEM = 0x0000
 TYPE_STRING_ID_ITEM = 0x0001
 TYPE_TYPE_ID_ITEM = 0x0002
 TYPE_PROTO_ID_ITEM = 0x0003
+TYPE_FIELD_ID_ITEM = 0x0004
 TYPE_METHOD_ID_ITEM = 0x0005
 TYPE_CLASS_DEF_ITEM = 0x0006
 TYPE_MAP_LIST = 0x1000
@@ -44,7 +46,9 @@ def _shorty(p):
 def build_dex(app: AppIR) -> DexBuild:
     cls = app.class_descriptor
     activity, void, int_t = ACTIVITY_TYPE, "V", "I"
-    screen_refs = screen_methods(cls)
+    operations = tuple(_walk_ops(app.operations))
+    screen_refs = screen_methods(cls, operations)
+    fields = background_fields(operations)
     protos = [ProtoKey(method.return_type, method.parameters) for method in screen_refs.values()]
     our_ctor = screen_refs["app_constructor"]
     our_on = screen_refs["app_on_create"]
@@ -60,12 +64,20 @@ def build_dex(app: AppIR) -> DexBuild:
         for op in _walk_ops(app.operations)
         if isinstance(op, LoadConst) and op.type_name == "str"
     }
+    strings_from_main.update(
+        op.image_asset
+        for op in operations
+        if isinstance(op, ApplyScreenBackground) and op.image_asset is not None
+    )
     type_descriptors = {cls, activity, void, int_t}
     for method in methods:
         type_descriptors.update((method.owner, method.return_type, *method.parameters))
+    for field in fields:
+        type_descriptors.update((field.owner, field.type_name))
     strings_set = {
         *type_descriptors,
         *(method.name for method in methods),
+        *(field.name for field in fields),
         *strings_from_main,
     }
     for p in protos:
@@ -91,8 +103,12 @@ def build_dex(app: AppIR) -> DexBuild:
         ),
     )
     midx = {m: i for i, m in enumerate(methods)}
+    fields = sorted(
+        fields, key=lambda field: (tidx[field.owner], sidx[field.name], tidx[field.type_name])
+    )
+    fidx = {field: index for index, field in enumerate(fields)}
 
-    generated = generate_methods(app, tidx, sidx, midx, helper_keys, screen_refs)
+    generated = generate_methods(app, tidx, sidx, midx, helper_keys, screen_refs, fidx)
     ctor_code, main_code = generated.constructor_code, generated.lifecycle_code
     helper_codes = generated.helper_codes
     # Fixed sections.
@@ -102,7 +118,9 @@ def build_dex(app: AppIR) -> DexBuild:
     type_ids_size = len(types)
     proto_ids_off = type_ids_off + type_ids_size * 4
     proto_ids_size = len(protos)
-    method_ids_off = proto_ids_off + proto_ids_size * 12
+    field_ids_size = len(fields)
+    field_ids_off = proto_ids_off + proto_ids_size * 12 if fields else 0
+    method_ids_off = proto_ids_off + proto_ids_size * 12 + field_ids_size * 8
     method_ids_size = len(methods)
     class_defs_off = method_ids_off + method_ids_size * 8
     data_off = align(class_defs_off + 32, 4)
@@ -174,6 +192,10 @@ def build_dex(app: AppIR) -> DexBuild:
             "<III", sidx[_shorty(p)], tidx[p.return_type], po.get(p.parameters, 0)
         )
     method_ids = bytearray()
+    field_ids = b"".join(
+        struct.pack("<HHI", tidx[field.owner], tidx[field.type_name], sidx[field.name])
+        for field in fields
+    )
     for m in methods:
         method_ids += struct.pack(
             "<HHI",
@@ -216,6 +238,8 @@ def build_dex(app: AppIR) -> DexBuild:
         (TYPE_CLASS_DATA_ITEM, 1, class_data_off),
         (TYPE_MAP_LIST, 1, map_off),
     ]
+    if fields:
+        map_entries.insert(4, (TYPE_FIELD_ID_ITEM, field_ids_size, field_ids_off))
     mb = bytearray(struct.pack("<I", len(map_entries)))
     for typ, size, off in map_entries:
         mb += struct.pack("<HHII", typ, 0, size, off)
@@ -239,8 +263,8 @@ def build_dex(app: AppIR) -> DexBuild:
         type_ids_off,
         proto_ids_size,
         proto_ids_off,
-        0,
-        0,
+        field_ids_size,
+        field_ids_off,
         method_ids_size,
         method_ids_off,
         1,
@@ -248,7 +272,7 @@ def build_dex(app: AppIR) -> DexBuild:
         data_size,
         data_off,
     )
-    out = bytearray(header) + string_ids + type_ids + proto_ids + method_ids + class_def
+    out = bytearray(header) + string_ids + type_ids + proto_ids + field_ids + method_ids + class_def
     out += b"\0" * (data_off - len(out))
     out += data
     out[12:32] = hashlib.sha1(out[32:]).digest()

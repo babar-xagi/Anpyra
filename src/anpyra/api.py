@@ -14,3 +14,6 @@ class TextView:
 
     def set_text(self, text: str) -> None:
         raise RuntimeError("Build this app with Anpyra; Android widgets cannot run on the host.")
+
+    def set_text_color(self, color: str | int) -> None:
+        raise RuntimeError("Build this app with Anpyra; Android widgets cannot run on the host.")
