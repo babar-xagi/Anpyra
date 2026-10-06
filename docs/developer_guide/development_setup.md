@@ -24,7 +24,7 @@ anpyra check examples/hello
 anpyra check examples/score
 ```
 
-Tests are grouped by responsibility but the root discovery command still runs all tests, including the original 41 baseline checks, seven native-architecture checks and six release-guard checks. Package markers make the groups discoverable on supported Python versions. Run from the repository root.
+Tests are grouped by responsibility but the root discovery command still runs all tests, including compiler/config/byte-level checks, Android component boundaries, release guards and historical exact-output regressions. Package markers make the groups discoverable on supported Python versions. Run from the repository root.
 
 ## 🌿 Work on a change
 

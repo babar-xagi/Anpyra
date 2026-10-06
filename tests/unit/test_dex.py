@@ -7,7 +7,7 @@ import zlib
 from pathlib import Path
 
 from anpyra import compile_source
-from anpyra.platforms.mobile.android.dex import build_dex, mutf8_encode
+from anpyra.android.dex import build_dex, mutf8_encode
 
 
 def u32(data, offset):

@@ -1,6 +1,6 @@
 # 🧠 Compiler and DEX Internals
 
-Relevant files: [frontend.py](../../src/anpyra/common/compiler/frontend.py), [ir.py](../../src/anpyra/common/compiler/ir.py), [dex.py](../../src/anpyra/platforms/mobile/android/dex.py). See the [source reference](source_reference.md) for every symbol.
+Relevant files: [frontend.py](../../src/anpyra/compiler/frontend.py), [ir.py](../../src/anpyra/compiler/ir.py), [dex.py](../../src/anpyra/android/dex.py). Method generation is in [codegen.py](../../src/anpyra/android/codegen.py), native UI emission in [screen.py](../../src/anpyra/android/screen.py), assembly in [dalvik.py](../../src/anpyra/android/dalvik.py), and string primitives in [encoding.py](../../src/anpyra/android/encoding.py). See the [source reference](source_reference.md) for every symbol.
 
 ## 1️⃣ Parse and validate the module
 
@@ -43,7 +43,7 @@ Strings sort by UTF-16 code units. Types, prototypes and method IDs then sort by
 
 DEX string data uses modified UTF-8, with a UTF-16 length. NUL is encoded differently from ordinary UTF-8; supplementary characters are encoded through surrogate code units. The binary tests cover these cases. See the primary [DEX format specification](https://source.android.com/docs/core/runtime/dex-format).
 
-## 5️⃣ Assign register frames
+## 5️⃣ Assign register frames in codegen.py
 
 Lifecycle symbols occupy low registers; the final two incoming registers hold `self` and `state`. The current implementation permits at most 14 symbols plus those two values. Allocation does not analyze lifetimes or reuse dead values.
 
@@ -51,7 +51,7 @@ Helper temporaries occupy low registers; parameters occupy the high registers. F
 
 `registers_size` is the frame size, `ins_size` the incoming words, and `outs_size` the maximum outgoing invocation words. The helper example has `(3, 2, 0)` because it makes no calls. The lifecycle frame reserves enough outgoing words for UI calls and helper arity.
 
-## 6️⃣ Assemble instructions and branches
+## 6️⃣ Assemble instructions and branches in dalvik.py
 
 The assembler collects `AsmInstruction` and `Label` records. Its first pass calculates label positions; its second pass encodes instructions and computes signed displacements relative to the current instruction.
 

@@ -8,20 +8,21 @@ Use evidence at each stage to locate a failure rather than modifying several sta
 | --- | --- | --- |
 | `python -m anpyra` or public imports fail | `__main__.py`, `__init__.py`, package configuration | Installed-path and wheel checks |
 | CLI flag/output/exit wrong | `cli.py` | `main`, `_dump`; CLI integration tests |
-| Project metadata/path rejected incorrectly | `common/config.py`, `common/project.py`, Android `config.py` | Shared identity/paths, Android AppConfig/load_project; config tests |
+| Project metadata/path rejected incorrectly | `config.py` | AppConfig/Project validation and load_project; config tests |
 | New scaffold TOML/source broken | `scaffold.py` | `init_project`, `STARTER_SOURCE`; Unicode/scaffold roundtrip |
-| Supported syntax rejected | `common/compiler/frontend.py` | AST predicate/statement method; compiler/regression tests |
-| Undefined/type error missed | `common/compiler/frontend.py` | `declare`, `require`, initializer lowering |
-| Correct source creates incorrect IR | Front end and `common/compiler/ir.py` | `compile_*` lowering and pretty output |
-| Wrong registers/helper parameters | `platforms/mobile/android/dex.py` | register maps and helper frames; binary DEX tests |
-| Wrong branch destination | `platforms/mobile/android/dex.py` | `Assembler.assemble`, `emit_main`, code-unit widths |
-| Missing `move-result`/wrong return | `platforms/mobile/android/dex.py` | helper call/result/return emitters |
-| DEX table/checksum/Unicode malformed | `platforms/mobile/android/dex.py` | sorting, MUTF-8, file layout, header integrity |
-| Android package metadata wrong | `platforms/mobile/android/manifest.py`, reader | pools, attributes, SDK/version/Activity profile |
-| Stored certificate/key rejected | `platforms/mobile/android/signing.py` | `load_or_create_signer_material` |
-| v2 content digest mismatch | `platforms/mobile/android/signing.py`, `verify.py` | section offsets, EOCD adjustment, chunk digest |
-| Previous APK lost after failure | `platforms/mobile/android/build.py` | staging/publication ordering; failure-preservation test |
-| Native target unavailable or misrouted | `platforms/registry.py`, Android `backend.py` | Inventory/dispatch status; platform and CLI tests |
+| Supported syntax rejected | `compiler/frontend.py` | AST predicate/statement method; compiler/regression tests |
+| Undefined/type error missed | `compiler/frontend.py` | `declare`, `require`, initializer lowering |
+| Correct source creates incorrect IR | Front end and `compiler/ir.py` | `compile_*` lowering and pretty output |
+| Wrong registers/helper parameters | `android/codegen.py` | register maps and helper frames; binary DEX tests |
+| Wrong branch destination | `android/codegen.py`, `android/dalvik.py` | `Assembler.assemble`, `emit_main`, code-unit widths |
+| Missing `move-result`/wrong return | `android/codegen.py` | helper call/result/return emitters |
+| DEX table/checksum/Unicode malformed | `android/dex.py`, `android/encoding.py` | sorting, MUTF-8, file layout, header integrity |
+| Android package metadata wrong | `android/manifest.py`, reader | pools, attributes, SDK/version/Activity profile |
+| Stored certificate/key rejected | `android/signing.py` | `load_or_create_signer_material` |
+| v2 content digest mismatch | `android/signing.py`, `verify.py` | section offsets, EOCD adjustment, chunk digest |
+| Previous APK lost after failure | `build.py` | staging/publication ordering; failure-preservation test |
+| Wrong native view/context/text receiver | `android/screen.py`, `android/codegen.py` | Native method binding and register map |
+| Wrong unsigned ZIP entries | `android/packaging.py` | Deterministic two-entry packaging |
 | APK installs but app crashes | Front end/backend + device logs | Find runtime instruction/type failure and reproduce minimally |
 | Documentation link/example broken | `scripts/check_docs.py`, guide page | Run docs checks; compare language reference to compiler |
 

@@ -2,7 +2,7 @@
 
 from .api import Activity, TextView
 from .build import BuildResult, build_apk, build_project
-from .common.compiler.frontend import CompileError, compile_file, compile_source
+from .compiler.frontend import CompileError, compile_file, compile_source
 from .config import AppConfig, ConfigError, Project, load_project
 
 __version__ = "0.1.0"

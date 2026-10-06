@@ -1,1 +1,1 @@
-"""Historical Android imports; implementation lives in platforms.mobile.android."""
+"""Native Android code generation, packaging and verification components."""

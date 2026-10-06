@@ -2,7 +2,7 @@
 
 Write small Android apps in a typed Python subset, compile them directly to DEX, and build signed APKs. Anpyra is a Python-written compiler and build framework based on the PyAndroid experiments 001–008.
 
-**Status: v0.1 alpha. Android is the only implemented target.** Native iOS, Windows, macOS and Linux backends are planned. Web is outside scope. Framework-specific device acceptance remains pending; the original experiments were reported successful on a phone.
+**Status: v0.1 alpha. Android is the only implemented target.** The current priority is completing Android; other platforms are deferred. The author confirmed successful starter APK installation on a phone. Broader screen/lifecycle and independent verification records are still pending.
 
 ## 🐍 Python-based builds
 

@@ -1,1 +1,1 @@
-"""Historical compiler imports; implementations live in common and the Android backend."""
+"""Static Python analysis and intermediate representation for Android apps."""

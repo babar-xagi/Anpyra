@@ -1,6 +1,6 @@
 # 🗂️ Repository Structure
 
-The repository separates the installable framework, user examples, automated checks, documentation and local generated files.
+The current source tree focuses on Android and uses direct component ownership. This source cleanup is unreleased; public PyPI 0.1.0 remains available with its original internal layout.
 
 ## 🌳 Maintained tree
 
@@ -8,84 +8,68 @@ The repository separates the installable framework, user examples, automated che
 Anpyra/
 ├── README.md, CONTRIBUTING.md, CHANGELOG.md, LICENSE
 ├── pyproject.toml, MANIFEST.in, .gitignore
-├── .github/                   # Tests/publish workflows, issue and PR templates
+├── .github/
+│   ├── workflows/tests.yml       # Windows/Linux checks; reusable by release
+│   ├── workflows/publish.yml     # Manual tagged TestPyPI/PyPI upload
+│   ├── ISSUE_TEMPLATE/
+│   └── pull_request_template.md
 ├── src/
 │   ├── README.md
 │   ├── anpyra/
 │   │   ├── __init__.py, __main__.py, py.typed
-│   │   ├── api.py, config.py   # Public Android-compatible imports
-│   │   ├── cli.py, scaffold.py
-│   │   ├── build.py           # Public build API and target dispatch
-│   │   ├── common/
-│   │   │   ├── config.py      # Shared identity/version validation
-│   │   │   ├── project.py     # Shared project path rules
-│   │   │   └── compiler/
-│   │   │       ├── frontend.py  # Python AST analysis/lowering
-│   │   │       └── ir.py        # Operation/function/app records
-│   │   ├── platforms/
-│   │   │   ├── registry.py    # Available/planned native targets
-│   │   │   ├── mobile/
-│   │   │   │   ├── android/   # Working backend
-│   │   │   │   │   ├── api.py, config.py, backend.py
-│   │   │   │   │   ├── build.py, dex.py
-│   │   │   │   │   ├── manifest.py, manifest_inspect.py
-│   │   │   │   │   └── signing.py, verify.py
-│   │   │   │   └── ios/       # Future backend; not implemented
-│   │   │   └── desktop/
-│   │   │       ├── windows/   # Future backend; not implemented
-│   │   │       ├── macos/     # Future backend; not implemented
-│   │   │       └── linux/     # Future backend; not implemented
-│   │   ├── compiler/         # Historical import forwarding only
-│   │   └── android/          # Historical import forwarding only
-│   └── pyandroid/__init__.py  # Legacy authoring imports
-├── examples/                 # Complete hello and score projects
+│   │   ├── api.py                # Public Android authoring types
+│   │   ├── config.py             # Metadata, project and TOML validation
+│   │   ├── scaffold.py           # New project source/config/ignore files
+│   │   ├── cli.py                # Commands and optional adb dispatch
+│   │   ├── build.py              # Compile/package/sign/verify/report pipeline
+│   │   ├── compiler/
+│   │   │   ├── frontend.py       # Static Python AST → typed IR
+│   │   │   └── ir.py             # Application/function/operation records
+│   │   └── android/
+│   │       ├── README.md, __init__.py
+│   │       ├── screen.py         # Native screen/lifecycle method bindings
+│   │       ├── codegen.py        # IR → method code, registers and branches
+│   │       ├── dalvik.py         # Instruction encoding and assembler
+│   │       ├── dex_types.py      # Signature and result/listing records
+│   │       ├── encoding.py       # DEX binary/string helpers
+│   │       ├── dex.py            # DEX pools, sections and checksums
+│   │       ├── manifest.py       # Binary manifest writing
+│   │       ├── manifest_inspect.py # Manifest reading
+│   │       ├── packaging.py      # Deterministic unsigned APK ZIP
+│   │       ├── signing.py        # Debug identity and APK v2 signing
+│   │       └── verify.py         # APK/content/DEX integrity inspection
+│   └── pyandroid/__init__.py     # Experiment authoring imports
+├── examples/hello/, score/       # Complete Android source/config projects
 ├── tests/
-│   ├── unit/                 # Source/config/DEX/native-boundary checks
-│   ├── integration/          # CLI/build/signing workflows
-│   ├── regression/           # Experiment 008 contract
-│   └── fixtures/             # Historical source inputs
+│   ├── unit/                    # Compiler/config/DEX/components/release guards
+│   ├── integration/             # CLI/build/identity workflows
+│   ├── regression/              # Functions and exact historical DEX output
+│   └── fixtures/                # Unchanged source inputs 005–008
 ├── docs/
 │   ├── user_guide/
 │   ├── developer_guide/
-│   └── roadmap.md
-└── scripts/                  # check_docs.py and read-only check_release.py
+│   ├── pypi_readme.md
+│   ├── progress.md              # Implemented work and success evidence
+│   └── roadmap.md               # Android completion phases
+└── scripts/check_docs.py, check_release.py
 ```
 
-## 📦 What belongs where?
+## 🧭 Where changes belong
 
-| Work | Location |
-| --- | --- |
-| New source language rule | `src/anpyra/common/compiler/frontend.py`, IR/backend if needed |
-| Dalvik opcode or DEX fix | `src/anpyra/platforms/mobile/android/dex.py` |
-| Android XML/package/signature change | `src/anpyra/platforms/mobile/android/` |
-| Shared project paths/metadata | `src/anpyra/common/project.py`, `common/config.py` |
-| Native target selection | `src/anpyra/platforms/registry.py` |
-| Future iOS/desktop implementation | Respective target directory under `platforms/` |
-| Public API/CLI/config change | Relevant top-level `src/anpyra/` file |
-| Small isolated contract test | `tests/unit/` |
-| Cross-module output/workflow test | `tests/integration/` |
-| Historical compatibility contract | `tests/regression/` and immutable fixtures |
-| Runnable application | Separate folder under `examples/` |
-| User task/concept | `docs/user_guide/` |
-| Maintenance explanation/file map | `docs/developer_guide/` |
-| Future feature proposal | `docs/roadmap.md` and issue discussion |
+Source syntax/types belong in frontend.py; operation records belong in ir.py. Android widget calls belong in screen.py; register/control-flow rules in codegen.py; binary instructions in dalvik.py; container layout in dex.py; ZIP entries in packaging.py. Keep API stubs, source checks, IR and emitters in agreement.
 
-Android is the only implemented target. Planned packages contain a marker and README, not a compiler. Web is outside target scope. Package markers and target ownership READMEs supplement the tree above. Read [native platform architecture](native_platforms.md) before adding a backend.
+There are no common/platforms/desktop/iOS placeholder packages. Root config owns the current Android project settings. Root build orchestrates actual components; android/dex.py is the only DEX writer.
 
-Keep generated app state out of `src/`. Keep host scripts separate from the restricted app source. Avoid large file moves solely to change appearance; module boundaries should follow actual responsibilities.
-
-## 🧹 Generated and private local directories
+## 🧹 Local artifacts
 
 | Directory | Meaning | Git policy |
 | --- | --- | --- |
-| `.venv/` | Local Python environment | Ignored |
-| `.cache/`, `.ruff_cache/` | Tool caches | Ignored |
-| `build/`, nested app `build/` | Package/generated APK artifacts | Ignored |
-| `dist/` | Wheels/source distributions | Ignored |
-| `*.egg-info/`, `__pycache__/` | Python metadata/cache | Ignored |
-| `.anpyra/`, `.pyandroid/` | Local signing material | Ignored |
-| `.reference/` | Optional local experiment-source audit inputs | Ignored; not required by builds/tests |
+| .venv/, build/, dist/ | Python environment, package/temporary outputs | Ignored |
+| .cache/, .ruff_cache/ | Tool data and local validation baselines | Ignored |
+| .anpyra/, .pyandroid/ | Retained private signing identities | Ignored; preserve for updates |
+| .reference/ | Optional historical audit input | Ignored; not required by tests/builds |
+| __pycache__/, *.egg-info/ | Python-generated caches/metadata | Ignored |
 
-These directories may exist on a maintainer's machine and do not appear in a clean checkout. Do not delete retained signing identities as part of routine cleanup. The wheel ships framework code and license; the source distribution also carries project guides, examples and tests through `MANIFEST.in`.
+Do not remove a signing identity as routine cleanup. Build distributions from clean source or a fresh source archive to prevent stale build/lib packages being carried over. Check the wheel inventory after deleting package directories.
 
-The [source reference](source_reference.md) explains every framework file in more detail.
+Use [source reference](source_reference.md) for functions, [components](android_components.md) for boundaries and [progress](../progress.md) for what is actually complete.

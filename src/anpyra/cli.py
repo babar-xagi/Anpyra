@@ -12,9 +12,11 @@ from importlib.metadata import version
 from pathlib import Path
 
 from . import __version__
+from .android.dex import build_dex
+from .android.verify import inspect_apk
 from .build import build_project
-from .platforms.mobile.android.verify import inspect_apk
-from .platforms.registry import get_backend, list_targets
+from .compiler.frontend import compile_file
+from .config import load_project
 from .scaffold import init_project
 
 
@@ -29,7 +31,7 @@ def _dump(dex, ir, args):
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        prog="anpyra", description="Native Python app toolchain; Android builds available today."
+        prog="anpyra", description="Compile Python directly to native Android DEX and APK."
     )
     parser.add_argument("--version", action="version", version=f"Anpyra {__version__}")
     commands = parser.add_subparsers(dest="command", required=True)
@@ -45,8 +47,10 @@ def main(argv: list[str] | None = None) -> int:
         command.add_argument("project", type=Path, nargs="?", default=Path("."))
         command.add_argument("--dump-ir", action="store_true")
         command.add_argument("--dump-dalvik", action="store_true")
-        command.add_argument("--target", default="android", help="native target (default: android)")
-    commands.add_parser("targets", help="list implemented and planned native targets")
+        command.add_argument(
+            "--target", default="android", choices=["android"], help="Android target"
+        )
+    commands.add_parser("targets", help="show the supported Android target")
     verify = commands.add_parser(
         "verify",
         help="verify an Anpyra APK's signature, content digest and DEX checksums",
@@ -65,8 +69,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"Created {project.root}")
             print(f'anpyra build "{project.root}"')
         elif args.command in {"build", "check"}:
-            backend = get_backend(args.target)
-            project = backend.load_project(args.project)
+            project = load_project(args.project)
             if args.command == "build":
                 result = build_project(project, target=args.target)
                 print(f"Built {result.apk_path} ({result.apk_size} bytes)")
@@ -74,13 +77,14 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"Build report: {result.report_path}")
                 _dump(result.dex_build, result.compile_result.ir, args)
             else:
-                compiled, dex = backend.check_project(project)
+                compiled = compile_file(
+                    project.source_path, package=project.config.package, label=project.config.label
+                )
+                dex = build_dex(compiled.ir)
                 print(f"Valid: {project.source_path}; {len(dex.methods)} method listings")
                 _dump(dex, compiled.ir, args)
         elif args.command == "targets":
-            for target in list_targets():
-                status = "available" if target.implemented else "planned (not implemented)"
-                print(f"{target.name:8} {target.family:7} {status}")
+            print("android  available")
         elif args.command == "verify":
             report = inspect_apk(args.apk)
             if args.json:

@@ -1,77 +1,54 @@
 # ⚙️ Architecture and Data Flow
 
-Anpyra has three main responsibilities: validate application source, emit native Android artifacts, and coordinate a reproducible project build. Source compilation never imports or evaluates the app.
+Anpyra is an Android-only static compiler/build pipeline. Source is parsed and validated, never imported or executed on the build computer. Each native artifact component has a canonical implementation.
 
-The shared layer is `common/`; the working target layer is `platforms/mobile/android/`. `platforms/registry.py` selects implemented backends. iOS and desktop folders reserve future implementations. Read [native architecture](native_platforms.md) for these boundaries and the Android-shaped source/IR assumptions still to generalize.
-
-## 🔄 End-to-end build
+## 🔄 Build flow
 
 ```mermaid
 flowchart TD
-    CLI[cli.main] --> Target[registry.get_backend: Android available]
-    Target --> Config[Android load_project → common Project + Android AppConfig]
-    Config --> Build[build_project → build_apk]
-    Build --> Frontend[compile_file → compile_source]
-    Frontend --> IR[CompileResult + AppIR + FunctionIR]
-    IR --> DEX[build_dex → DexBuild]
-    IR --> XML[build_manifest → binary XML]
-    DEX --> ZIP[_zip_payload → unsigned APK]
-    XML --> ZIP
-    ZIP --> Sign[load_or_create_signer_material → sign_apk_v2]
-    Sign --> Staging[Temporary build directory]
-    Staging --> Verify[inspect_apk → ApkReport]
-    Verify --> Output[Artifacts + build-report.json]
+    CLI[cli.py: arguments] --> Config[config.py: AppConfig + Project]
+    Config --> Build[build.py: orchestration]
+    Build --> Frontend[compiler/frontend.py: AST validation]
+    Frontend --> IR[compiler/ir.py: typed records]
+    IR --> Indexes[android/dex.py: reference pools]
+    Indexes --> Code[android/codegen.py: method frames and IR emission]
+    Code --> Screen[android/screen.py: native UI calls]
+    Code --> Dalvik[android/dalvik.py: assembler]
+    Screen --> Dalvik
+    Dalvik --> Writer[android/dex.py: file sections and checksums]
+    Writer --> Bytes[classes.dex]
+    Build --> Manifest[android/manifest.py: binary XML]
+    Bytes --> ZIP[android/packaging.py: unsigned APK]
+    Manifest --> ZIP
+    ZIP --> Sign[android/signing.py: retained identity + v2]
+    Sign --> Verify[android/verify.py: staged inspection]
+    Verify --> Output[APK + DEX + XML + JSON report]
 ```
 
-`check` stops after in-memory DEX generation. `verify` inspects an existing APK. `install` verifies first, then invokes optional adb. Each path is visible in `cli.main`.
+Check runs front-end/DEX generation in memory. Verify inspects an existing APK. Install verifies first, then invokes optional adb. targets reports Android only; no platform registry remains.
 
-## 🧱 Main records
+## 🧱 Data records
 
-| Record | Produced by | Consumer/purpose |
-| --- | --- | --- |
-| `ApplicationMetadata` | Shared common config | Application identity, label and versions without SDK settings |
-| `AppConfig` | Defaults/TOML/direct API | Validated package, labels, versions, SDKs and project path settings |
-| `Project` | Config loader or caller | Resolved entry/output/state paths |
-| `CompileResult` | Front end | Source path, Python AST, typed AppIR |
-| `AppIR` | Front end | Class/package/label, helper IR, lifecycle operations, symbol types |
-| `FunctionIR` | HelperCompiler | Helper signature, operations and symbols |
-| `DexBuild` | DEX backend | File bytes, method listings, register map and lifecycle code-unit count |
-| `V2SignerMaterial` | Signer loader/generator | RSA key, certificate DER and public-key DER |
-| `V2SignResult` | Signing | Signed APK, digest, block size and offsets |
-| `ApkReport` | Verification | Parsed manifest and integrity results |
-| `BuildResult` | Build orchestration | Written artifact paths, compiler/backend/report data |
+AppConfig/Project carry metadata and resolved paths. CompileResult carries source/AST/AppIR; AppIR/FunctionIR carry operations/symbols. MethodKey/ProtoKey identify references. GeneratedMethods carries constructed method code/listings. DexBuild contains the DEX bytes and inspection listings. V2SignerMaterial/V2SignResult carry identity/signing state and result. ApkReport contains successful parsed metadata/integrity results. BuildResult contains published paths and all build stage reports.
 
-Most records are frozen dataclasses. They carry explicit values between stages rather than requiring the stages to read project files independently.
+Frozen records make stage inputs/results explicit. See [source reference](source_reference.md) for fields/functions.
 
-## 🔌 Boundaries
+## 🔌 Component boundaries
 
-`api.py` provides editor-facing classes; `frontend.py` recognizes their names and builds IR; `dex.py` emits corresponding Android references and instructions. Adding an authoring method without front-end and backend support does not implement that feature.
+Screen bindings own native UI descriptors/method references and UI operation emission. Code generation owns scalar/helper/control flow and register frames. Dalvik owns instruction formats/labels. DEX owns reference indexing, file sections and checksums. Encoding owns binary/string primitives. Packaging owns deterministic ZIP entries. Build orchestration joins these stages, without duplicating their logic.
 
-Manifest generation needs metadata but not the source AST. Packaging needs bytes. Signing needs the unsigned ZIP and identity. Verification reads the resulting APK separately, although its binary implementation shares digest and manifest definitions with the writer; that shared implementation is one reason independent verification is still a roadmap item.
+API stubs provide editor signatures only. Adding a stub without front-end/IR/emitter support does not add a feature. Manifest writing uses metadata rather than AST; signing uses archive bytes and retained identity; verification reads the generated profile but shares some writer assumptions. Independent inspection is still needed.
 
-The public package root exposes authoring/configuration/compile/build interfaces. Compiler/Android internals can change during alpha development. `pyandroid` re-exports the same authoring classes for historical source imports.
+## 🛡️ Preserved invariants
 
-## 🛡️ Important invariants
+- Unsupported source fails; app code is never executed on the host.
+- Lifecycle requires one unconditional content-view attachment.
+- Helpers use high incoming registers; move-result immediately follows a result-producing invoke.
+- Branch positions are code units; DEX offsets are bytes.
+- Existing signing identities are retained; incomplete/mismatched pairs fail.
+- Compilation happens before signer creation; staged verification precedes output replacement.
+- Individual artifact replacements are atomic, not one multi-file transaction.
 
-- Unsupported source should fail clearly rather than be silently executed or treated as implemented.
-- Helpers become static methods, with incoming parameters in the high registers of their frame.
-- `move-result` immediately follows a value-returning helper invoke.
-- Branch labels resolve in 16-bit code units; DEX file offsets are bytes.
-- The one unconditional content-view attachment is enforced by the front end.
-- Rebuilds retain the debug identity; incomplete/mismatched pairs fail.
-- Staged APK verification precedes output replacement. Individual files are atomic replacements, not a transaction for the full directory.
+The cleanup preserves exact experiment DEX bytes/listings and signed example APK bytes. Public application imports remain; duplicate forwarding modules have been removed. Historical common/platform internal paths are removed by the Android-only scope decision.
 
-## 🧬 Experiment lineage
-
-| Milestone | Retained contribution | Current location |
-| --- | --- | --- |
-| 001 | DEX container/tables/strings/checksums | `platforms/mobile/android/dex.py` |
-| 002 | Constructors and lifecycle bytecode | `platforms/mobile/android/dex.py` |
-| 003 | Native TextView calls | `api.py`, front end, DEX backend |
-| 004C | Binary manifest, APK and v2 signing | `platforms/mobile/android/` |
-| 005 | Static Python front end and IR | `common/compiler/frontend.py`, `ir.py` |
-| 006 | Symbols, types, boolean branches | Front end, IR, assembler |
-| 007 | Arithmetic, integer comparisons, nested branches | Front end, IR, assembler |
-| 008 | Typed helpers, parameters, static calls, results | Front end, FunctionIR, DEX method generation |
-
-The author reported these experiments successful on a device. The framework baseline passed host tests/build/wheel checks; its separate phone acceptance remains pending. This distinction is recorded in the [roadmap](../roadmap.md).
+See [progress](../progress.md) for installation/publication evidence and [roadmap](../roadmap.md) for Android completion work.

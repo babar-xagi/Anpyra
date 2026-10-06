@@ -6,15 +6,16 @@
 | --- | --- | --- |
 | Unit | `tests/unit/test_compiler.py` | Types, syntax/rejection, historical source compatibility, initialization and register limits |
 | Unit | `tests/unit/test_config.py` | Settings, relative paths, invalid config, scaffolding and Unicode |
-| Unit | `tests/unit/test_platforms.py` | Shared dependency boundary, target status, early rejection and historical imports |
+| Unit | `tests/unit/test_architecture.py` | Android-only package ownership, screen descriptors, early target rejection and historical imports |
 | Unit | `tests/unit/test_release.py` | Release version/tag consistency, stale artifacts, metadata/private-path/link rejection |
 | Unit | `tests/unit/test_dex.py` | Selected emitted bytes, frame layout, branch destinations, checksums and MUTF-8 |
 | Integration | `tests/integration/test_build.py` | Build/manifest/signing/report/reproducibility/failure preservation |
 | Integration | `tests/integration/test_cli.py` | Command workflow and mocked device command construction |
+| Regression | `tests/regression/test_android_output.py` | Exact experiment 005–008 DEX hashes from the pre-cleanup implementation |
 | Regression | `tests/regression/test_functions.py` | Adapted experiment 008 typed-helper contracts |
 | Fixtures | `tests/fixtures/exp005.py` through `exp008.py` | Historical source inputs; not test runners |
 
-The current suite contains **54 tests**: 41 original checks, seven native-architecture/CLI checks and six release-guard checks. Package `__init__.py` files allow recursive unittest discovery. Some retained regression tests build APKs, so the groups describe intent rather than strict isolation rules.
+The current suite contains **55 tests**. One exact-output regression checks all four experiment DEX hashes captured before Android component cleanup. Package `__init__.py` files allow recursive unittest discovery. Some retained regression tests build APKs, so the groups describe intent rather than strict isolation rules.
 
 ## ⌨️ Run checks
 
@@ -49,7 +50,7 @@ There is currently no emulator/device job, coverage threshold, type-checking gat
 
 ## 📱 Manual framework acceptance
 
-The author reported the original experiments working on a phone. The refactored framework still needs its own recorded runtime acceptance. Complete this checklist for a candidate release:
+The author reported the original experiments working on a phone. The author confirmed installation of the published starter APK on October 6, 2026. The remaining runtime acceptance checks still need records; the current source cleanup has host output-preservation evidence. Complete this checklist for a candidate release:
 
 - [ ] Record OS/Python/Anpyra/cryptography versions and commit ID.
 - [ ] Record device model, Android version/API and connection method.

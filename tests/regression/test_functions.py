@@ -4,11 +4,11 @@ import unittest
 import zipfile
 from pathlib import Path
 
+from anpyra.android.dex import build_dex
+from anpyra.android.verify import inspect_apk
 from anpyra.build import build_apk
-from anpyra.common.compiler.frontend import CompileError, compile_source
-from anpyra.common.compiler.ir import CallFunction, IntBinary, ReturnValue
-from anpyra.platforms.mobile.android.dex import build_dex
-from anpyra.platforms.mobile.android.verify import inspect_apk
+from anpyra.compiler.frontend import CompileError, compile_source
+from anpyra.compiler.ir import CallFunction, IntBinary, ReturnValue
 
 SOURCE = """\
 from pyandroid import Activity, TextView

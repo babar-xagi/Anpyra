@@ -19,7 +19,7 @@ Anpyra's current Android pipeline builds apps using **Python and its Python depe
 
 The `min_sdk` and `target_sdk` settings are Android compatibility metadata written into the manifest. They do not require installing an SDK. The minimum API level follows [Android's v2 signing support](https://source.android.com/docs/security/features/apksigning/v2). Optional adb comes from Android platform-tools; it is used to install/run an already-built APK.
 
-These requirements describe the **implemented Android backend**. Future native iOS/desktop backends have not established their toolchain requirements. See [native targets](platforms.md).
+These requirements describe the Android-only build pipeline. See [Android scope](android.md) for build computers versus the device that runs the APK.
 
 ## 📦 Install from PyPI
 

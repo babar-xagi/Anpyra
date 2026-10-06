@@ -72,7 +72,7 @@ def main() -> int:
             try:
                 compiled = compile_source(source, source_path=path)
                 # Include backend generation: a valid IR alone does not prove encodability.
-                from anpyra.platforms.mobile.android.dex import build_dex
+                from anpyra.android.dex import build_dex
 
                 build_dex(compiled.ir)
                 apps += 1

@@ -52,7 +52,7 @@ anpyra build examples/hello
 anpyra build myapp/anpyra.toml --dump-ir
 ```
 
-Build/check default to Android. `--target android` selects it explicitly. Planned iOS/desktop targets fail before reading project configuration or writing artifacts. `--dump-dalvik` describes Android bytecode.
+Build/check default to Android. `--target android` selects it explicitly. Only Android is accepted; other target names produce an argument-parser error before project reads/writes. `--dump-dalvik` describes Android bytecode.
 
 ## 🌍 targets
 
@@ -60,7 +60,7 @@ Build/check default to Android. `--target android` selects it explicitly. Planne
 anpyra targets
 ```
 
-Lists native targets and their mobile/desktop family. Android is available; iOS, Windows, macOS and Linux are planned, not implemented. See [native targets](platforms.md) for the host/target distinction.
+Prints `android  available`. There are no additional target packages or dispatch registry. See [Android scope](android.md) for the host/target distinction.
 
 ## ✅ verify
 

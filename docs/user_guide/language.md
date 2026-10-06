@@ -1,6 +1,6 @@
 # 🐍 Supported Language and UI
 
-This reference describes the implementation in `common/compiler/frontend.py` and `platforms/mobile/android/dex.py`. A feature appearing in the roadmap does not make it available in source today.
+This reference describes the implementation in `compiler/frontend.py` and `android/dex.py`. A feature appearing in the roadmap does not make it available in source today.
 
 ## 🧩 Application shape
 

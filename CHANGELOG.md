@@ -4,6 +4,16 @@ This file records user-visible milestones. Planned work belongs in the [roadmap]
 
 ## 🛠️ Unreleased
 
+### 🧹 Android-only component cleanup
+
+- Remove common/platform registry packages and future desktop/iOS placeholders.
+- Use canonical compiler/ and android/ modules with root API/config/build/CLI files.
+- Separate native screen bindings, method generation, Dalvik assembly, DEX records/encoding, file writing and APK packaging.
+- Keep public app/legacy authoring imports; remove internal forwarding modules so Android DEX has one canonical file.
+- Preserve exact experiment DEX output and signed example APK bytes; current suite has 55 checks.
+- Add detailed component/source ownership and implementation progress; author confirmed successful starter APK phone installation.
+- Cleanup remains unreleased; published 0.1.0 package files and tag are retained.
+
 - Updated repository installation guidance and publication status after verifying the first PyPI release.
 
 ## 📦 0.1.0 — October 6, 2026 (PyPI release; foundation built October 4)

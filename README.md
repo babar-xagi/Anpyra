@@ -22,7 +22,7 @@ It grew from the successful **PyAndroid experiments 001–008**. Experiment 008 
 
 **Current status: v0.1 alpha.** Small `Activity` + `TextView` apps, typed values, conditions, arithmetic, and integer helpers work within documented limits. Layouts, buttons, callbacks, general Python libraries, and release/store workflows are future phases.
 
-**Native platform direction:** Android is available today. iOS, Windows, macOS and Linux have separate reserved backend folders for future work. Web is outside the target scope. See [target status](docs/user_guide/platforms.md) and [native architecture](docs/developer_guide/native_platforms.md).
+**Current focus: Android only.** The source cleanup removes common/platform layers and future-target placeholders, and separates native Android components. Public application imports remain compatible. See [components](docs/developer_guide/android_components.md) and [implementation progress](docs/progress.md). The cleanup is unreleased; PyPI 0.1.0 remains the published package.
 
 ## ⚙️ How it works
 
@@ -107,38 +107,33 @@ Build through Anpyra and run the APK on Android. The authoring types help editor
 
 ```text
 Anpyra/
-├── src/                    # Framework and compatibility API
-│   ├── anpyra/
-│   │   ├── common/         # Source analysis, IR, metadata and project paths
-│   │   ├── platforms/
-│   │   │   ├── registry.py # Native target inventory and selection
-│   │   │   ├── mobile/
-│   │   │   │   ├── android/ # Working DEX, manifest, APK and signing backend
-│   │   │   │   └── ios/     # Reserved future backend
-│   │   │   └── desktop/
-│   │   │       ├── windows/ # Reserved future backend
-│   │   │       ├── macos/   # Reserved future backend
-│   │   │       └── linux/   # Reserved future backend
-│   │   ├── compiler/       # Historical import forwarding
-│   │   └── android/        # Historical import forwarding
-│   └── pyandroid/          # Legacy authoring imports
-├── examples/               # Complete hello and score projects
-├── tests/
-│   ├── unit/               # Compiler, configuration and DEX checks
-│   ├── integration/        # Project builds, CLI and signing
-│   ├── regression/         # Experiment 008 tests
-│   └── fixtures/           # Source apps from experiments 005–008
+├── src/anpyra/
+│   ├── api.py, config.py, scaffold.py, cli.py, build.py
+│   ├── compiler/          # frontend.py and ir.py
+│   └── android/
+│       ├── screen.py      # Native Activity/TextView calls
+│       ├── codegen.py     # IR → method code and registers
+│       ├── dalvik.py      # Instruction encoding and assembler
+│       ├── dex.py         # DEX tables, sections and checksums
+│       ├── dex_types.py, encoding.py
+│       ├── manifest.py, manifest_inspect.py
+│       ├── packaging.py, signing.py, verify.py
+│       └── README.md
+├── src/pyandroid/         # Experiment import compatibility
+├── examples/              # Hello and score Android apps
+├── tests/                 # Unit, integration, regression and fixtures
 ├── docs/
-│   ├── user_guide/         # Install, learn, build, troubleshoot
-│   ├── developer_guide/   # File map, internals, debug, extend
-│   └── roadmap.md          # Completed work and future phases
-├── scripts/                # Maintenance checks
-└── .github/                # CI and contribution templates
+│   ├── user_guide/
+│   ├── developer_guide/
+│   ├── progress.md        # Implemented work and actual success evidence
+│   └── roadmap.md         # Android completion phases
+├── scripts/               # Documentation/release checks
+└── .github/               # Tests, publishing and contribution templates
 ```
 
 Generated output, environments, caches, and `.anpyra/` signing state are local artifacts excluded from Git. See the [detailed structure](docs/developer_guide/repository_structure.md).
 
-Run `anpyra targets` to see availability. `anpyra build examples/hello --target android` explicitly selects the working backend; Android remains the default. Planned targets fail with a clear error before any build writes.
+Run `anpyra targets` to see the supported Android target. Build/check default to Android. Component files contain their actual implementation, with one canonical DEX writer in android/dex.py.
 
 ## 📚 Find your guide
 
@@ -149,6 +144,7 @@ Run `anpyra targets` to see availability. `anpyra build examples/hello --target 
 | Find the file responsible for a bug | [Source reference](docs/developer_guide/source_reference.md) |
 | Trace a compiler or signing problem | [Debugging guide](docs/developer_guide/debugging.md) |
 | Implement a new feature | [Extension guide](docs/developer_guide/extending.md) |
+| See implementation and actual results | [Progress record](docs/progress.md) |
 | See completed and future work | [Roadmap and phases](docs/roadmap.md) |
 | Publish the framework wheel | [PyPI setup and release commands](docs/developer_guide/publishing.md) |
 
@@ -165,8 +161,8 @@ ruff format --check src tests examples scripts
 python scripts/check_docs.py
 ```
 
-The existing suite contains **54 tests** covering compiler behavior, binary instructions, configuration, CLI workflows, signer reuse, tamper detection, and reproducible rebuilds. The v0.1 baseline also passed a wheel installation/build check and builds both examples. CI is configured for Windows/Linux and Python 3.11/3.13; the badge reports remote status.
+The existing suite contains **55 tests** covering compiler behavior, binary instructions, configuration, CLI workflows, signer reuse, tamper detection, and reproducible rebuilds. The v0.1 baseline also passed a wheel installation/build check and builds both examples. CI is configured for Windows/Linux and Python 3.11/3.13; the badge reports remote status.
 
-The original experiments were reported successful on a phone. **Framework-level device acceptance is still pending**; host verification does not establish runtime acceptance. Use the [device checklist](docs/developer_guide/testing.md) when validating a release.
+The author confirmed successful phone installation of the published starter APK on October 6, 2026. Exact screen text, score branches, lifecycle behavior and independent verification still require recorded acceptance. The current cleanup also preserves existing example APK and experiment DEX bytes. Use the [device checklist](docs/developer_guide/testing.md) when validating a release.
 
 Contributions start with [CONTRIBUTING.md](CONTRIBUTING.md). Anpyra uses the [Apache-2.0 license](LICENSE).

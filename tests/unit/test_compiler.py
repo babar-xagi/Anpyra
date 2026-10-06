@@ -2,8 +2,8 @@ import unittest
 from pathlib import Path
 
 from anpyra import CompileError, compile_source
-from anpyra.common.compiler.ir import LoadConst
-from anpyra.platforms.mobile.android.dex import build_dex
+from anpyra.android.dex import build_dex
+from anpyra.compiler.ir import LoadConst
 from anpyra.scaffold import STARTER_SOURCE
 
 

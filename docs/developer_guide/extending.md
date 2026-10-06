@@ -15,7 +15,7 @@ The native pipeline remains the design direction. New features must be implement
 
 ## 🐍 Adding a language feature
 
-Suppose a proposal adds multiplication. Decide integer overflow behavior and operand forms first. The likely touch points are `FunctionCompiler.compile_int_value_into`, `HelperCompiler.compile_return_expr`, `IntBinary`, opcode/assembler handling and emitters in `dex.py`.
+Suppose a proposal adds multiplication. Decide integer overflow behavior and operand forms first. The likely touch points are `FunctionCompiler.compile_int_value_into`, `HelperCompiler.compile_return_expr`, `IntBinary`, instruction handling in `android/dalvik.py` and helper/lifecycle emitters in `android/codegen.py`.
 
 Both helper and lifecycle paths must implement it consistently, or explicitly document different support. Add a test of actual encoded instructions and a source rejection case, then add a working user example. Merely accepting `ast.Mult` would otherwise promise behavior without valid bytecode.
 
@@ -29,8 +29,8 @@ For reassignment, the design is more involved: initialization/state changes, bra
 | Imports | Front-end whitelist and compatibility decision |
 | Validation | Constructor/receiver/argument types and accepted source form |
 | IR | Explicit operation or consistent generalized call representation |
-| Backend references | Android class/type/prototype/method indexes |
-| Instructions | Allocation, invocation arguments, result handling and register limits |
+| Backend references | Native descriptor/method declarations in screen.py; pool/index collection in dex.py |
+| Instructions | Screen calls in screen.py, scalar/control flow and registers in codegen.py, binary formats in dalvik.py |
 | Tests | Source lowering, actual bytes and device behavior |
 | Docs | Current feature reference, example, source map and roadmap status |
 
@@ -48,9 +48,9 @@ Design explicit key selection/loading, protected storage, error behavior and upg
 
 ## 🏗️ Refactoring large internals
 
-`dex.py` currently combines assembler and DEX writing. A future split into encoding/assembler/register/writer modules can make sense when those responsibilities need separate features. Preserve public imports through deliberate compatibility exports and use current binary/regression tests before changing layout code.
+The Android-only cleanup already separates DEX writing, method generation, Dalvik assembly, native screen bindings, encoding and packaging. Follow the [component ownership guide](android_components.md); edit the canonical implementation rather than adding a parallel emitter.
 
-Keep refactoring and new semantics reviewable. A cosmetic file split should not silently change table order, registers or APK bytes. The current documentation/test reorganization leaves runtime module paths unchanged.
+Keep refactoring and new semantics reviewable. File extraction must preserve table order, registers and APK bytes unless a behavior change is deliberate and tested. Public application imports remain compatible; the former common/platform internal paths were removed intentionally. Historical DEX hashes and same-identity APK comparisons protect this cleanup.
 
 ## ✅ Definition of done
 

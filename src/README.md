@@ -1,18 +1,19 @@
 # 🧱 Source Navigation
 
-`anpyra/` is the installable framework. `pyandroid/` is the compatibility import package for historical application source.
+Anpyra now has a direct Android-only layout. Public API/configuration/build/CLI files live at the package root. Python source analysis lives in compiler/; native artifact components live in android/.
 
-| Area | Purpose |
+| Area | Responsibility |
 | --- | --- |
-| Top-level Anpyra files | Public imports, scaffold, CLI and native build dispatch |
-| `anpyra/common/` | Source AST, IR, identity/version validation and project paths |
-| `anpyra/platforms/registry.py` | Available/planned native target inventory |
-| `anpyra/platforms/mobile/android/` | Authoring/config, DEX, binary manifest, APK/signing/verification |
-| `anpyra/platforms/mobile/ios/` | Reserved future iOS backend |
-| `anpyra/platforms/desktop/{windows,macos,linux}/` | Reserved future desktop backends |
-| `anpyra/compiler/`, `anpyra/android/` | Historical import forwarding only |
-| `pyandroid/__init__.py` | Re-export Activity/TextView for old imports |
+| anpyra/api.py | Activity/TextView authoring stubs |
+| anpyra/config.py | AppConfig, Project, TOML and safe paths |
+| anpyra/scaffold.py | New Android project templates |
+| anpyra/cli.py, build.py | User commands and build orchestration |
+| anpyra/compiler/frontend.py, ir.py | Python AST validation and typed operation records |
+| anpyra/android/screen.py | Native Android screen/lifecycle method calls |
+| anpyra/android/codegen.py, dalvik.py | Method frames/control flow and instruction assembly |
+| anpyra/android/dex.py, dex_types.py, encoding.py | DEX container, records and binary primitives |
+| anpyra/android/manifest.py, manifest_inspect.py | Binary XML writing/reading |
+| anpyra/android/packaging.py, signing.py, verify.py | APK ZIP, retained identity/signature and integrity |
+| pyandroid/__init__.py | Historical authoring class exports |
 
-For each file's classes/functions, implemented behavior, limits and tests, read the [source reference](../docs/developer_guide/source_reference.md). For data flow, read [architecture](../docs/developer_guide/architecture.md). Do not put application projects or generated artifacts inside the framework package.
-
-Only Android is implemented. Common compiler/IR code still describes the current Activity/TextView model; future native backends require semantic work as explained in [native architecture](../docs/developer_guide/native_platforms.md). Web is outside target scope.
+There are no common/platform registry or future-target packages. See [component ownership](../docs/developer_guide/android_components.md), [every source file](../docs/developer_guide/source_reference.md), and [progress](../docs/progress.md). Keep app projects, caches and signing state outside src/.

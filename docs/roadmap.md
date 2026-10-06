@@ -2,7 +2,7 @@
 
 **Snapshot:** October 6, 2026 · **Current package:** v0.1.0 alpha · **Direction:** Python source → typed IR → native DEX → signed APK.
 
-**Future direction:** native mobile and desktop applications. Android is the only implemented target; iOS, Windows, macOS and Linux have reserved folders. Web is outside scope. This organization does not change the immediate priority of Android validation and features.
+**Current direction:** complete the Android framework first. Common/platform dispatch layers and other-target placeholders have been removed from the active source. The [progress record](progress.md) lists implemented components, publication, author-confirmed phone installation and remaining evidence.
 
 This roadmap records completed work, validation gaps and proposed future phases. Future phases describe intended work, not available APIs or promised release dates. Priorities can change with evidence; phases that depend on new language/runtime semantics must not be marked complete from documentation alone.
 
@@ -14,7 +14,7 @@ This roadmap records completed work, validation gaps and proposed future phases.
 | 🧪 Validation pending | Implementation exists but a required check is outstanding |
 | 📋 Planned | Work has not been implemented |
 
-The original experiments were reported successful on a phone by the author. The refactored framework passed host tests, example builds and wheel installation/build checks. Its **own real-device acceptance and independent binary verification are still pending**. Do not combine these into a broader device-support claim.
+The original experiments were reported successful on a phone by the author. The refactored framework passed host tests, example builds and wheel installation/build checks. The author has now confirmed starter APK installation on a phone. Exact screen output, both score branches, lifecycle checks and independent binary verification still need recorded evidence. Do not combine these into a broader device-support claim.
 
 ## ✅ What has already been achieved?
 
@@ -60,16 +60,15 @@ The original experiments were reported successful on a phone by the author. The 
 - [x] Local docs checks for links, emoji titles and Python/app snippets.
 - [x] Source-distribution inclusion rules for project guidance and examples.
 
-### 🌍 Native platform foundation
+### 🧹 Android-only organization
 
-- [x] Common source analysis/IR, application metadata and project path code separated from target packaging.
-- [x] Android SDK configuration, authoring API, DEX, manifest, APK, signing and verification owned by the Android backend.
-- [x] Separate native mobile Android/iOS and desktop Windows/macOS/Linux directories.
-- [x] Explicit available/planned target registry, `targets` listing and build/check target selection.
-- [x] Historical imports retained through compatibility modules.
-- [x] Boundary/dispatch/compatibility checks added; the native foundation brought the suite to 48 tests. The later release guards bring it to 54.
-- [ ] Generalize the current Android-shaped source/UI/IR/register contracts for another backend.
-- [ ] Implement, package and runtime-validate any additional native target.
+- [x] Remove common/platform registry layers and desktop/iOS placeholders from active source.
+- [x] Put AST/IR in compiler/ and native Android components in android/.
+- [x] Separate DEX file writing, Dalvik assembly, method generation, screen bindings and APK ZIP packaging.
+- [x] Preserve public application/experiment authoring imports while consolidating internal DEX access into android/dex.py.
+- [x] Verify 55 tests and exact pre-cleanup DEX/APK output preservation.
+- [x] Record published 0.1.0 wheel/source success and author-confirmed phone installation.
+- [ ] Publish this source cleanup under a new version; published 0.1.0 is immutable.
 
 ## 🧱 Phase overview
 
@@ -78,7 +77,7 @@ The original experiments were reported successful on a phone by the author. The 
 | 0 | Experimental proof 001–008 | ✅ Author-reported device success | — |
 | 1 | Unified v0.1 compiler/framework | ✅ Host baseline complete | 0 |
 | 2 | Documentation and contributor organization | ✅ Repository work implemented | 1 |
-| 3 | Validation, diagnostics and binary hardening | 🧪 Device/independent checks pending; further work planned | 1–2 |
+| 3 | Validation, diagnostics and binary hardening | 🧪 Phone installation reported; full runtime/independent checks pending | 1–2 |
 | 4 | Language semantics and register model | 📋 Planned | 3 |
 | 5 | Native layouts and widget surface | 📋 Planned | 3–4 |
 | 6 | Events, application state and lifecycle | 📋 Planned | 4–5 |
@@ -86,7 +85,6 @@ The original experiments were reported successful on a phone by the author. The 
 | 8 | Assets/resources and package expansion | 📋 Planned | 5, 7 where required |
 | 9 | Release identity and distribution | 📋 Planned | Validated runtime/package contracts |
 | 10 | Tooling, platform coverage and ecosystem | 📋 Planned, incremental | Relevant earlier phases |
-| 11 | Additional native mobile/desktop backends | 📋 Planned; folder/dispatch foundation exists | Proven shared semantics and target-specific toolchains |
 
 Phases are a dependency-oriented plan, not a fixed schedule. Small independent tooling improvements can happen earlier. General-purpose Python compatibility is not promised by completing this list.
 
@@ -116,7 +114,8 @@ Phases are a dependency-oriented plan, not a fixed schedule. Small independent t
 
 **Outcome:** strengthen confidence in the existing compiler before expanding it.
 
-- [ ] Run the [framework device checklist](developer_guide/testing.md) on the author's phone and record model/API/commit/fingerprints/results.
+- [x] Obtain author confirmation of starter APK installation on a phone (October 6, 2026).
+- [ ] Run the full [framework device checklist](developer_guide/testing.md) on the author's phone and record model/API/commit/fingerprints/results.
 - [ ] Verify generated APK/DEX using an independent implementation or Android tools; record discrepancies and fixes.
 - [ ] Add structured diagnostics where they help: error code, source location and actionable explanation.
 - [ ] Extend malformed-input/boundary tests for DEX, manifest, ZIP and signer parsing.
@@ -230,28 +229,9 @@ Phases are a dependency-oriented plan, not a fixed schedule. Small independent t
 
 **Exit criteria:** each tool solves a measured task, preserves the build contract and has appropriate checks. These items can be delivered independently; no plugin system or IDE integration exists yet.
 
-## 🌍 Phase 11 — Additional native platforms
-
-**Outcome:** implement genuine native mobile/desktop targets after establishing reusable application semantics. Directory creation is a foundation, not completion of this phase. No fixed target delivery order or dates are promised.
-
-- [x] Reserve `platforms/mobile/ios/` and `platforms/desktop/{windows,macos,linux}/`; keep Android code isolated.
-- [x] Add target inventory/dispatch with honest availability and early rejection for unavailable targets.
-- [ ] Generalize lifecycle/widget operations and Android-specific descriptor/register assumptions in the shared front end/IR.
-- [ ] Define platform capability checks, target configuration and backend/result contracts around an actual second implementation.
-- [ ] Choose a first additional native platform based on real host/toolchain and UI requirements.
-- [ ] Implement its native code generation, UI bindings, packaging and applicable signing/distribution workflow inside its target folder.
-- [ ] Add target-specific examples, native runtime acceptance, isolated package checks and CI where feasible.
-- [ ] Extend subsequent native targets independently while preserving Android behavior.
-
-**Dependencies:** validated Android baseline; defined shared language/UI behavior; researched target-native runtime, format, host and toolchain constraints. Android's Python-only build does not prove the same dependency model for iOS or desktop.
-
-**Exit criteria per target:** real native artifacts build, supported source behavior is documented, an example runs correctly on that platform, failures are tested and CLI status reflects proven capability. Web remains outside target scope.
-
-Implementation details: [native platform architecture](developer_guide/native_platforms.md).
-
 ## 🎯 Next practical milestone
 
-First complete framework acceptance and independent inspection of hello/score. Then build a **small counter app** through phases 4–6: layout, label, button, click callback and typed mutable state. This is a proposal with dependencies, not a buildable v0.1 example.
+The starter APK has been installed successfully according to the author. Next record its visible text/lifecycle and both score branches, plus independent inspection of hello/score. Then build a **small counter app** through phases 4–6: layout, label, button, click callback and typed mutable state. This is a proposal with dependencies, not a buildable v0.1 example.
 
 ## 🤝 How to keep the roadmap useful
 
