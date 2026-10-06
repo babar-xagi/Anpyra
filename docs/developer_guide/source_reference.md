@@ -229,6 +229,10 @@ See [native platform architecture](native_platforms.md) for current Android-shap
 | [pyproject.toml](../../pyproject.toml) | Package/version/dependencies/console entry/source discovery/typing/Ruff |
 | [MANIFEST.in](../../MANIFEST.in) | Source distribution inclusion rules |
 | [tests.yml](../../.github/workflows/tests.yml) | OS/Python matrix, lint/docs/tests/examples/wheel checks |
+| [publish.yml](../../.github/workflows/publish.yml) | Manual tagged release: reusable tests, build/validate/smoke, checked artifacts and OIDC upload to selected index |
+| [check_release.py](../../scripts/check_release.py) | check_version compares static source versions/tag; check_distributions validates archives using _check_paths/_check_metadata; main returns status without uploading |
+| [test_release.py](../../tests/unit/test_release.py) | Reject version/tag drift, stale distributions, mismatched metadata, private/unsafe paths and tar links |
+| [pypi_readme.md](../pypi_readme.md) | Package description with PyPI-compatible Markdown and absolute links; selected by pyproject.toml |
 | [check_docs.py](../../scripts/check_docs.py) | Owned Markdown links/headings and syntax/buildability of documented Python app examples |
 | Root README/contribution/changelog and docs indexes | Navigation, maintenance workflow and status; no executable framework implementation |
 

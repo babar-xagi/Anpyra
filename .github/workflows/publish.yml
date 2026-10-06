@@ -1,0 +1,112 @@
+name: Publish Python package
+run-name: Publish ${{ inputs.tag }} to ${{ inputs.repository }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing version tag, for example v0.1.0
+        type: string
+        required: true
+      repository:
+        description: Package index
+        type: choice
+        options:
+          - testpypi
+          - pypi
+        default: testpypi
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-${{ inputs.repository }}-${{ inputs.tag }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    if: github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/tests.yml
+    with:
+      ref: refs/tags/${{ inputs.tag }}
+
+  build:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out the release tag
+        uses: actions/checkout@v4
+        with:
+          ref: refs/tags/${{ inputs.tag }}
+          persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+        with:
+          version: '0.12.21'
+          enable-cache: false
+
+      - name: Check version and tag
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+        run: python scripts/check_release.py --tag "$RELEASE_TAG"
+
+      - name: Build wheel and source distribution
+        run: uv build --no-create-gitignore --out-dir dist
+
+      - name: Check archive contents and metadata
+        run: |
+          python scripts/check_release.py --dist dist
+          uvx --from twine twine check --strict dist/*
+
+      - name: Install the wheel and build a new Android app
+        run: |
+          uv venv --python 3.12 /tmp/anpyra-release-smoke
+          uv pip install --python /tmp/anpyra-release-smoke/bin/python dist/*.whl
+          cd /tmp
+          /tmp/anpyra-release-smoke/bin/anpyra --version
+          /tmp/anpyra-release-smoke/bin/anpyra init release-app --package dev.anpyra.release
+          /tmp/anpyra-release-smoke/bin/anpyra build release-app
+          /tmp/anpyra-release-smoke/bin/anpyra verify release-app/build/dev.anpyra.release.apk
+
+      - name: Save checked distributions
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-distributions
+          path: |
+            dist/*.whl
+            dist/*.tar.gz
+          if-no-files-found: error
+          retention-days: 14
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: ${{ inputs.repository }}
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Download checked distributions
+        uses: actions/download-artifact@v4
+        with:
+          name: python-distributions
+          path: dist
+
+      - name: Publish to TestPyPI
+        if: inputs.repository == 'testpypi'
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+
+      - name: Publish to PyPI
+        if: inputs.repository == 'pypi'
+        uses: pypa/gh-action-pypi-publish@release/v1

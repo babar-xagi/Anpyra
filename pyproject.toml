@@ -6,10 +6,30 @@ build-backend = "setuptools.build_meta"
 name = "anpyra"
 version = "0.1.0"
 description = "Compile a typed Python subset directly to Android DEX and signed APKs"
-readme = "README.md"
+readme = "docs/pypi_readme.md"
 requires-python = ">=3.11"
 license = "Apache-2.0"
 dependencies = ["cryptography>=46.0.0"]
+keywords = ["android", "python", "compiler", "dex", "apk", "native"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Compilers",
+    "Topic :: Software Development :: Build Tools",
+    "Typing :: Typed",
+]
+
+[project.urls]
+Homepage = "https://github.com/babar-xagi/Anpyra"
+Documentation = "https://github.com/babar-xagi/Anpyra/tree/main/docs"
+Repository = "https://github.com/babar-xagi/Anpyra"
+Issues = "https://github.com/babar-xagi/Anpyra/issues"
+Changelog = "https://github.com/babar-xagi/Anpyra/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 dev = ["ruff"]

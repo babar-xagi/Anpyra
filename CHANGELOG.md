@@ -4,6 +4,14 @@ This file records user-visible milestones. Planned work belongs in the [roadmap]
 
 ## 🛠️ Unreleased
 
+### 📦 Python package publishing
+
+- Manual tagged TestPyPI/PyPI workflow with reusable CI, version guards, archive/README checks and isolated wheel build smoke test.
+- Separate least-privilege publishing job using Trusted Publishing and checked build artifacts.
+- Package classifiers/project links and a dedicated PyPI-compatible README.
+- Read-only release validator, focused rejection tests and complete account/tag/command guide.
+- Workflow prepared locally; trusted-publisher configuration and first index upload remain pending.
+
 ### 🌍 Native platform organization
 
 - Shared source analysis/IR, identity metadata and project paths moved to `common/`.

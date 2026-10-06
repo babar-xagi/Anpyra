@@ -67,7 +67,7 @@ The original experiments were reported successful on a phone by the author. The 
 - [x] Separate native mobile Android/iOS and desktop Windows/macOS/Linux directories.
 - [x] Explicit available/planned target registry, `targets` listing and build/check target selection.
 - [x] Historical imports retained through compatibility modules.
-- [x] Boundary/dispatch/compatibility checks added; current suite contains 48 tests.
+- [x] Boundary/dispatch/compatibility checks added; the native foundation brought the suite to 48 tests. The later release guards bring it to 54.
 - [ ] Generalize the current Android-shaped source/UI/IR/register contracts for another backend.
 - [ ] Implement, package and runtime-validate any additional native target.
 
@@ -203,6 +203,8 @@ Phases are a dependency-oriented plan, not a fixed schedule. Small independent t
 ## 9️⃣ Phase 9 — Release signing and distribution
 
 **Outcome:** make distribution deliberate and reproducible.
+
+**Package-publishing foundation exists:** manual tagged TestPyPI/PyPI workflow, reused CI, archive/version/description guards, wheel smoke test and [account/command guide](developer_guide/publishing.md). Trusted-publisher setup, remote workflow acceptance and the first upload are pending. This does not complete Android release-signing or store-distribution work.
 
 - [ ] Explicit debug/release modes and signer selection/import.
 - [ ] Protected release key handling, identity backups and actionable errors.

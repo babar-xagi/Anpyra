@@ -8,7 +8,7 @@ The repository separates the installable framework, user examples, automated che
 Anpyra/
 ├── README.md, CONTRIBUTING.md, CHANGELOG.md, LICENSE
 ├── pyproject.toml, MANIFEST.in, .gitignore
-├── .github/                   # CI, issue and pull request templates
+├── .github/                   # Tests/publish workflows, issue and PR templates
 ├── src/
 │   ├── README.md
 │   ├── anpyra/
@@ -48,7 +48,7 @@ Anpyra/
 │   ├── user_guide/
 │   ├── developer_guide/
 │   └── roadmap.md
-└── scripts/check_docs.py      # Documentation and app-snippet checks
+└── scripts/                  # check_docs.py and read-only check_release.py
 ```
 
 ## 📦 What belongs where?

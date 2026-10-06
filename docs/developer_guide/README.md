@@ -17,6 +17,7 @@ This guide is for maintainers and contributors extending or fixing Anpyra. It de
 | [Testing and device acceptance](testing.md) | Grouped tests, their coverage, gaps and device checklist |
 | [Extending Anpyra](extending.md) | Add syntax or a widget across the whole pipeline |
 | [Release checklist](release.md) | Version, packaging, validation and distribution gates |
+| [PyPI publishing](publishing.md) | Account setup, manual CI pipeline, version tags and release commands |
 
 ## 🎯 Start with the problem
 

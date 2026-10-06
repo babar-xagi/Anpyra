@@ -154,6 +154,8 @@ The pip alternative is `python -m pip install PATH_TO_WHEEL` inside the activate
 
 Anpyra was not published to PyPI by this work. `pip install anpyra` or `uv pip install anpyra` is not the documented installation route.
 
+Maintainers can use the prepared [TestPyPI/PyPI publishing workflow](../developer_guide/publishing.md). Once a release is confirmed on PyPI, normal package-name installation becomes available for that version.
+
 ## 📱 Optional adb
 
 Get platform-tools from the [official Android page](https://developer.android.com/tools/releases/platform-tools), extract them, and add their directory to your shell's `PATH`. Confirm with `adb version` and `adb devices`.

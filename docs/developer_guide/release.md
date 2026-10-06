@@ -1,6 +1,6 @@
 # 🚢 Release and Packaging Checklist
 
-Anpyra v0.1 is an alpha baseline. A local wheel is available; PyPI publication, signed release workflows and store publishing are separate future work.
+Anpyra v0.1 is an alpha baseline. The manual TestPyPI/PyPI workflow is prepared; its account configuration and first index upload remain pending. Follow [publishing](publishing.md) for one-time setup, tag/run commands and installation verification. Android release identity and app-store delivery remain separate future work.
 
 ## 📋 Prepare a candidate
 
@@ -28,14 +28,17 @@ Complete the [manual device checklist](testing.md) before claiming device accept
 ## 📦 Build distributions
 
 ```powershell
-python -m pip wheel --no-deps . --wheel-dir dist
+uv build --no-create-gitignore --out-dir dist/pypi/0.1.0
+python scripts/check_release.py --tag v0.1.0 --dist dist/pypi/0.1.0
+uvx --from twine twine check --strict dist/pypi/0.1.0/*
 ```
 
-For a source archive, use the configured setuptools backend through a standard build frontend when available:
+Use an empty output folder and the actual candidate version. uv builds both wheel and source archive. The pip alternative is:
 
 ```powershell
-python -m pip install build
-python -m build --sdist
+python -m pip install build twine
+python -m build --outdir dist/pypi/0.1.0
+python -m twine check --strict dist/pypi/0.1.0/*
 ```
 
 `MANIFEST.in` includes guides, examples, tests, maintenance scripts and repository templates in the source distribution. Wheel contents are the installable packages, metadata/license and typing marker, not the complete repository.
@@ -46,7 +49,7 @@ Inspect both archives for absent secrets/generated files. Install the wheel in a
 
 Record commit, tool versions, test/CI results, APK fingerprints and tested devices. List unresolved compatibility limits. Only mark a roadmap phase complete when its exit criteria are met. Do not add a success badge for a test that has not run.
 
-Tagging, uploading wheels, publishing to PyPI, and app-store delivery are explicit distribution actions, not side effects of this local checklist. Plan those workflows in the release/distribution roadmap phase.
+Tagging, uploading wheels and app-store delivery are explicit distribution actions. The publish workflow is manually dispatched from main with an existing vVERSION tag and a selected index. It reuses tests, checks tag/version, validates archives/README, smoke-tests a wheel, then uploads through a separately configured trusted publisher. A normal push/tag does not upload packages.
 
 ## 🔄 Post-release maintenance
 
