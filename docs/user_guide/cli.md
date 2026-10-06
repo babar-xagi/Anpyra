@@ -9,7 +9,7 @@ anpyra --version
 anpyra --help
 ```
 
-`--version` prints `Anpyra 0.1.1`. A subcommand is required for normal work.
+`--version` prints `Anpyra 0.1.2`. A subcommand is required for normal work.
 
 ## 🏗️ init
 
@@ -68,7 +68,7 @@ Prints `android  available`. There are no additional target packages or dispatch
 anpyra verify APK [--json]
 ```
 
-Checks the framework's single-signer APK v2 profile, protected content, DEX magic, SHA-1 and Adler-32. It expects manifest and DEX plus optional validated digest-named screen PNG assets in the current source feature. It is not a general verifier for arbitrary APKs with assets, resources or multiple signers.
+Checks the framework's single-signer APK v2 profile, protected content, DEX magic, SHA-1 and Adler-32. It expects manifest and DEX plus optional validated digest-named PNG image and TTF/OTF font assets. It is not a general verifier for arbitrary APKs with assets, resources or multiple signers.
 
 ```powershell
 anpyra verify examples/hello/build/dev.anpyra.hello.apk

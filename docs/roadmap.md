@@ -1,6 +1,6 @@
 # 🗺️ Anpyra Roadmap and Development Phases
 
-**Snapshot:** October 6, 2026 · **Current package:** v0.1.1 alpha · **Direction:** Python source → typed IR → native DEX → signed APK.
+**Snapshot:** October 6, 2026 · **Current package:** v0.1.2 alpha · **Direction:** Python source → typed IR → native DEX → signed APK.
 
 **Current direction:** complete the Android framework first. Common/platform dispatch layers and other-target placeholders have been removed from the active source. The [progress record](progress.md) lists implemented components, publication, author-confirmed phone installation and remaining evidence.
 
@@ -242,11 +242,11 @@ Choose one deliverable per issue/review where practical. Record implementation, 
 
 Further reading: [developer guide](developer_guide/README.md), [extension workflow](developer_guide/extending.md), [release checklist](developer_guide/release.md), [changelog](../CHANGELOG.md).
 
-## 🔤 Typography implementation after 0.1.1
+## 🔤 Typography implementation in 0.1.2
 
 - [x] Separate TextView authoring and native style implementation, preserving public imports.
 - [x] Implement title text, colors/size, gravity, padding/dimensions, fonts, spacing, overflow, decorations/shadows, selection and accessibility declarations.
 - [x] Validate/package standalone TTF/OTF fonts and reject malformed signed assets.
 - [x] Add focused tests, runnable example and user/developer file ownership guides.
-- [ ] Publish the expanded typography API under a new version after verification.
+- [ ] Verify the 0.1.2 PyPI publication and public install/upgrade checks.
 - [ ] Extend rich text, arbitrary font weights/axes, automatic size and broader Android runtime coverage.

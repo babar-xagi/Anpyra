@@ -1,6 +1,6 @@
 # 🛠️ TextView Styling Implementation
 
-Expanded typography is a source feature after PyPI 0.1.1; do not claim the published package already contains it. Application imports remain compatible, while TextView's canonical class now lives in its component file.
+Expanded typography ships in Anpyra 0.1.2. The original PyPI 0.1.1 files remain immutable. Application imports remain compatible, while TextView's canonical class now lives in its component file.
 
 ## 🗂️ Ownership and bug-fix map
 

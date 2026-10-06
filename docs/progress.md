@@ -1,6 +1,6 @@
 # 📊 Implementation Progress and Verified Results
 
-**Updated: October 6, 2026.** Current focus: finish the Android framework. Release version: **Anpyra 0.1.1**. This version includes the Android-only source layout and native Screen styling; the original 0.1.0 release remains immutable.
+**Updated: October 6, 2026.** Current focus: finish the Android framework. Release version: **Anpyra 0.1.2**. This version includes Android-only components, native Screen styling and expanded TextView typography. The original 0.1.0/0.1.1 releases remain immutable.
 
 ## ✅ Success evidence
 
@@ -108,7 +108,7 @@ Public `from anpyra import ...` and `pyandroid` authoring imports continue to wo
 
 These are planned capabilities. Loops, collections, general Python imports/runtime, interactive widgets, resources and release/store signing are not implemented by the directory cleanup. See the detailed [roadmap](roadmap.md) and [component guide](developer_guide/android_components.md).
 
-## 🔤 Expanded TextView component (unreleased)
+## 🔤 Expanded TextView component (0.1.2)
 
 - Move the real TextView authoring class to components/textview.py; root/api/pyandroid imports re-export the same class.
 - Implement text content/constructor keywords plus foreground/background color, sp size, dp padding/dimensions, horizontal/vertical gravity, opacity, system/local fonts, bold/italic, wrapping/line limits/ellipsis, spacing, decoration, selection, shadows, direction, OpenType features and accessibility description.
@@ -118,4 +118,4 @@ These are planned capabilities. Loops, collections, general Python imports/runti
 - All 95 host tests, docs/lint/workflow checks and local wheel/source checks passed. An isolated wheel installation built/verified the font example. Legacy experiment DEX hashes remain unchanged.
 - On TECNO BG7 / Android API 33, 30 recorded cases passed: size/letter spacing, 15 gravity combinations, dp padding/dimensions, TTF/OTF, bold/italic, decoration add/remove, uppercase, opacity, line spacing, RTL and selection focus; remaining native options passed combined launch and visible ellipsis/shadow checks. Native Copy/Share toolbar was visually confirmed after long-press; clipboard copying/sharing was not performed.
 - The device runner accounted for the OEM's clipped accessibility bounds by measuring its controlled app background. Previously captured screenshots for unchanged cases were replayed during final tail checks; device results distinguish reused captures. API 24–28 and other devices/fonts still need separate runtime coverage.
-- Published PyPI 0.1.1 remains immutable and does not include these expanded typography APIs. A future release needs a new version/tag.
+- Expanded typography ships under version/tag 0.1.2/v0.1.2; it does not replace immutable PyPI 0.1.1 files.

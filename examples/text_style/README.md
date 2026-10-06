@@ -1,6 +1,6 @@
 # 🔤 Native Typography Example
 
-This source-only example styles a native TextView inside Screen. It exercises local font loading, color/size, horizontal/vertical alignment, runtime dp padding, wrapping, letter/line spacing, shadow and accessibility description. Install the editable checkout; the expanded typography APIs are not in PyPI 0.1.1.
+This example styles a native TextView inside Screen. It exercises local font loading, color/size, horizontal/vertical alignment, runtime dp padding, wrapping, letter/line spacing, shadow and accessibility description. Anpyra 0.1.2 includes these APIs. The example source/assets are in the repository/source archive; ordinary wheel users can create their own project and local fonts using the same API.
 
 From the repository root:
 

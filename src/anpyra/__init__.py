@@ -6,7 +6,7 @@ from .compiler.frontend import CompileError, compile_file, compile_source
 from .components import Background, Font, Gradient, Image, Screen, Shadow, StyleError, TextStyle
 from .config import AppConfig, ConfigError, Project, load_project
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 __all__ = [
     "Font",
     "Shadow",

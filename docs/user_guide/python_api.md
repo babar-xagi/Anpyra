@@ -4,7 +4,7 @@ These examples are **host scripts**, separate from the restricted Android app so
 
 ## 🔤 Component imports
 
-TextView now has one canonical implementation in `anpyra.components.textview`, re-exported through `anpyra` and `pyandroid` for compatibility. Current source adds Font, Shadow and TextStyle plus declarative typography; see the [TextView guide](textview.md). These expanded properties are not in published 0.1.1.
+TextView now has one canonical implementation in `anpyra.components.textview`, re-exported through `anpyra` and `pyandroid` for compatibility. Version 0.1.2 adds Font, Shadow and TextStyle plus declarative typography; see the [TextView guide](textview.md). These expanded properties are included in the 0.1.2 wheel.
 
 ## 📦 Build a configured application
 

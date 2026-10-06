@@ -2,7 +2,7 @@
 
 This file records user-visible milestones. Planned work belongs in the [roadmap](docs/roadmap.md), not as completed release notes.
 
-## 🛠️ Unreleased
+## 📦 0.1.2 — October 6, 2026
 
 ### 🔤 Native TextView typography
 

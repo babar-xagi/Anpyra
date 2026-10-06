@@ -20,7 +20,7 @@ This guide is for people building small Android apps. You do not need to underst
 
 ## 🎨 Screen component
 
-[Screen backgrounds/images/gradients](screen.md) documents the 0.1.1 API. [TextView typography](textview.md) covers expanded source-only text styling, fonts, titles, alignment, padding and overflow.
+[Screen backgrounds/images/gradients](screen.md) documents the 0.1.1 API. [TextView typography](textview.md) covers text styling available in 0.1.2, fonts, titles, alignment, padding and overflow.
 
 ## 🎯 Buildable examples
 
