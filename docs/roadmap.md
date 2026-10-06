@@ -68,7 +68,7 @@ The original experiments were reported successful on a phone by the author. The 
 - [x] Preserve public application/experiment authoring imports while consolidating internal DEX access into android/dex.py.
 - [x] Verify 55 tests and exact pre-cleanup DEX/APK output preservation.
 - [x] Record published 0.1.0 wheel/source success and author-confirmed phone installation.
-- [ ] Verify the 0.1.1 PyPI upload and fresh/upgrade installations; published 0.1.0 is immutable.
+- [x] Verify the 0.1.1 PyPI upload, fresh installation and pip/uv upgrades from 0.1.0; original files remain immutable.
 
 ## 🧱 Phase overview
 
@@ -206,7 +206,7 @@ Phases are a dependency-oriented plan, not a fixed schedule. Small independent t
 
 **Outcome:** make distribution deliberate and reproducible.
 
-**Package-publishing foundation exists:** manual tagged TestPyPI/PyPI workflow, reused CI, archive/version/description guards, wheel smoke test and [account/command guide](developer_guide/publishing.md). Production Trusted Publishing is configured; the workflow published 0.1.0 on October 6, 2026, and public-index installation/build verification passed. TestPyPI rehearsal and versioned hosted documentation remain pending. This does not complete Android release-signing or store-distribution work.
+**Package-publishing foundation exists:** manual tagged TestPyPI/PyPI workflow, reused CI, archive/version/description guards, starter/Screen wheel smoke tests and [account/command guide](developer_guide/publishing.md). Production Trusted Publishing published 0.1.0 and 0.1.1 on October 6, 2026. Fresh 0.1.1 installation and pip/uv upgrades from 0.1.0 passed, including retained app identity/config/output and new Screen builds. TestPyPI rehearsal and versioned hosted documentation remain pending. This does not complete Android release-signing or store-distribution work.
 
 - [ ] Explicit debug/release modes and signer selection/import.
 - [ ] Protected release key handling, identity backups and actionable errors.

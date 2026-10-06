@@ -9,14 +9,15 @@
 | Original experiments 001–008 | Author reported successful runs | Historical source fixtures 005–008 retained |
 | Framework source checking | Passed | Starter app produces typed IR and native method listings without writing artifacts |
 | Signed APK generation | Passed | Hello/score and fresh generated projects build and pass framework verification |
-| PyPI publication | Passed, October 6 | Wheel/source archive uploaded through [Trusted Publishing](https://github.com/babar-xagi/Anpyra/actions/runs/37472908394); [release 0.1.0](https://pypi.org/project/anpyra/0.1.0/) available |
-| Public-index installation | Passed | Fresh `anpyra==0.1.0` environment created and used to build/verify an Android app |
+| PyPI publication | Passed, October 6 | [0.1.1 Trusted Publishing run](https://github.com/babar-xagi/Anpyra/actions/runs/37511994040) succeeded; [PyPI 0.1.1](https://pypi.org/project/anpyra/0.1.1/) wheel/source hashes match checked CI artifacts |
+| Public-index installation | Passed | Fresh `anpyra==0.1.1` environment built/verified a starter app and a Screen image/gradient app |
+| Package upgrades | Passed | Separate pip and uv environments upgraded from PyPI 0.1.0 to 0.1.1; signing identity, app config and starter APK bytes preserved; new Screen/image/gradient builds verified |
 | Windows/Linux release CI | Passed | Published candidate validated on Python 3.11/3.13 |
 | Author's phone installation | **Author confirmed success** | Default starter package `dev.anpyra.app`, verified APK, adb detected an authorized device; reported installation completed |
 | Current Android-only cleanup | Host checks passed | 55 tests; four experiment DEX hashes/listings and both signed example APK hashes equal their pre-cleanup output |
 | Full runtime acceptance | Partially recorded | Installation confirmed; exact screen text, score branches, lifecycle and independent verifier results still require records |
 
-Phone installation is a concrete success. It is not evidence for every widget, Android version or runtime path. The author has not yet supplied a device model/API and complete screen/lifecycle checklist for this cleanup.
+Phone installation and the API 33 Screen checks below are concrete successes. Device-model records and the broader lifecycle/score checklist remain incomplete; these results do not establish coverage of every widget or Android version.
 
 ## 🧱 What is implemented?
 
@@ -69,6 +70,14 @@ Files: [manifest](../src/anpyra/android/manifest.py), [packaging](../src/anpyra/
 - Grouped tests, original fixtures, byte-level checks and output preservation checks.
 - uv-recommended installation with pip alternatives and separate user/developer guides.
 - Manual release pipeline, version/tag/archive/description checks, isolated wheel smoke and Trusted Publishing.
+- Version 0.1.1 published from commit `3ef07e9b6fa625d6d1c90b4abbf539ef77283df7`, tag `v0.1.1`; [GitHub release](https://github.com/babar-xagi/Anpyra/releases/tag/v0.1.1) provides notes and install/upgrade commands.
+
+### 🔐 Published 0.1.1 archive fingerprints
+
+| File | SHA-256 |
+| --- | --- |
+| `anpyra-0.1.1-py3-none-any.whl` | `676fa4d927920cd8e4a1fae227a414ce6e33cb91adafe70be6c3bbc20e24db4d` |
+| `anpyra-0.1.1.tar.gz` | `051d100d3bec01ed76950500a373d19f79402071e4f10da4c1645abdded112ac` |
 
 ## 🎨 Screen component (0.1.1)
 

@@ -26,6 +26,8 @@ This file records user-visible milestones. Planned work belongs in the [roadmap]
 
 ### 🔄 Installation and upgrades
 
+- Publish wheel/source through [Trusted Publishing](https://github.com/babar-xagi/Anpyra/actions/runs/37511994040); verify public archive hashes against CI artifacts and a fresh PyPI installation.
+- Verify separate pip/uv upgrades from 0.1.0, preserving app config, signing identity and starter APK bytes; build/verify the new Screen image/gradient example after each upgrade.
 - Document direct pip/uv installation, exact 0.1.1 and latest-release upgrades, interpreter selection and rebuilding existing apps.
 - Keep existing app configuration and debug signing state during package upgrades; app versions remain independent of the compiler version.
 
