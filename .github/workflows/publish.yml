@@ -80,6 +80,9 @@ jobs:
           /tmp/anpyra-release-smoke/bin/anpyra check "$GITHUB_WORKSPACE/examples/text_style"
           /tmp/anpyra-release-smoke/bin/anpyra build "$GITHUB_WORKSPACE/examples/text_style"
           /tmp/anpyra-release-smoke/bin/anpyra verify "$GITHUB_WORKSPACE/examples/text_style/build/dev.anpyra.textstyle.apk"
+          /tmp/anpyra-release-smoke/bin/anpyra check "$GITHUB_WORKSPACE/examples/button_style"
+          /tmp/anpyra-release-smoke/bin/anpyra build "$GITHUB_WORKSPACE/examples/button_style"
+          /tmp/anpyra-release-smoke/bin/anpyra verify "$GITHUB_WORKSPACE/examples/button_style/build/dev.anpyra.buttonstyle.apk"
 
       - name: Save checked distributions
         uses: actions/upload-artifact@v4

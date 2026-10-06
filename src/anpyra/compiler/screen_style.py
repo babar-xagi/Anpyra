@@ -3,10 +3,15 @@
 import ast
 from dataclasses import replace
 
+from ..components.button import Border, ButtonState, ButtonStyle, Icon
 from ..components.screen import Background, Gradient, Image, StyleError
 from ..components.textview import Font, Shadow, TextStyle
 
 CONSTRUCTORS = {
+    "ButtonStyle": ButtonStyle,
+    "ButtonState": ButtonState,
+    "Border": Border,
+    "Icon": Icon,
     "Background": Background,
     "Gradient": Gradient,
     "Image": Image,

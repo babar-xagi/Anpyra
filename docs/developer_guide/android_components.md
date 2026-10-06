@@ -8,7 +8,10 @@ All paths below are under `src/anpyra/`.
 
 | Component | File | Main responsibility |
 | --- | --- | --- |
-| Authoring API | `api.py` | Activity/TextView editor signatures and host-execution errors |
+| Authoring API | `api.py` | Activity signatures, compatible TextView export and host errors |
+| Components | `components/screen.py`, `textview.py`, `button.py` | Actual authoring classes and validated style values |
+| Button design | `compiler/button_style.py`, `android/button.py` | Parsed state design and native drawables/geometry |
+| Icons | `android/icons.py`, `android/assets.py` | Raster fit, safe decoding and signed asset mapping |
 | Project configuration | `config.py` | AppConfig, Project, TOML and safe paths |
 | Starter project | `scaffold.py` | app.py/config/ignore templates |
 | Command interface | `cli.py` | Arguments, check/build/verify/adb dispatch |
@@ -23,7 +26,7 @@ All paths below are under `src/anpyra/`.
 | DEX file | `android/dex.py` | Pools/indexes, section layout, class data and checksums |
 | Manifest writing | `android/manifest.py` | Binary AndroidManifest.xml |
 | Manifest reading | `android/manifest_inspect.py` | Generated manifest profile parsing |
-| Unsigned APK | `android/packaging.py` | Deterministic two-entry ZIP |
+| Unsigned APK | `android/packaging.py` | Deterministic manifest/DEX ZIP plus validated image/font assets |
 | Signing identity/APK v2 | `android/signing.py` | Retained key/certificate and signature block |
 | Integrity inspection | `android/verify.py` | Signature/content/manifest/DEX verification |
 

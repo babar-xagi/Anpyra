@@ -22,12 +22,19 @@ Anpyra/
 │   │   ├── scaffold.py           # New project source/config/ignore files
 │   │   ├── cli.py                # Commands and optional adb dispatch
 │   │   ├── build.py              # Compile/package/sign/verify/report pipeline
+│   │   ├── components/
+│   │   │   ├── screen.py         # Screen and background declarations
+│   │   │   ├── textview.py       # Typography and font declarations
+│   │   │   └── button.py         # Button states, border and icon declarations
 │   │   ├── compiler/
 │   │   │   ├── frontend.py       # Static Python AST → typed IR
-│   │   │   └── ir.py             # Application/function/operation records
+│   │   │   ├── ir.py             # Application/function/operation records
+│   │   │   └── screen_style.py, text_style.py, button_style.py
 │   │   └── android/
 │   │       ├── README.md, __init__.py
 │   │       ├── screen.py         # Native screen/lifecycle method bindings
+│   │       ├── textview.py, button.py, backgrounds.py
+│   │       ├── assets.py, icons.py, fonts.py
 │   │       ├── codegen.py        # IR → method code, registers and branches
 │   │       ├── dalvik.py         # Instruction encoding and assembler
 │   │       ├── dex_types.py      # Signature and result/listing records

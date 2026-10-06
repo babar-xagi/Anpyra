@@ -250,3 +250,13 @@ Further reading: [developer guide](developer_guide/README.md), [extension workfl
 - [x] Add focused tests, runnable example and user/developer file ownership guides.
 - [x] Verify the 0.1.2 PyPI publication, fresh installation and separate pip/uv upgrades from 0.1.1, including typography/local-font APK builds.
 - [ ] Extend rich text, arbitrary font weights/axes, automatic size and broader Android runtime coverage.
+
+## 🟦 Button design after 0.1.2
+
+- [x] Native Button subtype, reusable typography and canonical component files.
+- [x] Explicit shape/state colors, gradients, border/radii, ripple, layout/margins and icons.
+- [x] Native interaction flags/enabled branches, validations and signed icon/font assets.
+- [x] Host tests, source example, user guide and file ownership map.
+- [x] Record 20 native device press/state/icon/geometry cases on Android API 33; document untested devices/options separately.
+- [ ] Publish Button under a future version after verification.
+- [ ] Add typed Python click callbacks and multi-child layout composition.

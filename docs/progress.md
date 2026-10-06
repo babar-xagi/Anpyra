@@ -128,3 +128,14 @@ Published October 6, 2026 from commit `21b8ed8aefd11c0c267734b87c4e81f84c6548fd`
 | --- | --- |
 | `anpyra-0.1.2-py3-none-any.whl` | `9b4c0d00f53210835b83dea3841c00eaa8c745b980eb429f07655e49922538a9` |
 | `anpyra-0.1.2.tar.gz` | `b324a27c5d9b4064c1e0f7a5175c0c3aa6d9f129f5a40d405493e364d1745de9` |
+
+## 🟦 Native Button component (unreleased)
+
+- Implement actual android.widget.Button construction with shared TextView typography and a separate components/button.py API.
+- Implement caller-configured fills/gradients, border/corners, opacity, state label/background/border colors, native ripple, dimensions/placement/margins, elevation and compound raster icons with fit/tint/alpha.
+- Preserve native unspecified gravity and caller padding, validate single-parent attachment, support bool enabled calls/branches, and reject unimplemented callbacks explicitly.
+- Share safe image decoding/normalization/signing with Screen; new icon assets are referenced by content hash, while legacy DEX output remains unchanged.
+- All 111 host tests, docs/lint/workflow and local wheel/source checks pass. An isolated wheel installation builds/verifies the centered icon example; legacy DEX regressions remain byte-identical.
+- On TECNO BG7 / Android API 33, 20 recorded Button cases passed: dimensions/density, real held press/release label/background colors, disabled presses, borders/corner radii, four gradient directions, four icon positions/tint, margins, explicit padding/native gravity, masked ripple, keyboard focus and native Button accessibility class. Screenshots/results are recorded by the opt-in device script.
+- Hover, radial/sweep fills, every font/theme and API 24–28 still need separate runtime coverage. Native press feedback works; Python click callback compilation remains a future phase.
+- PyPI 0.1.2 remains immutable and does not include Button. Multi-child layouts, Python callback binding, image backgrounds and additional Android runtime coverage remain planned.

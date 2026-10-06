@@ -8,6 +8,7 @@ import zlib
 
 from ..compiler.ir import AppIR, ApplyScreenBackground, LoadConst
 from .backgrounds import background_fields
+from .button import button_fields, button_strings
 from .codegen import _walk_ops, generate_methods
 from .dex_types import DexBuild, MethodKey, ProtoKey
 from .encoding import align, dex_string_sort_key, mutf8_encode, uleb128, utf16_code_units
@@ -49,7 +50,9 @@ def build_dex(app: AppIR) -> DexBuild:
     activity, void, int_t = ACTIVITY_TYPE, "V", "I"
     operations = tuple(_walk_ops(app.operations))
     screen_refs = screen_methods(cls, operations)
-    fields = tuple(set(background_fields(operations)) | textview_fields(operations))
+    fields = tuple(
+        set(background_fields(operations)) | textview_fields(operations) | button_fields(operations)
+    )
     protos = [ProtoKey(method.return_type, method.parameters) for method in screen_refs.values()]
     our_ctor = screen_refs["app_constructor"]
     our_on = screen_refs["app_on_create"]
@@ -71,6 +74,7 @@ def build_dex(app: AppIR) -> DexBuild:
         if isinstance(op, ApplyScreenBackground) and op.image_asset is not None
     )
     strings_from_main.update(textview_strings(operations))
+    strings_from_main.update(button_strings(operations))
     type_descriptors = {cls, activity, void, int_t}
     for method in methods:
         type_descriptors.update((method.owner, method.return_type, *method.parameters))

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from ..components.button import ButtonDesign
 from ..components.screen import Background
 
 
@@ -41,6 +42,26 @@ class ReturnValue:
 @dataclass(frozen=True)
 class NewTextView:
     target: str
+
+
+@dataclass(frozen=True)
+class NewButton:
+    target: str
+
+
+@dataclass(frozen=True)
+class ApplyButtonDesign:
+    receiver: str
+    design: ButtonDesign
+    icon_asset: str | None = None
+
+
+@dataclass(frozen=True)
+class SetButtonProperty:
+    receiver: str
+    property: str
+    value: float | bool
+    value_var: str | None = None
 
 
 @dataclass(frozen=True)
@@ -109,6 +130,9 @@ IROp = (
     | CallFunction
     | ReturnValue
     | NewTextView
+    | NewButton
+    | ApplyButtonDesign
+    | SetButtonProperty
     | SetText
     | SetContentView
     | NewScreen

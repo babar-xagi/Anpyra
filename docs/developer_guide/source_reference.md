@@ -51,6 +51,10 @@ CallSuperOnCreate models the automatic lifecycle call. LoadConst, IntBinary, Cal
 
 New records need front-end lowering, traversals, emitter handling and tests; a dataclass alone does not generate executable behavior.
 
+## 🟦 Button design and state styling
+
+[Button implementation guide](button_styling.md) maps [components/button.py](../../src/anpyra/components/button.py), [compiler/button_style.py](../../src/anpyra/compiler/button_style.py), [android/button.py](../../src/anpyra/android/button.py) and [android/icons.py](../../src/anpyra/android/icons.py). NewButton constructs the native subtype; SetButtonProperty models native interaction/dimension settings; ApplyButtonDesign stores the attachment-time shape/state/icon/layout snapshot. Shared typography remains in textview.py; icon and Screen image decoding share assets.read_image. iput supports layout gravity.
+
 ## 📺 Screen bindings and method code
 
 New source components are documented in [Screen styling internals](screen_styling.md): [components/screen.py](../../src/anpyra/components/screen.py) owns Screen/value objects and color/opacity validation; [compiler/screen_style.py](../../src/anpyra/compiler/screen_style.py) parses declarative values; [android/backgrounds.py](../../src/anpyra/android/backgrounds.py) emits native layers/gradient/image operations; [android/assets.py](../../src/anpyra/android/assets.py) validates, normalizes and maps local image assets.

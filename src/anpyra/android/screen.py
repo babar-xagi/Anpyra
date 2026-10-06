@@ -5,6 +5,7 @@ Android renders the generated calls on the device; this is not a host UI rendere
 
 from ..compiler.ir import (
     CallSuperOnCreate,
+    NewButton,
     NewScreen,
     NewTextView,
     SetContentView,
@@ -14,6 +15,7 @@ from ..compiler.ir import (
     SetTextStyle,
 )
 from .backgrounds import FRAME, SDK_FIELD, VIEW, background_methods
+from .button import BUTTON, button_methods
 from .dalvik import (
     OP_IF_LT,
     OP_INVOKE_DIRECT,
@@ -51,7 +53,8 @@ def screen_methods(class_descriptor: str, operations=()) -> dict[str, MethodKey]
     if any(isinstance(op, SetTextColor) for op in operations):
         methods["text_view_color"] = MethodKey(TEXT_VIEW_TYPE, "setTextColor", "V", ("I",))
     methods.update(textview_methods(operations))
-    if any(isinstance(op, (NewScreen, SetTextColor, SetTextStyle)) for op in operations):
+    methods.update(button_methods(operations))
+    if any(isinstance(op, (NewScreen, SetTextColor, SetTextStyle, NewButton)) for op in operations):
         methods["view_force_dark"] = MethodKey(VIEW, "setForceDarkAllowed", "V", ("Z",))
     return methods
 
@@ -101,16 +104,15 @@ def emit_screen_operation(
             OP_INVOKE_SUPER,
             "Activity.onCreate(Bundle)",
         )
-    elif isinstance(op, NewTextView):
+    elif isinstance(op, (NewTextView, NewButton)):
         register = registers[op.target]
-        assembler.emit(
-            "new_instance", register, type_indexes[TEXT_VIEW_TYPE], TEXT_VIEW_TYPE, size=2
-        )
+        descriptor = BUTTON if isinstance(op, NewButton) else TEXT_VIEW_TYPE
+        assembler.emit("new_instance", register, type_indexes[descriptor], descriptor, size=2)
         invoke(
-            "text_view_constructor",
+            "button_constructor" if isinstance(op, NewButton) else "text_view_constructor",
             (register, this_register),
             OP_INVOKE_DIRECT,
-            "TextView.<init>(Context)",
+            "Button.<init>(Context)" if isinstance(op, NewButton) else "TextView.<init>(Context)",
         )
         preserve_colors(register)
     elif isinstance(op, SetText):

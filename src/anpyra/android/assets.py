@@ -11,8 +11,17 @@ from pathlib import Path
 from PIL import Image as PillowImage
 from PIL import ImageCms, ImageOps, UnidentifiedImageError
 
-from ..compiler.ir import AppIR, ApplyScreenBackground, IfBool, IfCompare, SetTextStyle
+from ..compiler.ir import (
+    AppIR,
+    ApplyButtonDesign,
+    ApplyScreenBackground,
+    IfBool,
+    IfCompare,
+    SetTextStyle,
+)
+from ..components.screen import Image
 from .fonts import validate_font
+from .icons import fit_icon
 
 
 class AssetError(ValueError):
@@ -39,6 +48,52 @@ def validate_png(payload: bytes) -> None:
             image.verify()
     except (OSError, ValueError, SyntaxError) as exc:
         raise AssetError(f"invalid packaged PNG: {exc}") from exc
+
+
+def read_image(root: Path, spec: Image):
+    path = (root / spec.path).resolve()
+    if not path.is_relative_to(root):
+        raise AssetError(f"image path escapes project: {spec.path}")
+    if not path.is_file():
+        raise AssetError(f"image does not exist: {spec.path}")
+    try:
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", PillowImage.DecompressionBombWarning)
+            with PillowImage.open(path) as source:
+                if source.format in {"EPS", "PDF", "WMF"}:
+                    raise AssetError(
+                        "screen images must be raster images; convert vector/document files to PNG"
+                    )
+                if source.width * source.height > 16_000_000 or max(source.size) > 4096:
+                    raise AssetError(
+                        "image exceeds 4096 pixels per side or 16 million pixels; resize it first"
+                    )
+                if spec.frame >= getattr(source, "n_frames", 1):
+                    raise AssetError(f"image frame {spec.frame} does not exist: {spec.path}")
+                source.seek(spec.frame)
+                oriented = ImageOps.exif_transpose(source)
+                profile = source.info.get("icc_profile")
+                if profile:
+                    if oriented.mode == "P":
+                        oriented = oriented.convert("RGBA")
+                    oriented = ImageCms.profileToProfile(
+                        oriented,
+                        ImageCms.ImageCmsProfile(io.BytesIO(profile)),
+                        ImageCms.createProfile("sRGB"),
+                        outputMode="RGBA",
+                    )
+                normalized = oriented.convert("RGBA")
+                normalized.info.clear()
+    except (
+        OSError,
+        ValueError,
+        UnidentifiedImageError,
+        ImageCms.PyCMSError,
+        PillowImage.DecompressionBombError,
+        PillowImage.DecompressionBombWarning,
+    ) as exc:
+        raise AssetError(f"cannot decode image {spec.path}: {exc}") from exc
+    return normalized
 
 
 def prepare_assets(app: AppIR, root: Path) -> PreparedAssets:
@@ -77,55 +132,36 @@ def prepare_assets(app: AppIR, root: Path) -> PreparedAssets:
                 "size": len(payload),
             }
             return replace(op, font_asset=asset)
+        if isinstance(op, ApplyButtonDesign) and op.design.icon is not None:
+            spec = op.design.icon
+            normalized = fit_icon(read_image(root, Image(spec.path)), spec)
+            normalized.info.clear()
+            buffer = io.BytesIO()
+            normalized.save(buffer, format="PNG", optimize=False)
+            payload = buffer.getvalue()
+            digest = hashlib.sha256(payload).hexdigest()
+            asset = f"anpyra/{digest}.png"
+            entry = "assets/" + asset
+            entries[entry] = payload
+            report[(spec.path, "button_icon", spec.size, spec.fit)] = {
+                "source": spec.path,
+                "kind": "button_icon",
+                "entry": entry,
+                "sha256": digest,
+                "width": normalized.width,
+                "height": normalized.height,
+                "fit": spec.fit,
+                "size_dp": spec.size,
+            }
+            return replace(op, icon_asset=asset)
         if not isinstance(op, ApplyScreenBackground) or op.background.image is None:
             return op
         spec = op.background.image
-        path = (root / spec.path).resolve()
-        if not path.is_relative_to(root):
-            raise AssetError(f"image path escapes project: {spec.path}")
-        if not path.is_file():
-            raise AssetError(f"image does not exist: {spec.path}")
-        try:
-            with warnings.catch_warnings():
-                warnings.simplefilter("error", PillowImage.DecompressionBombWarning)
-                with PillowImage.open(path) as source:
-                    if source.format in {"EPS", "PDF", "WMF"}:
-                        raise AssetError(
-                            "screen images must be raster images; convert vector/document files to PNG"
-                        )
-                    if source.width * source.height > 16_000_000 or max(source.size) > 4096:
-                        raise AssetError(
-                            "image exceeds 4096 pixels per side or 16 million pixels; resize it first"
-                        )
-                    if spec.frame >= getattr(source, "n_frames", 1):
-                        raise AssetError(f"image frame {spec.frame} does not exist: {spec.path}")
-                    source.seek(spec.frame)
-                    oriented = ImageOps.exif_transpose(source)
-                    profile = source.info.get("icc_profile")
-                    if profile:
-                        if oriented.mode == "P":
-                            oriented = oriented.convert("RGBA")
-                        oriented = ImageCms.profileToProfile(
-                            oriented,
-                            ImageCms.ImageCmsProfile(io.BytesIO(profile)),
-                            ImageCms.createProfile("sRGB"),
-                            outputMode="RGBA",
-                        )
-                    normalized = oriented.convert("RGBA")
-                    normalized.info.clear()
-                    buffer = io.BytesIO()
-                    normalized.save(buffer, format="PNG", optimize=False)
-                    payload = buffer.getvalue()
-                    width, height = normalized.size
-        except (
-            OSError,
-            ValueError,
-            UnidentifiedImageError,
-            ImageCms.PyCMSError,
-            PillowImage.DecompressionBombError,
-            PillowImage.DecompressionBombWarning,
-        ) as exc:
-            raise AssetError(f"cannot decode image {spec.path}: {exc}") from exc
+        normalized = read_image(root, spec)
+        buffer = io.BytesIO()
+        normalized.save(buffer, format="PNG", optimize=False)
+        payload = buffer.getvalue()
+        width, height = normalized.size
         digest = hashlib.sha256(payload).hexdigest()
         asset = f"anpyra/{digest}.png"
         entry = "assets/" + asset

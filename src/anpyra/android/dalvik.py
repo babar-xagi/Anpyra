@@ -170,6 +170,12 @@ class Assembler:
                     OP_SGET_OBJECT if k == "sget_object" else OP_SGET, register, field_index
                 )
                 text = f"{'sget-object' if k == 'sget_object' else 'sget'} v{register}, {pretty}"
+            elif k == "iput":
+                value, receiver, field_index, pretty = a
+                if max(value, receiver) > 15:
+                    raise ValueError("iput uses four-bit registers")
+                enc = [0x59 | (value << 8) | (receiver << 12), field_index]
+                text = f"iput v{value}, v{receiver}, {pretty}"
             elif k == "const_string":
                 r, idx, lit = a
                 enc = encode_21c(OP_CONST_STRING, r, idx)

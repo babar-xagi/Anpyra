@@ -38,5 +38,8 @@ jobs:
       - run: anpyra check examples/text_style --dump-dalvik
       - run: anpyra build examples/text_style
       - run: anpyra verify examples/text_style/build/dev.anpyra.textstyle.apk
+      - run: anpyra check examples/button_style --dump-dalvik
+      - run: anpyra build examples/button_style
+      - run: anpyra verify examples/button_style/build/dev.anpyra.buttonstyle.apk
       - run: anpyra verify examples/score/build/dev.anpyra.score.apk
       - run: python -m pip wheel --no-deps . --wheel-dir dist

@@ -2,6 +2,17 @@
 
 This file records user-visible milestones. Planned work belongs in the [roadmap](docs/roadmap.md), not as completed release notes.
 
+## 🛠️ Unreleased
+
+### 🟦 Native Button design
+
+- Add canonical Button/ButtonStyle/ButtonState/Border/Icon authoring and native android.widget.Button construction.
+- Reuse typography and local fonts; add explicit colors/gradients, dp border/radii, state backgrounds/text, ripple, placement/margins, elevation and raster icons.
+- Preserve native unspecified text gravity, explicit padding after background replacement, old imports and legacy DEX output.
+- Add enabled-state branches, parent/asset checks, 16 focused host tests, original icon example and opt-in device checks.
+- Pass 111 host tests, local package checks and 20 recorded native Button cases on Android API 33, including press/release, disabled state, shapes, gradients, icons, ripple and focus.
+- Button callbacks/actions remain a separate future phase; published 0.1.2 is unchanged.
+
 ## 📦 0.1.2 — October 6, 2026
 
 ### 📦 Publication and upgrades

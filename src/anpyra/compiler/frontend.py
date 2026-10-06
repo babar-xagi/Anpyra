@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from ..components.screen import Background, StyleError, parse_color
+from .button_style import ButtonStyler
 from .ir import (
     AppIR,
     ApplyScreenBackground,
@@ -16,9 +17,11 @@ from .ir import (
     IfCompare,
     IntBinary,
     LoadConst,
+    NewButton,
     NewScreen,
     NewTextView,
     ReturnValue,
+    SetButtonProperty,
     SetContentView,
     SetScreenContent,
     SetText,
@@ -49,6 +52,11 @@ def _is_name(node: ast.AST, name: str) -> bool:
 
 
 API_NAMES = {
+    "Button",
+    "ButtonStyle",
+    "ButtonState",
+    "Border",
+    "Icon",
     "Activity",
     "TextView",
     "Screen",
@@ -71,6 +79,13 @@ def _require_imports(tree: ast.Module) -> set[str]:
                 "anpyra.components": API_NAMES - {"Activity"},
                 "anpyra.components.screen": {"Screen", "Image", "Gradient", "Background"},
                 "anpyra.components.textview": {"TextView", "Font", "Shadow", "TextStyle"},
+                "anpyra.components.button": {
+                    "Button",
+                    "ButtonStyle",
+                    "ButtonState",
+                    "Border",
+                    "Icon",
+                },
             }
             if node.level or node.module not in modules:
                 raise CompileError(
@@ -309,6 +324,7 @@ class FunctionCompiler:
         self.attached = set()
         self.branch_depth = 0
         self.text_styler = TextStyler()
+        self.button_styler = ButtonStyler(self.text_styler)
 
     def declare(self, name, typ, node):
         if name in {"self", "state", *API_NAMES} or name in self.functions:
@@ -321,6 +337,8 @@ class FunctionCompiler:
         actual = self.symbols.get(name)
         if actual is None:
             raise CompileError(f"{_line(node)}undefined variable {name!r}")
+        if expected == "TextView" and actual == "Button":
+            return
         if actual != expected:
             raise CompileError(f"{_line(node)}{name!r} has type {actual}, expected {expected}")
 
@@ -411,7 +429,10 @@ class FunctionCompiler:
             while isinstance(target, ast.Attribute):
                 chain.insert(0, target.attr)
                 target = target.value
-            if isinstance(target, ast.Name) and self.symbols.get(target.id) == "TextView":
+            if isinstance(target, ast.Name) and self.symbols.get(target.id) in {
+                "TextView",
+                "Button",
+            }:
                 if chain == ["text"]:
                     return self.compile_expr(
                         ast.Expr(
@@ -426,6 +447,10 @@ class FunctionCompiler:
                 if self.branch_depth:
                     raise StyleError("configure TextView styles outside branches")
                 value = style_value(node.value, self.constants)
+                if self.symbols[target.id] == "Button":
+                    if target.id in self.attached:
+                        raise StyleError("configure Button styles before attachment")
+                    return self.button_styler.assign(target.id, chain, value)
                 if chain == ["style"]:
                     return self.text_styler.whole(target.id, value)
                 if len(chain) == 2 and chain[0] == "style":
@@ -484,21 +509,26 @@ class FunctionCompiler:
             return (NewScreen(target),)
         if not (
             isinstance(call, ast.Call)
-            and _is_name(call.func, "TextView")
+            and isinstance(call.func, ast.Name)
+            and call.func.id in {"TextView", "Button"}
             and len(call.args) == 1
             and _is_name(call.args[0], "self")
         ):
             raise CompileError(f"{_line(node)}supported untyped assignment: name = TextView(self)")
-        self.declare(target, "TextView", node)
-        if "TextView" not in self.imported:
-            raise CompileError(f"{_line(node)}import TextView before using it")
-        ops = [NewTextView(target)]
+        widget = call.func.id
+        self.declare(target, widget, node)
+        if widget == "Button":
+            self.button_styler.begin(target)
+        if widget not in self.imported:
+            raise CompileError(f"{_line(node)}import {widget} before using it")
+        ops = [NewButton(target) if widget == "Button" else NewTextView(target)]
         names = [item.arg for item in call.keywords]
         if len(names) != len(set(names)) or any(name not in {"text", "style"} for name in names):
             raise StyleError("TextView accepts context plus optional text= and style= keywords")
         for item in call.keywords:
             if item.arg == "style":
-                ops.extend(self.text_styler.whole(target, style_value(item.value, self.constants)))
+                styler = self.button_styler if widget == "Button" else self.text_styler
+                ops.extend(styler.whole(target, style_value(item.value, self.constants)))
             else:
                 ops.extend(
                     self.compile_expr(
@@ -520,6 +550,18 @@ class FunctionCompiler:
             raise CompileError(f"{_line(node)}unsupported expression")
         receiver = call.func.value
         attr = call.func.attr
+        if isinstance(receiver, ast.Name) and self.symbols.get(receiver.id) == "Button":
+            if attr in {"on_click", "set_on_click", "set_on_click_listener"}:
+                raise CompileError(f"{_line(node)}Button click callbacks are not implemented yet")
+            if attr == "set_enabled" and len(call.args) == 1 and not call.keywords:
+                arg = call.args[0]
+                if isinstance(arg, ast.Name):
+                    self.require(arg.id, "bool", node)
+                    return (SetButtonProperty(receiver.id, "enabled", False, arg.id),)
+                value = style_value(arg, self.constants)
+                if type(value) is not bool:
+                    raise StyleError("set_enabled accepts bool")
+                return (SetButtonProperty(receiver.id, "enabled", value),)
         setters = {
             "set_text_size": "size",
             "set_alignment": "alignment",
@@ -541,6 +583,10 @@ class FunctionCompiler:
             else:
                 raise StyleError(f"invalid arguments for {attr}")
             if attr == "set_style":
+                if self.symbols[receiver.id] == "Button":
+                    if receiver.id in self.attached:
+                        raise StyleError("configure Button style before attachment")
+                    return self.button_styler.whole(receiver.id, value)
                 return self.text_styler.whole(receiver.id, value)
             return self.text_styler.assign(receiver.id, setters[attr], value)
         if (
@@ -573,7 +619,13 @@ class FunctionCompiler:
             if call.args[0].id in self.screen_contents.values():
                 raise CompileError(f"{_line(node)}a view cannot belong to two screens")
             self.screen_contents[receiver.id] = call.args[0].id
-            return (SetScreenContent(receiver.id, call.args[0].id),)
+            child = call.args[0].id
+            if child in self.attached:
+                raise CompileError(f"{_line(node)}a view cannot be attached to two parents")
+            self.attached.add(child)
+            if self.symbols[child] == "Button":
+                return (*self.button_styler.apply(child), SetScreenContent(receiver.id, child))
+            return (SetScreenContent(receiver.id, child),)
         if (
             attr == "set_text"
             and isinstance(receiver, ast.Name)
@@ -607,7 +659,11 @@ class FunctionCompiler:
                 raise CompileError(
                     f"{_line(node)}attach the screen rather than its already-parented content"
                 )
-            return (SetContentView(call.args[0].id),)
+            if self.symbols[view] == "Button":
+                self.attached.add(view)
+                return (*self.button_styler.apply(view), SetContentView(view))
+            self.attached.add(view)
+            return (SetContentView(view),)
         raise CompileError(f"{_line(node)}unsupported method call")
 
     def compile_condition(self, node, body, orelse):
@@ -715,7 +771,7 @@ def _compile_source(source: str, *, source_path: Path, package: str, label: str)
         raise CompileError(
             "on_create must call self.set_content_view(view) exactly once, outside branches"
         )
-    if not {"TextView", "Screen"}.intersection(fc.symbols.values()):
+    if not {"TextView", "Screen", "Button"}.intersection(fc.symbols.values()):
         raise CompileError("on_create must create a TextView or Screen")
     if len(fc.symbols) > 14:
         raise CompileError(

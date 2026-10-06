@@ -191,7 +191,7 @@ class TextStyle:
     content_description: str | None = None
 
     def __post_init__(self):
-        for field in fields(self):
+        for field in fields(TextStyle):
             value = getattr(self, field.name)
             if value is not None:
                 object.__setattr__(self, field.name, validate_text_property(field.name, value))

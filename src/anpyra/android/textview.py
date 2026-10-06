@@ -63,6 +63,8 @@ def textview_methods(operations):
         elif name == "gravity":
             add("text_gravity", TEXT, "setGravity", parameters=("I",))
             add("text_alignment", VIEW, "setTextAlignment", parameters=("I",))
+            if None in op.value:
+                add("text_get_gravity", TEXT, "getGravity", "I")
         elif name == "font":
             add("text_typeface", TEXT, "setTypeface", parameters=(TYPEFACE,))
             add("text_get_typeface", TEXT, "getTypeface", TYPEFACE)
@@ -191,7 +193,20 @@ def emit_text_style(
             emit_const(assembler, a, DIRECTIONS[value] if name == "text_direction" else int(value))
         invoke(key, (receiver, a))
     elif name == "gravity":
-        emit_const(assembler, a, GRAVITY_HORIZONTAL[value[0]] | GRAVITY_VERTICAL[value[1]])
+        if None in value:
+            invoke("text_get_gravity", (receiver,))
+            assembler.emit("move_result", a, size=1)
+            for part, mask, mapping in (
+                (value[0], 0x800007, GRAVITY_HORIZONTAL),
+                (value[1], 0x70, GRAVITY_VERTICAL),
+            ):
+                if part is not None:
+                    emit_const(assembler, b, ~mask)
+                    assembler.emit("int_binop", 0x95, a, a, b, "and-int", size=2)
+                    emit_const(assembler, b, mapping[part])
+                    assembler.emit("int_binop", 0x96, a, a, b, "or-int", size=2)
+        else:
+            emit_const(assembler, a, GRAVITY_HORIZONTAL[value[0]] | GRAVITY_VERTICAL[value[1]])
         invoke("text_gravity", (receiver, a))
         emit_const(assembler, a, 1)  # TEXT_ALIGNMENT_GRAVITY
         invoke("text_alignment", (receiver, a))
