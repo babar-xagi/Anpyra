@@ -1,6 +1,6 @@
 # 🚢 Release and Packaging Checklist
 
-Anpyra 0.1.1 is an alpha release. The [manual workflow](https://github.com/babar-xagi/Anpyra/actions/runs/37511994040) published it to PyPI on October 6, 2026. Public wheel/source hashes match CI artifacts; fresh installation and pip/uv upgrades from 0.1.0 passed starter and Screen build verification with existing app identities preserved. TestPyPI rehearsal remains available but was not run for this release. Follow [publishing](publishing.md) for one-time setup, tag/run commands and installation verification. Android release identity and app-store delivery remain separate future work.
+Anpyra **0.1.2** was published to PyPI on October 6, 2026 through [the successful workflow](https://github.com/babar-xagi/Anpyra/actions/runs/37528963281). Public wheel/source hashes match checked CI artifacts. Fresh installation and separate pip/uv upgrades from 0.1.1 built/verified starter and typography/local-font APKs, retaining existing app configuration and signing identity. See [release notes](https://github.com/babar-xagi/Anpyra/releases/tag/v0.1.2) and [progress evidence](../progress.md). TestPyPI rehearsal was not run for this release. Follow [publishing](publishing.md) for setup and commands. Android app-store signing/distribution remains separate future work.
 
 ## 📋 Prepare a candidate
 

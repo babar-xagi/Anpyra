@@ -9,9 +9,9 @@
 | Original experiments 001–008 | Author reported successful runs | Historical source fixtures 005–008 retained |
 | Framework source checking | Passed | Starter app produces typed IR and native method listings without writing artifacts |
 | Signed APK generation | Passed | Hello/score and fresh generated projects build and pass framework verification |
-| PyPI publication | Passed, October 6 | [0.1.1 Trusted Publishing run](https://github.com/babar-xagi/Anpyra/actions/runs/37511994040) succeeded; [PyPI 0.1.1](https://pypi.org/project/anpyra/0.1.1/) wheel/source hashes match checked CI artifacts |
-| Public-index installation | Passed | Fresh `anpyra==0.1.1` environment built/verified a starter app and a Screen image/gradient app |
-| Package upgrades | Passed | Separate pip and uv environments upgraded from PyPI 0.1.0 to 0.1.1; signing identity, app config and starter APK bytes preserved; new Screen/image/gradient builds verified |
+| PyPI publication | Passed, October 6 | [0.1.2 Trusted Publishing run](https://github.com/babar-xagi/Anpyra/actions/runs/37528963281) succeeded; [PyPI 0.1.2](https://pypi.org/project/anpyra/0.1.2/) wheel/source hashes match checked CI artifacts |
+| Public-index installation | Passed | Fresh `anpyra==0.1.2` installation built/verified starter and typography/local-font APKs; typography rebuild was byte-identical |
+| Package upgrades | Passed | Separate pip/uv PyPI environments upgraded 0.1.1 → 0.1.2; app config, signing identity and starter APK bytes preserved; typography/font APKs verified and rebuilt reproducibly. Earlier 0.1.0 → 0.1.1 checks also passed |
 | Windows/Linux release CI | Passed | Published candidate validated on Python 3.11/3.13 |
 | Author's phone installation | **Author confirmed success** | Default starter package `dev.anpyra.app`, verified APK, adb detected an authorized device; reported installation completed |
 | Current Android-only cleanup | Host checks passed | 55 tests; four experiment DEX hashes/listings and both signed example APK hashes equal their pre-cleanup output |
@@ -119,3 +119,12 @@ These are planned capabilities. Loops, collections, general Python imports/runti
 - On TECNO BG7 / Android API 33, 30 recorded cases passed: size/letter spacing, 15 gravity combinations, dp padding/dimensions, TTF/OTF, bold/italic, decoration add/remove, uppercase, opacity, line spacing, RTL and selection focus; remaining native options passed combined launch and visible ellipsis/shadow checks. Native Copy/Share toolbar was visually confirmed after long-press; clipboard copying/sharing was not performed.
 - The device runner accounted for the OEM's clipped accessibility bounds by measuring its controlled app background. Previously captured screenshots for unchanged cases were replayed during final tail checks; device results distinguish reused captures. API 24–28 and other devices/fonts still need separate runtime coverage.
 - Expanded typography ships under version/tag 0.1.2/v0.1.2; it does not replace immutable PyPI 0.1.1 files.
+
+## 📦 Verified 0.1.2 publication
+
+Published October 6, 2026 from commit `21b8ed8aefd11c0c267734b87c4e81f84c6548fd`, tag `v0.1.2`. [Publishing run](https://github.com/babar-xagi/Anpyra/actions/runs/37528963281) and [GitHub release](https://github.com/babar-xagi/Anpyra/releases/tag/v0.1.2) provide the checked files and notes. The public index installed the new APIs directly; no checkout was used by the isolated package environments.
+
+| File | SHA-256 |
+| --- | --- |
+| `anpyra-0.1.2-py3-none-any.whl` | `9b4c0d00f53210835b83dea3841c00eaa8c745b980eb429f07655e49922538a9` |
+| `anpyra-0.1.2.tar.gz` | `b324a27c5d9b4064c1e0f7a5175c0c3aa6d9f129f5a40d405493e364d1745de9` |

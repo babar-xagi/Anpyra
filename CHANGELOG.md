@@ -4,6 +4,12 @@ This file records user-visible milestones. Planned work belongs in the [roadmap]
 
 ## 📦 0.1.2 — October 6, 2026
 
+### 📦 Publication and upgrades
+
+- Publish the wheel/source through [Trusted Publishing](https://github.com/babar-xagi/Anpyra/actions/runs/37528963281); public file hashes match checked CI artifacts.
+- Verify fresh PyPI installation and pip/uv upgrades from 0.1.1, retaining app config, signing identity and starter APK bytes.
+- Build/verify typography/local-font APKs from each public installation and confirm reproducible rebuilds.
+
 ### 🔤 Native TextView typography
 
 - Extract the canonical TextView class into components/textview.py with compatible public imports.

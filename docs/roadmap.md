@@ -248,5 +248,5 @@ Further reading: [developer guide](developer_guide/README.md), [extension workfl
 - [x] Implement title text, colors/size, gravity, padding/dimensions, fonts, spacing, overflow, decorations/shadows, selection and accessibility declarations.
 - [x] Validate/package standalone TTF/OTF fonts and reject malformed signed assets.
 - [x] Add focused tests, runnable example and user/developer file ownership guides.
-- [ ] Verify the 0.1.2 PyPI publication and public install/upgrade checks.
+- [x] Verify the 0.1.2 PyPI publication, fresh installation and separate pip/uv upgrades from 0.1.1, including typography/local-font APK builds.
 - [ ] Extend rich text, arbitrary font weights/axes, automatic size and broader Android runtime coverage.
