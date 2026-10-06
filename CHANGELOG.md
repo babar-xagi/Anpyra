@@ -2,7 +2,7 @@
 
 This file records user-visible milestones. Planned work belongs in the [roadmap](docs/roadmap.md), not as completed release notes.
 
-## 🛠️ Unreleased
+## 📦 0.1.3 — October 6, 2026
 
 ### 🟦 Native Button design
 
@@ -11,7 +11,7 @@ This file records user-visible milestones. Planned work belongs in the [roadmap]
 - Preserve native unspecified text gravity, explicit padding after background replacement, old imports and legacy DEX output.
 - Add enabled-state branches, parent/asset checks, 16 focused host tests, original icon example and opt-in device checks.
 - Pass 111 host tests, local package checks and 20 recorded native Button cases on Android API 33, including press/release, disabled state, shapes, gradients, icons, ripple and focus.
-- Button callbacks/actions remain a separate future phase; published 0.1.2 is unchanged.
+- Button callbacks/actions remain a separate future phase; previous published versions remain immutable.
 
 ## 📦 0.1.2 — October 6, 2026
 

@@ -20,7 +20,7 @@ This guide is for people building small Android apps. You do not need to underst
 
 ## 🎨 Screen component
 
-[Screen backgrounds/images/gradients](screen.md) documents the 0.1.1 API. [TextView typography](textview.md) covers text styling available in 0.1.2. [Button design](button.md) covers the new source-only native component, states, ripple, geometry and icons, fonts, titles, alignment, padding and overflow.
+[Screen styling](screen.md), [TextView typography](textview.md) and [Button design](button.md) document the native components available in 0.1.3, including colors, fonts, states, ripple, geometry and icons.
 
 ## 🎯 Buildable examples
 

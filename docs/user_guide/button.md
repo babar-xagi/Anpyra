@@ -1,6 +1,6 @@
 # 🟦 Button Design and Native States
 
-Button is an **unreleased source component** after PyPI 0.1.2. Install an editable checkout (`uv pip install -e .`) to try it. It compiles to `android.widget.Button`, inherits TextView typography and supports native press feedback. Published 0.1.2 does not contain this component yet.
+Button is included in **Anpyra 0.1.3**. Install directly with `uv pip install "anpyra==0.1.3"` or `python -m pip install "anpyra==0.1.3"`; existing users can follow the [upgrade guide](installation.md). It compiles to `android.widget.Button`, inherits TextView typography and supports native press feedback.
 
 ## ✨ Create a styled button
 

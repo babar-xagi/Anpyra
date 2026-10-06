@@ -20,11 +20,11 @@ Anpyra's current Android pipeline builds apps using **Python and its Python depe
 
 The `min_sdk` and `target_sdk` settings are Android compatibility metadata written into the manifest. They do not require installing an SDK. The minimum API level follows [Android's v2 signing support](https://source.android.com/docs/security/features/apksigning/v2). Optional adb comes from Android platform-tools; it is used to install/run an already-built APK.
 
-Anpyra **0.1.2 includes Screen styling and expanded TextView typography, including local fonts**. Install directly from PyPI; no Git checkout is needed to use these APIs. These requirements describe the Android-only build pipeline. See [Android scope](android.md) for build computers versus the device that runs the APK.
+Anpyra **0.1.3 includes Screen styling and expanded TextView typography, including local fonts, plus native Button design**. Install directly from PyPI; no Git checkout is needed to use these APIs. These requirements describe the Android-only build pipeline. See [Android scope](android.md) for build computers versus the device that runs the APK.
 
 ## 📦 Install from PyPI
 
-Install Anpyra **0.1.2** from [the official project page](https://pypi.org/project/anpyra/0.1.2/) with uv (recommended) or pip. Python dependencies are installed automatically. These commands download the package directly from PyPI.
+Install Anpyra **0.1.3** from [the official project page](https://pypi.org/project/anpyra/0.1.3/) with uv (recommended) or pip. Python dependencies are installed automatically. These commands download the package directly from PyPI.
 
 ### ⚡ uv (recommended)
 
@@ -32,14 +32,14 @@ Install uv using [its official instructions](https://docs.astral.sh/uv/getting-s
 
 ```powershell
 uv venv --python 3.12
-uv pip install "anpyra==0.1.2"
+uv pip install "anpyra==0.1.3"
 .\.venv\Scripts\python.exe -m anpyra --version
 .\.venv\Scripts\python.exe -m anpyra doctor
 .\.venv\Scripts\python.exe -m anpyra init myapp
 .\.venv\Scripts\python.exe -m anpyra build myapp
 ```
 
-The version command should print `Anpyra 0.1.2`. On Linux/macOS use `.venv/bin/python -m anpyra` for the final commands. For the latest available version instead of an exact pin, use `uv pip install anpyra` in a fresh environment.
+The version command should print `Anpyra 0.1.3`. On Linux/macOS use `.venv/bin/python -m anpyra` for the final commands. For the latest available version instead of an exact pin, use `uv pip install anpyra` in a fresh environment.
 
 ### 🐍 pip alternative
 
@@ -47,14 +47,14 @@ On Windows:
 
 ```powershell
 python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install "anpyra==0.1.2"
+.\.venv\Scripts\python.exe -m pip install "anpyra==0.1.3"
 .\.venv\Scripts\python.exe -m anpyra --version
 .\.venv\Scripts\python.exe -m anpyra doctor
 ```
 
 On Linux/macOS create the environment with `python3 -m venv .venv` and use `.venv/bin/python -m pip install anpyra`. Keep an existing environment instead of recreating it. Activation is optional. A normal package installation does not include the repository's `examples/` folder; use `anpyra init` to create your own app, or follow the source checkout instructions below.
 
-## 🔄 Upgrade from 0.1.0 or 0.1.1 to 0.1.2
+## 🔄 Upgrade from an earlier version to 0.1.3
 
 Upgrade in **the same Python environment where Anpyra is already installed**. Keep your app directory, `anpyra.toml`, assets and `.anpyra/` signing identity. Updating the compiler package does not update or install an Android APK; rebuild your app after upgrading. Your app's `version_name` is independent of the Anpyra package version.
 
@@ -63,19 +63,19 @@ Upgrade in **the same Python environment where Anpyra is already installed**. Ke
 From the directory containing your existing `.venv`:
 
 ```powershell
-uv pip install --python .\.venv\Scripts\python.exe --upgrade "anpyra==0.1.2"
+uv pip install --python .\.venv\Scripts\python.exe --upgrade "anpyra==0.1.3"
 .\.venv\Scripts\python.exe -m anpyra --version
 .\.venv\Scripts\python.exe -m anpyra doctor
 ```
 
-On Linux/macOS replace `.\.venv\Scripts\python.exe` with `.venv/bin/python`. In an activated environment you can shorten the upgrade command to `uv pip install --upgrade "anpyra==0.1.2"`.
+On Linux/macOS replace `.\.venv\Scripts\python.exe` with `.venv/bin/python`. In an activated environment you can shorten the upgrade command to `uv pip install --upgrade "anpyra==0.1.3"`.
 
 ### 🐍 Existing pip installation
 
 If you originally used `python -m pip install anpyra`, use that same Python:
 
 ```powershell
-python -m pip install --upgrade "anpyra==0.1.2"
+python -m pip install --upgrade "anpyra==0.1.3"
 python -m anpyra --version
 python -m anpyra doctor
 ```
@@ -93,7 +93,7 @@ uv pip install --upgrade anpyra
 python -m pip install --upgrade anpyra
 ```
 
-An exact pin (`anpyra==0.1.2`) selects this release; the unpinned `--upgrade anpyra` selects the latest compatible release. See the official [uv package commands](https://docs.astral.sh/uv/pip/packages/) and [pip upgrade guide](https://pip.pypa.io/en/stable/user_guide/#only-if-needed-recursive-upgrade).
+An exact pin (`anpyra==0.1.3`) selects this release; the unpinned `--upgrade anpyra` selects the latest compatible release. See the official [uv package commands](https://docs.astral.sh/uv/pip/packages/) and [pip upgrade guide](https://pip.pypa.io/en/stable/user_guide/#only-if-needed-recursive-upgrade).
 
 ### 🧭 Verify and rebuild your existing app
 
@@ -111,7 +111,7 @@ anpyra install .\build\dev.anpyra.app.apk --launch
 
 The APK filename comes from `[app].package` in `anpyra.toml`; replace `dev.anpyra.app.apk` if you changed the package. Use your environment's Python with `-m anpyra` instead of `anpyra` if activation is unavailable. Keep `.anpyra/` so rebuilds retain the signing identity needed to update an installed app.
 
-If the version still shows `0.1.0` or `0.1.1`, compare `python -c "import sys; print(sys.executable)"` and `python -m anpyra --version` with the intended environment. On Windows, `Get-Command anpyra -All` shows which CLI executable PowerShell selects. Upgrade the interpreter that owns that installation rather than creating another environment accidentally.
+If the version still shows an earlier release such as `0.1.2`, compare `python -c "import sys; print(sys.executable)"` and `python -m anpyra --version` with the intended environment. On Windows, `Get-Command anpyra -All` shows which CLI executable PowerShell selects. Upgrade the interpreter that owns that installation rather than creating another environment accidentally.
 
 ## 🛠️ Editable source installation with uv
 
@@ -239,7 +239,7 @@ In a separate directory containing a fresh virtual environment, install the whee
 
 ```powershell
 uv venv --python 3.12
-uv pip install "D:\Anpyra\dist\anpyra-0.1.2-py3-none-any.whl"
+uv pip install "D:\Anpyra\dist\anpyra-0.1.3-py3-none-any.whl"
 ```
 
 The pip alternative is `python -m pip install PATH_TO_WHEEL` inside the activated fresh environment. Use a fresh environment to avoid an existing editable install of the same version being considered satisfied. Dependencies must exist or be obtainable by your package manager.

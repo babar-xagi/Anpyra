@@ -33,7 +33,7 @@ They proved the low-level pieces: DEX container, constructors/lifecycle, native 
 | Can I add buttons or layouts? | Planned. Adding a stub alone does not generate Android code. |
 | Is target SDK the minimum phone version? | No; `min_sdk` is the minimum declared API. `target_sdk` describes the targeted platform behavior. |
 | Do I need adb to build? | No; it is optional for the install command. |
-| Is PyPI/store publishing ready? | The framework can be installed directly from PyPI; 0.1.2 includes Screen styling, expanded typography/local fonts and Android-only modules. Android release identity/app-store delivery remains planned. |
+| Is PyPI/store publishing ready? | The framework can be installed directly from PyPI; 0.1.3 includes native Button design, Screen styling, typography/local fonts and Android-only modules. Android release identity/app-store delivery remains planned. |
 | Has framework APK installation succeeded? | The author confirmed starter APK installation on a phone. Full screen/lifecycle/score and independent checks remain to be recorded; this is not device certification. |
 | Where is future work listed? | The [phased roadmap](../roadmap.md), with deliverables and acceptance criteria. |
 

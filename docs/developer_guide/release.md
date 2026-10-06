@@ -28,17 +28,17 @@ Complete the [manual device checklist](testing.md) before claiming device accept
 ## 📦 Build distributions
 
 ```powershell
-uv build --no-create-gitignore --out-dir dist/pypi/0.1.2
-python scripts/check_release.py --tag v0.1.2 --dist dist/pypi/0.1.2
-uvx --from twine twine check --strict dist/pypi/0.1.2/*
+uv build --no-create-gitignore --out-dir dist/pypi/0.1.3
+python scripts/check_release.py --tag v0.1.3 --dist dist/pypi/0.1.3
+uvx --from twine twine check --strict dist/pypi/0.1.3/*
 ```
 
 Use an empty output folder and the actual candidate version. uv builds both wheel and source archive. The pip alternative is:
 
 ```powershell
 python -m pip install build twine
-python -m build --outdir dist/pypi/0.1.2
-python -m twine check --strict dist/pypi/0.1.2/*
+python -m build --outdir dist/pypi/0.1.3
+python -m twine check --strict dist/pypi/0.1.3/*
 ```
 
 `MANIFEST.in` includes guides, examples, tests, maintenance scripts and repository templates in the source distribution. Wheel contents are the installable packages, metadata/license and typing marker, not the complete repository.

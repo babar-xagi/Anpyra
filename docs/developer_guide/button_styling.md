@@ -1,6 +1,6 @@
 # 🛠️ Button Design Implementation
 
-Button is source-only after PyPI 0.1.2. It compiles to Android's actual Button subclass; Python authoring types are not a host renderer. Callback support is intentionally a separate runtime/compiler phase.
+Button ships in Anpyra 0.1.3; earlier PyPI files remain immutable. It compiles to Android's actual Button subclass; Python authoring types are not a host renderer. Callback support is intentionally a separate runtime/compiler phase.
 
 ## 🗂️ File ownership and debugging
 

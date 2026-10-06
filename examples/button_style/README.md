@@ -1,6 +1,6 @@
 # 🟦 Native Button Design Example
 
-This source-only example creates an actual Android Button inside Screen. It demonstrates typography, dp size/placement/padding, a rounded border, pressed/disabled backgrounds, native ripple, an end icon and elevation. PyPI 0.1.2 does not contain Button yet; use the editable source checkout.
+This example creates an actual Android Button inside Screen. It demonstrates typography, dp size/placement/padding, a rounded border, pressed/disabled backgrounds, native ripple, an end icon and elevation. Anpyra 0.1.3 includes Button. The example source/icon are in the repository/source distribution; ordinary wheel users can create a project using the same API.
 
 From the repository root:
 
