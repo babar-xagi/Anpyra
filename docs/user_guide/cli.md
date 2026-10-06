@@ -31,6 +31,8 @@ anpyra check [PROJECT] [--target android] [--dump-ir] [--dump-dalvik]
 
 Loads configuration, compiles source and generates DEX in memory. It creates no artifacts or signing files. `PROJECT` defaults to `.` and accepts a directory or config path.
 
+Inside your app directory use `anpyra check` or `anpyra check .`. From the parent directory use `anpyra check myapp`. Paths are relative to your current shell directory.
+
 ```powershell
 anpyra check examples/score --dump-ir --dump-dalvik
 ```

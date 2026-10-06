@@ -1,6 +1,6 @@
 # 🚢 Release and Packaging Checklist
 
-Anpyra v0.1 is an alpha baseline. The manual TestPyPI/PyPI workflow is prepared; its account configuration and first index upload remain pending. Follow [publishing](publishing.md) for one-time setup, tag/run commands and installation verification. Android release identity and app-store delivery remain separate future work.
+Anpyra v0.1 is an alpha baseline. The manual workflow published Anpyra 0.1.0 to PyPI on October 6, 2026; its wheel and source archive were confirmed through the public index, and a fresh PyPI installation built/verified an Android app. TestPyPI rehearsal remains available but was not run for this release. Follow [publishing](publishing.md) for one-time setup, tag/run commands and installation verification. Android release identity and app-store delivery remain separate future work.
 
 ## 📋 Prepare a candidate
 

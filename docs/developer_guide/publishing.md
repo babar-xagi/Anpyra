@@ -2,7 +2,7 @@
 
 This guide covers publishing the **Python framework package**: wheel (`.whl`) plus source distribution (`.tar.gz`). Android APK/store distribution is a separate workflow. A PyPI account is a starting point; you must also connect this GitHub repository as a trusted publisher.
 
-The publishing files are prepared locally. No PyPI/TestPyPI upload is performed by creating them, ordinary Git pushes or tags. The [publish workflow](../../.github/workflows/publish.yml) runs only when you explicitly dispatch it from `main`.
+Anpyra 0.1.0 was published to PyPI on October 6, 2026 through [the successful publishing run](https://github.com/babar-xagi/Anpyra/actions/runs/37472908394). The public wheel/source archive and fresh package installation were verified. TestPyPI rehearsal was not run for this release. No upload is performed by ordinary Git pushes or tags. The [publish workflow](../../.github/workflows/publish.yml) runs only when you explicitly dispatch it from `main`.
 
 ## 🗂️ Release files
 
@@ -59,11 +59,11 @@ Use the workflow filename alone, not `.github/workflows/publish.yml`. Your PyPI 
 
 For an **existing project you own**, open its Manage → Publishing page and add the same GitHub publisher. See [existing project setup](https://docs.pypi.org/trusted-publishers/adding-a-publisher/) and [new project setup](https://docs.pypi.org/trusted-publishers/creating-a-project-through-oidc/).
 
-A pending publisher does not reserve a name. PyPI determines availability when you publish. If `anpyra` belongs to another account, use a distribution name you own and update `project.name` plus the publisher/project commands together. The Python import package can remain `anpyra`. Project ownership/name availability has not been confirmed by this local work.
+A pending publisher does not reserve a name. PyPI determines availability when you publish. If `anpyra` belongs to another account, use a distribution name you own and update `project.name` plus the publisher/project commands together. The Python import package can remain `anpyra`. The production anpyra project now exists under this account. For a different project/name, verify its ownership separately.
 
 ## 3️⃣ Prepare and push a release candidate
 
-Current source version: **0.1.0**. Keep these two values identical:
+Published version: **0.1.0**. For the next release, choose a new version and tag rather than rerunning the 0.1.0 upload examples. Keep these two values identical:
 
 - `pyproject.toml` → `[project] version`.
 - `src/anpyra/__init__.py` → `__version__`.
@@ -150,7 +150,7 @@ uv pip install --python verify-pypi/Scripts/python.exe "anpyra==0.1.0"
 .\verify-pypi\Scripts\anpyra.exe --version
 ```
 
-Users can then install that published version with `uv pip install anpyra` or `python -m pip install anpyra` in their own environment. Update installation/README publication status only after confirming the upload. Publishing the framework does not establish Android app-store readiness.
+Users can then install that published version with `uv pip install anpyra` or `python -m pip install anpyra` in their own environment. The README/installation guide now reflect the confirmed 0.1.0 upload. Update them after verifying each future release. Publishing the framework does not establish Android app-store readiness.
 
 ## 🧰 Local build and package checks
 

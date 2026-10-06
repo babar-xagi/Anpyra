@@ -8,7 +8,7 @@ Anpyra's current Android pipeline builds apps using **Python and its Python depe
 | --- | --- |
 | Python 3.11+ | Run the compiler and build pipeline; examples below use Python 3.12 |
 | **uv, recommended**, or pip | Create the environment and install Anpyra |
-| Git or a source checkout | Obtain this source-based alpha |
+| Git/source checkout, optional | Needed for development and repository examples; not for PyPI installation |
 | `cryptography>=46.0.0` | Keys, certificates and APK signatures; installed automatically with Anpyra |
 | Android API 24+ device, for running/testing | Run the generated APK; not needed to build on your computer |
 | Platform-tools, optional | Supply `adb` for device installation |
@@ -21,7 +21,31 @@ The `min_sdk` and `target_sdk` settings are Android compatibility metadata writt
 
 These requirements describe the **implemented Android backend**. Future native iOS/desktop backends have not established their toolchain requirements. See [native targets](platforms.md).
 
-## ⚡ Recommended: install with uv
+## 📦 Install from PyPI
+
+**Anpyra 0.1.0 was published on October 6, 2026.** Install from [the official project page](https://pypi.org/project/anpyra/0.1.0/) with uv (recommended). On Windows, in a directory for your environment:
+
+```powershell
+uv venv --python 3.12
+uv pip install anpyra
+.\.venv\Scripts\python.exe -m anpyra doctor
+.\.venv\Scripts\python.exe -m anpyra init myapp
+.\.venv\Scripts\python.exe -m anpyra build myapp
+```
+
+On Linux/macOS use `.venv/bin/python -m anpyra` for the last three commands. To select this exact release, use `uv pip install "anpyra==0.1.0"`.
+
+The pip alternative on Windows:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install anpyra
+.\.venv\Scripts\python.exe -m anpyra doctor
+```
+
+On Linux/macOS create the environment with `python3 -m venv .venv` and use `.venv/bin/python -m pip install anpyra`. Keep an existing environment instead of recreating it. Activation is optional. A normal package installation does not include the repository's `examples/` folder; use `anpyra init` to create your own app, or follow the source checkout instructions below.
+
+## 🛠️ Editable source installation with uv
 
 Follow [uv's official installation instructions](https://docs.astral.sh/uv/getting-started/installation/) if uv is not installed. You can use its standalone installer without installing Java or another Android toolchain.
 
@@ -152,9 +176,7 @@ uv pip install "D:\Anpyra\dist\anpyra-0.1.0-py3-none-any.whl"
 
 The pip alternative is `python -m pip install PATH_TO_WHEEL` inside the activated fresh environment. Use a fresh environment to avoid an existing editable install of the same version being considered satisfied. Dependencies must exist or be obtainable by your package manager.
 
-Anpyra was not published to PyPI by this work. `pip install anpyra` or `uv pip install anpyra` is not the documented installation route.
-
-Maintainers can use the prepared [TestPyPI/PyPI publishing workflow](../developer_guide/publishing.md). Once a release is confirmed on PyPI, normal package-name installation becomes available for that version.
+Anpyra 0.1.0 is published on PyPI. Maintainers can follow the [publishing workflow](../developer_guide/publishing.md) for subsequent releases. Uploading the same version again cannot replace its existing files.
 
 ## 📱 Optional adb
 

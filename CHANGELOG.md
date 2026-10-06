@@ -4,13 +4,17 @@ This file records user-visible milestones. Planned work belongs in the [roadmap]
 
 ## 🛠️ Unreleased
 
+- Updated repository installation guidance and publication status after verifying the first PyPI release.
+
+## 📦 0.1.0 — October 6, 2026 (PyPI release; foundation built October 4)
+
 ### 📦 Python package publishing
 
 - Manual tagged TestPyPI/PyPI workflow with reusable CI, version guards, archive/README checks and isolated wheel build smoke test.
 - Separate least-privilege publishing job using Trusted Publishing and checked build artifacts.
 - Package classifiers/project links and a dedicated PyPI-compatible README.
 - Read-only release validator, focused rejection tests and complete account/tag/command guide.
-- Workflow prepared locally; trusted-publisher configuration and first index upload remain pending.
+- Production trusted publisher configured; release 0.1.0 published and verified on October 6, 2026.
 
 ### 🌍 Native platform organization
 
@@ -39,8 +43,8 @@ This file records user-visible milestones. Planned work belongs in the [roadmap]
 - Documentation link/title/Python-example checks and CI integration.
 - Source-distribution inclusion of documentation, examples, tests and repository maintenance files.
 
-## 📦 0.1.0 — October 4, 2026
-
+### 🧱 Framework foundation
+- Published wheel and source archive through GitHub Trusted Publishing; verified public PyPI installation and a fresh Android build.
 - Unified the PyAndroid 001–008 work around the cumulative experiment 008 compiler.
 - Added installable package, typed authoring imports, project configuration and compile/build APIs.
 - Added six CLI commands, example projects, JSON build report and v2 APK verification.

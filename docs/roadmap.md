@@ -1,6 +1,6 @@
 # 🗺️ Anpyra Roadmap and Development Phases
 
-**Snapshot:** October 4, 2026 · **Current package:** v0.1.0 alpha · **Direction:** Python source → typed IR → native DEX → signed APK.
+**Snapshot:** October 6, 2026 · **Current package:** v0.1.0 alpha · **Direction:** Python source → typed IR → native DEX → signed APK.
 
 **Future direction:** native mobile and desktop applications. Android is the only implemented target; iOS, Windows, macOS and Linux have reserved folders. Web is outside scope. This organization does not change the immediate priority of Android validation and features.
 
@@ -204,14 +204,15 @@ Phases are a dependency-oriented plan, not a fixed schedule. Small independent t
 
 **Outcome:** make distribution deliberate and reproducible.
 
-**Package-publishing foundation exists:** manual tagged TestPyPI/PyPI workflow, reused CI, archive/version/description guards, wheel smoke test and [account/command guide](developer_guide/publishing.md). Trusted-publisher setup, remote workflow acceptance and the first upload are pending. This does not complete Android release-signing or store-distribution work.
+**Package-publishing foundation exists:** manual tagged TestPyPI/PyPI workflow, reused CI, archive/version/description guards, wheel smoke test and [account/command guide](developer_guide/publishing.md). Production Trusted Publishing is configured; the workflow published 0.1.0 on October 6, 2026, and public-index installation/build verification passed. TestPyPI rehearsal and versioned hosted documentation remain pending. This does not complete Android release-signing or store-distribution work.
 
 - [ ] Explicit debug/release modes and signer selection/import.
 - [ ] Protected release key handling, identity backups and actionable errors.
 - [ ] Package/version upgrade checks and documented signing compatibility.
 - [ ] Evaluate v3/key rotation and older-device support only if requirements justify them.
 - [ ] Build verified source/wheel release artifacts and define versioning policy.
-- [ ] Establish PyPI publication and versioned documentation when maintainers choose to publish.
+- [x] Publish the framework wheel/source archive to PyPI and verify a fresh index installation.
+- [ ] Establish versioned hosted documentation.
 - [ ] Evaluate AAB/store delivery separately; define support before advertising it.
 
 **Exit criteria:** isolated package installation succeeds, release identity is preserved/protected, upgrade paths are tested, and platform/distribution claims have recorded evidence. Local APK v2 debug signing alone does not establish store readiness.

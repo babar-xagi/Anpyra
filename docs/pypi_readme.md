@@ -10,7 +10,7 @@ Build with Python 3.11+ and Python dependencies. No Java/JDK, Kotlin, Android SD
 
 ## ⚡ Install the published package
 
-Once this release is available on PyPI, use uv (recommended):
+Install from PyPI using uv (recommended):
 
 ```shell
 uv venv --python 3.12

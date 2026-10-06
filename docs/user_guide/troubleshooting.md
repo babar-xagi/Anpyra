@@ -15,12 +15,25 @@ Start with `python -m anpyra doctor`, then `anpyra check YOUR_PROJECT`. Keep the
 
 ## ⚙️ Project configuration problems
 
-- **Cannot read configuration:** pass the app directory or its `anpyra.toml`. The framework root is not itself an app project.
+- **Cannot read configuration:** pass the app directory or its `anpyra.toml`. Inside the app directory use `anpyra check` / `anpyra check .`. Passing `myapp` after `cd myapp` looks for a nested `myapp/myapp`. The framework root is not itself an app project.
 - **Unknown app settings:** fix typos and use only [documented fields](configuration.md).
 - **Invalid package:** use lowercase dot-separated segments such as `dev.example.hello`.
 - **Project path escapes:** keep entry and output paths relative and inside the app root.
 - **Output contains source:** choose a separate `build` directory; do not put source under that output directory.
 - **Directory must be empty:** `init` protects existing files. Choose a new directory rather than deleting your work.
+
+## 🗂️ APK not found when installing
+
+Use the exact APK path printed by `anpyra build`. Its filename follows `[app] package` in `anpyra.toml`, not the project directory name. `anpyra init myapp` defaults to `dev.anpyra.app`; examples selecting `--package dev.example.myapp` produce a different filename.
+
+For the default package:
+
+| Current folder | Check command | Install command |
+| --- | --- | --- |
+| Parent of `myapp` | `anpyra check myapp` | `anpyra install myapp/build/dev.anpyra.app.apk --launch` |
+| Inside `myapp` | `anpyra check` | `anpyra install build/dev.anpyra.app.apk --launch` |
+
+Use `Get-ChildItem .\build\*.apk` inside the project to see its outputs, or pass an absolute path. A file-not-found error occurs before adb runs; changing USB/device settings does not resolve a wrong local path.
 
 ## 🐍 Compiler problems
 
