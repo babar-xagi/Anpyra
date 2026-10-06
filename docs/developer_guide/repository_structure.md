@@ -1,6 +1,6 @@
 # 🗂️ Repository Structure
 
-The current source tree focuses on Android and uses direct component ownership. This source cleanup is unreleased; public PyPI 0.1.0 remains available with its original internal layout.
+The current source tree focuses on Android and uses direct component ownership. Version 0.1.1 includes this layout; immutable 0.1.0 retains its original internal layout.
 
 ## 🌳 Maintained tree
 

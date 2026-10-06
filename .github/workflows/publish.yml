@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Existing version tag, for example v0.1.0
+        description: Existing version tag, for example v0.1.1
         type: string
         required: true
       repository:
@@ -74,6 +74,9 @@ jobs:
           /tmp/anpyra-release-smoke/bin/anpyra init release-app --package dev.anpyra.release
           /tmp/anpyra-release-smoke/bin/anpyra build release-app
           /tmp/anpyra-release-smoke/bin/anpyra verify release-app/build/dev.anpyra.release.apk
+          /tmp/anpyra-release-smoke/bin/anpyra check "$GITHUB_WORKSPACE/examples/screen_style"
+          /tmp/anpyra-release-smoke/bin/anpyra build "$GITHUB_WORKSPACE/examples/screen_style"
+          /tmp/anpyra-release-smoke/bin/anpyra verify "$GITHUB_WORKSPACE/examples/screen_style/build/dev.anpyra.screenstyle.apk"
 
       - name: Save checked distributions
         uses: actions/upload-artifact@v4

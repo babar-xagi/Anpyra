@@ -9,7 +9,7 @@ anpyra --version
 anpyra --help
 ```
 
-`--version` prints `Anpyra 0.1.0`. A subcommand is required for normal work.
+`--version` prints `Anpyra 0.1.1`. A subcommand is required for normal work.
 
 ## 🏗️ init
 

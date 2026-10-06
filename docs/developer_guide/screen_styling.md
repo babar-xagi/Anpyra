@@ -1,6 +1,6 @@
 # 🎨 Screen Styling Implementation and Validation
 
-This source feature adds native background styling and packaged raster images without Java/Gradle/SDK compilation. It is unreleased; published 0.1.0 remains unchanged. Public syntax is documented in the [screen guide](../user_guide/screen.md).
+This source feature adds native background styling and packaged raster images without Java/Gradle/SDK compilation. It is included in 0.1.1; immutable 0.1.0 files remain unchanged. Public syntax is documented in the [screen guide](../user_guide/screen.md).
 
 ## 🗂️ Ownership
 

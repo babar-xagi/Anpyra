@@ -1,6 +1,6 @@
 # 🗺️ Anpyra Roadmap and Development Phases
 
-**Snapshot:** October 6, 2026 · **Current package:** v0.1.0 alpha · **Direction:** Python source → typed IR → native DEX → signed APK.
+**Snapshot:** October 6, 2026 · **Current package:** v0.1.1 alpha · **Direction:** Python source → typed IR → native DEX → signed APK.
 
 **Current direction:** complete the Android framework first. Common/platform dispatch layers and other-target placeholders have been removed from the active source. The [progress record](progress.md) lists implemented components, publication, author-confirmed phone installation and remaining evidence.
 
@@ -68,7 +68,7 @@ The original experiments were reported successful on a phone by the author. The 
 - [x] Preserve public application/experiment authoring imports while consolidating internal DEX access into android/dex.py.
 - [x] Verify 55 tests and exact pre-cleanup DEX/APK output preservation.
 - [x] Record published 0.1.0 wheel/source success and author-confirmed phone installation.
-- [ ] Publish this source cleanup under a new version; published 0.1.0 is immutable.
+- [ ] Verify the 0.1.1 PyPI upload and fresh/upgrade installations; published 0.1.0 is immutable.
 
 ## 🧱 Phase overview
 

@@ -1,6 +1,6 @@
 # 🧩 Android Components and Code Ownership
 
-The current source checkout focuses on Android. `common/`, `platforms/`, desktop/iOS placeholders and registry dispatch have been removed. Public application imports and the Android build pipeline remain compatible. This cleanup is unreleased; published 0.1.0 retains its original internal layout.
+The current source checkout focuses on Android. `common/`, `platforms/`, desktop/iOS placeholders and registry dispatch have been removed. Public application imports and the Android build pipeline remain compatible. This cleanup ships in 0.1.1; immutable 0.1.0 retains its original internal layout.
 
 ## 🗺️ Find the implementation
 

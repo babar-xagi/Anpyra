@@ -1,6 +1,6 @@
 # 📊 Implementation Progress and Verified Results
 
-**Updated: October 6, 2026.** Current focus: finish the Android framework. Published package: **Anpyra 0.1.0**. The simplified Android-only source layout is an unreleased cleanup of that implementation.
+**Updated: October 6, 2026.** Current focus: finish the Android framework. Release version: **Anpyra 0.1.1**. This version includes the Android-only source layout and native Screen styling; the original 0.1.0 release remains immutable.
 
 ## ✅ Success evidence
 
@@ -70,7 +70,7 @@ Files: [manifest](../src/anpyra/android/manifest.py), [packaging](../src/anpyra/
 - uv-recommended installation with pip alternatives and separate user/developer guides.
 - Manual release pipeline, version/tag/archive/description checks, isolated wheel smoke and Trusted Publishing.
 
-## 🎨 New Screen component (unreleased)
+## 🎨 Screen component (0.1.1)
 
 - Implemented components/screen.py and component imports, with declarative style.bg color/image/gradient/opacity/transparent values and one TextView foreground child.
 - Support RGB/ARGB/CSS colors, seven native image fit modes, linear directions, radial/sweep and layered/group transparency; foreground text color is configurable.
@@ -85,7 +85,7 @@ Details: [user API/options](user_guide/screen.md), [implementation/tests](develo
 
 The active source tree now has `compiler/` and `android/`, with ordinary root API/config/build/CLI files. Common/platform registry layers and desktop/iOS placeholders were removed. DEX container writing, method generation, instruction assembly, native screen bindings and APK ZIP packaging have separate owners.
 
-Public `from anpyra import ...` and `pyandroid` authoring imports continue to work. Internal imports under removed common/platforms packages and compiler.dex change intentionally; use android.dex for DEX internals. This cleanup has not replaced immutable PyPI 0.1.0 files; publishing it requires a new version/tag.
+Public `from anpyra import ...` and `pyandroid` authoring imports continue to work. Internal imports under removed common/platforms packages and compiler.dex change intentionally; use android.dex for DEX internals. This cleanup ships under version/tag 0.1.1/v0.1.1 and does not replace immutable PyPI 0.1.0 files.
 
 ## 🎯 Work still needed to complete Android
 

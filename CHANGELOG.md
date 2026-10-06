@@ -2,7 +2,7 @@
 
 This file records user-visible milestones. Planned work belongs in the [roadmap](docs/roadmap.md), not as completed release notes.
 
-## 🛠️ Unreleased
+## 📦 0.1.1 — October 6, 2026
 
 ### 🎨 Native Screen styling
 
@@ -12,7 +12,7 @@ This file records user-visible milestones. Planned work belongs in the [roadmap]
 - Extend DEX for native enum/static fields, arrays, full constants, object results and safe wide invocations; preserve legacy DEX output.
 - Add runnable source example, option/implementation docs, opt-in device test script and 76 host tests.
 - Verify 25 real-device pixel cases on Android API 33 plus combined image/gradient/text rendering.
-- Feature remains unreleased; published PyPI 0.1.0 is unchanged.
+- Include the Screen APIs in the 0.1.1 wheel; Pillow installs automatically as a dependency.
 
 ### 🧹 Android-only component cleanup
 
@@ -22,9 +22,12 @@ This file records user-visible milestones. Planned work belongs in the [roadmap]
 - Keep public app/legacy authoring imports; remove internal forwarding modules so Android DEX has one canonical file.
 - Preserve exact experiment DEX output and signed example APK bytes; current suite has 55 checks.
 - Add detailed component/source ownership and implementation progress; author confirmed successful starter APK phone installation.
-- Cleanup remains unreleased; published 0.1.0 package files and tag are retained.
+- Release the Android-only layout in 0.1.1; immutable 0.1.0 package files and tag are retained.
 
-- Updated repository installation guidance and publication status after verifying the first PyPI release.
+### 🔄 Installation and upgrades
+
+- Document direct pip/uv installation, exact 0.1.1 and latest-release upgrades, interpreter selection and rebuilding existing apps.
+- Keep existing app configuration and debug signing state during package upgrades; app versions remain independent of the compiler version.
 
 ## 📦 0.1.0 — October 6, 2026 (PyPI release; foundation built October 4)
 

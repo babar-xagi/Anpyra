@@ -1,6 +1,6 @@
 # 🔎 Source File Reference
 
-All framework paths below link to their canonical implementation. The current source checkout is Android-only. Public app APIs remain compatible; removed common/platform internal imports intentionally change in this unreleased cleanup.
+All framework paths below link to their canonical implementation. The current source checkout is Android-only. Public app APIs remain compatible; removed common/platform internal imports intentionally change in 0.1.1.
 
 ## 🚪 Public package and project files
 

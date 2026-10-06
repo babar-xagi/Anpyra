@@ -6,7 +6,7 @@ This guide is for people building small Android apps. You do not need to underst
 
 | Step | Page | What you learn |
 | --- | --- | --- |
-| 1 | [Installation](installation.md) | Environments, source/wheel install, platform-specific commands |
+| 1 | [Installation](installation.md) | Direct pip/uv install, upgrades, environments and source/wheel setup |
 | 2 | [Core concepts](concepts.md) | Source, Activity, AST, IR, DEX, APK, signing and runtime |
 | 3 | [First application](first_app.md) | Create, edit, check, build, verify, install and update |
 | 4 | [Language reference](language.md) | Supported features, working examples and limits |
@@ -20,7 +20,7 @@ This guide is for people building small Android apps. You do not need to underst
 
 ## 🎨 Screen component
 
-[Screen backgrounds/images/gradients](screen.md) documents the new source API, options and verified behavior.
+[Screen backgrounds/images/gradients](screen.md) documents the 0.1.1 API, options and verified behavior.
 
 ## 🎯 Buildable examples
 

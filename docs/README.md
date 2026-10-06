@@ -14,7 +14,7 @@ The [developer guide](developer_guide/README.md) maps every maintained source fi
 
 - [Implementation progress](progress.md): components already implemented, PyPI/phone success and remaining evidence.
 - [Roadmap and phases](roadmap.md): finished work, next milestones, dependencies, acceptance criteria.
-- [Changelog](../CHANGELOG.md): baseline and unreleased repository improvements.
+- [Changelog](../CHANGELOG.md): released features and repository improvements.
 - [Contribution workflow](../CONTRIBUTING.md): where new work belongs and how to prepare a review.
 
 ## 🧭 Conventions
