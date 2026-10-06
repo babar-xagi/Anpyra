@@ -35,5 +35,8 @@ jobs:
       - run: anpyra check examples/screen_style --dump-dalvik
       - run: anpyra build examples/screen_style
       - run: anpyra verify examples/screen_style/build/dev.anpyra.screenstyle.apk
+      - run: anpyra check examples/text_style --dump-dalvik
+      - run: anpyra build examples/text_style
+      - run: anpyra verify examples/text_style/build/dev.anpyra.textstyle.apk
       - run: anpyra verify examples/score/build/dev.anpyra.score.apk
       - run: python -m pip wheel --no-deps . --wheel-dir dist

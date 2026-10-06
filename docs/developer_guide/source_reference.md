@@ -8,7 +8,7 @@ All framework paths below link to their canonical implementation. The current so
 | --- | --- | --- |
 | [__init__.py](../../src/anpyra/__init__.py) | Public Activity/TextView, AppConfig/Project/errors, compile/build exports and version | Public imports/version inconsistent |
 | [__main__.py](../../src/anpyra/__main__.py) | Run CLI main and exit with returned status | python -m anpyra differs from console command |
-| [api.py](../../src/anpyra/api.py) | Activity.set_content_view; TextView constructor/set_text; explicit host RuntimeErrors | Editor signatures or host execution error incorrect |
+| [api.py](../../src/anpyra/api.py) | Activity.set_content_view; compatible TextView re-export; explicit host RuntimeErrors | Editor signatures or host execution error incorrect |
 | [config.py](../../src/anpyra/config.py) | ConfigError; frozen AppConfig; Project; load_project | Metadata, SDKs, TOML or paths incorrect |
 | [scaffold.py](../../src/anpyra/scaffold.py) | STARTER_SOURCE and init_project | New source/config/ignore template wrong |
 | [cli.py](../../src/anpyra/cli.py) | main parser/dispatch and _dump IR/method listing | Flags, output, path or adb arguments wrong |
@@ -55,7 +55,9 @@ New records need front-end lowering, traversals, emitter handling and tests; a d
 
 New source components are documented in [Screen styling internals](screen_styling.md): [components/screen.py](../../src/anpyra/components/screen.py) owns Screen/value objects and color/opacity validation; [compiler/screen_style.py](../../src/anpyra/compiler/screen_style.py) parses declarative values; [android/backgrounds.py](../../src/anpyra/android/backgrounds.py) emits native layers/gradient/image operations; [android/assets.py](../../src/anpyra/android/assets.py) validates, normalizes and maps local image assets.
 
-IR now includes NewScreen, SetScreenContent, ApplyScreenBackground and SetTextColor. Styled methods have reserved low array registers, rendering scratch and a high invocation bank. FieldKey/external field ID pools support native enum/SDK references. New Dalvik forms cover full constants, arrays, static fields, object results, move-from16 and invoke-range. Legacy method frames/DEX bytes remain unchanged.
+Typography is traced in [TextView internals](textview_styling.md): [components/textview.py](../../src/anpyra/components/textview.py) owns the authoring class and Font/Shadow/TextStyle values; [compiler/text_style.py](../../src/anpyra/compiler/text_style.py) merges ordered related properties; [android/textview.py](../../src/anpyra/android/textview.py) emits native typography/density/font calls; [android/fonts.py](../../src/anpyra/android/fonts.py) validates standalone fonts.
+
+IR now includes NewScreen, SetScreenContent, ApplyScreenBackground, SetTextColor and SetTextStyle. Styled methods have reserved low array registers, rendering scratch and a high invocation bank. FieldKey/external field ID pools support native enum/SDK references. New Dalvik forms cover full constants, arrays, static fields, object results, move-from16 and invoke-range. Legacy method frames/DEX bytes remain unchanged.
 
 | File | Symbols and responsibility |
 | --- | --- |

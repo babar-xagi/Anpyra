@@ -2,7 +2,14 @@
 
 import struct
 
-from ..compiler.ir import ApplyScreenBackground, IfBool, IfCompare, NewScreen, SetTextColor
+from ..compiler.ir import (
+    ApplyScreenBackground,
+    IfBool,
+    IfCompare,
+    NewScreen,
+    SetTextColor,
+    SetTextStyle,
+)
 from ..components.screen import alpha_byte, parse_color
 from .dalvik import OP_INVOKE_DIRECT, OP_INVOKE_STATIC, OP_INVOKE_VIRTUAL, emit_const, emit_invoke
 from .dex_types import FieldKey, MethodKey
@@ -74,7 +81,7 @@ def background_methods() -> dict[str, MethodKey]:
 def background_fields(operations) -> tuple[FieldKey, ...]:
     fields = set()
     for op in operations:
-        if isinstance(op, (NewScreen, SetTextColor)):
+        if isinstance(op, (NewScreen, SetTextColor, SetTextStyle)):
             fields.add(SDK_FIELD)
         if isinstance(op, (IfBool, IfCompare)):
             fields.update(background_fields((*op.then_ops, *op.else_ops)))

@@ -13,6 +13,7 @@ from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import padding
 
 from .assets import AssetError, validate_png
+from .fonts import validate_font
 from .manifest_inspect import inspect_manifest
 from .packaging import valid_asset_entry
 from .signing import (
@@ -249,14 +250,16 @@ def inspect_apk(path: Path) -> ApkReport:
         for name in assets:
             payload = zf.read(name)
             if (
-                not payload.startswith(b"\x89PNG\r\n\x1a\n")
-                or hashlib.sha256(payload).hexdigest() != name.rsplit("/", 1)[1][:-4]
-            ):
+                name.endswith(".png") and not payload.startswith(b"\x89PNG\r\n\x1a\n")
+            ) or hashlib.sha256(payload).hexdigest() != name.rsplit("/", 1)[1][:-4]:
                 raise ApkV2VerifyError(f"invalid screen image digest/profile: {name}")
             try:
-                validate_png(payload)
-            except AssetError as exc:
-                raise ApkV2VerifyError(f"invalid screen image payload: {name}: {exc}") from exc
+                if name.endswith(".png"):
+                    validate_png(payload)
+                else:
+                    validate_font(payload, name[-4:])
+            except (AssetError, ValueError) as exc:
+                raise ApkV2VerifyError(f"invalid asset payload: {name}: {exc}") from exc
         manifest = zf.read("AndroidManifest.xml")
         dex = zf.read("classes.dex")
 

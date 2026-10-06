@@ -20,7 +20,7 @@ Anpyra is a Python-written compiler and build framework for a **small, typed Pyt
 
 It grew from the successful **PyAndroid experiments 001–008**. Experiment 008 supplies the cumulative compiler foundation; Anpyra adds an installable package, build API, project configuration, CLI, examples, and automated checks.
 
-**Current status: v0.1.1 alpha.** Small `Activity` + `TextView` apps, typed values, conditions, arithmetic, and integer helpers work within documented limits. Version 0.1.1 includes native Screen backgrounds, images, gradients and text color. Layouts, buttons, callbacks, general Python libraries, and release/store workflows are future phases.
+**Current status: v0.1.1 alpha.** Small `Activity` + `TextView` apps, typed values, conditions, arithmetic, and integer helpers work within documented limits. Version 0.1.1 includes native Screen backgrounds, images, gradients and text color. The current source additionally has expanded TextView typography; install the editable checkout for these unreleased properties. Layouts, buttons, callbacks, general Python libraries, and release/store workflows are future phases.
 
 **Current focus: Android only.** The source cleanup removes common/platform layers and future-target placeholders, and separates native Android components. Public application imports remain compatible. See [components](docs/developer_guide/android_components.md) and [implementation progress](docs/progress.md). Version 0.1.1 includes this Android-only organization; application imports remain compatible with 0.1.0.
 
@@ -106,7 +106,7 @@ Build through Anpyra and run the APK on Android. The authoring types help editor
 
 | Area | Implemented in v0.1 |
 | --- | --- |
-| Native UI | Activity/TextView; Screen styles, one content child and text color |
+| Native UI | Activity/TextView; Screen styles, one content child and text color; expanded typography in current source |
 | Types | Initialized `str`, `int`, `bool` locals |
 | Expressions | Simple integer `+` / `-`, signed 16-bit literals |
 | Control flow | Boolean conditions, integer comparisons, nested `if` / `elif` / `else` |
@@ -123,10 +123,12 @@ Build through Anpyra and run the APK on Android. The authoring types help editor
 Anpyra/
 ├── src/anpyra/
 │   ├── api.py, config.py, scaffold.py, cli.py, build.py
-│   ├── components/        # Screen, Image, Gradient and Background API
+│   ├── components/        # Screen and TextView authoring/style APIs
 │   ├── compiler/          # Front end, IR and declarative style parsing
 │   └── android/
 │       ├── screen.py      # Native view calls
+│       ├── textview.py    # Native typography and dp/sp handling
+│       ├── fonts.py       # Standalone font format validation
 │       ├── backgrounds.py # Drawable/image/gradient emission
 │       ├── assets.py      # Validated image conversion and asset mapping
 │       ├── codegen.py     # IR → method code and registers
@@ -137,7 +139,7 @@ Anpyra/
 │       ├── packaging.py, signing.py, verify.py
 │       └── README.md
 ├── src/pyandroid/         # Experiment import compatibility
-├── examples/              # Hello, score and Screen styling Android apps
+├── examples/              # Hello, score, Screen and typography Android apps
 ├── tests/                 # Unit, integration, regression and fixtures
 ├── docs/
 │   ├── user_guide/
@@ -159,6 +161,7 @@ Run `anpyra targets` to see the supported Android target. Build/check default to
 | Install and build an app | [User guide](docs/user_guide/README.md) |
 | Understand supported syntax | [Language and examples](docs/user_guide/language.md) |
 | Style screen colors, images and gradients | [Screen component guide](docs/user_guide/screen.md) |
+| Style titles, fonts, padding and text overflow | [TextView component guide](docs/user_guide/textview.md) |
 | Find the file responsible for a bug | [Source reference](docs/developer_guide/source_reference.md) |
 | Trace a compiler or signing problem | [Debugging guide](docs/developer_guide/debugging.md) |
 | Implement a new feature | [Extension guide](docs/developer_guide/extending.md) |
@@ -179,7 +182,7 @@ ruff format --check src tests examples scripts
 python scripts/check_docs.py
 ```
 
-The existing suite contains **76 tests** covering compiler behavior, binary instructions, configuration, CLI workflows, signer reuse, tamper detection, and reproducible rebuilds. The v0.1 baseline also passed a wheel installation/build check and builds both examples. CI is configured for Windows/Linux and Python 3.11/3.13; the badge reports remote status.
+The existing suite contains **95 tests** covering compiler behavior, binary instructions, configuration, CLI workflows, signer reuse, tamper detection, and reproducible rebuilds. The v0.1 baseline also passed a wheel installation/build check and builds both examples. CI is configured for Windows/Linux and Python 3.11/3.13; the badge reports remote status.
 
 The author confirmed starter APK installation. Screen styling passed 25 pixel checks on an Android API 33 phone; combined image/gradient/text rendering was visually confirmed. Score branches, lifecycle behavior, independent binary verification and more Android versions still need recorded acceptance. The cleanup preserves existing example APK and experiment DEX bytes. Use the [device checklist](docs/developer_guide/testing.md) when validating a release.
 

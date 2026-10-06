@@ -3,6 +3,7 @@ recursive-include src *.md
 recursive-include docs *.md
 recursive-include examples *.py *.toml *.md
 recursive-include examples *.png
+recursive-include examples *.ttf *.otf
 recursive-include tests *.py *.md
 recursive-include scripts *.py *.md
 recursive-include .github *.yml *.md

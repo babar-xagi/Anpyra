@@ -6,8 +6,9 @@ import re
 import zipfile
 
 from .assets import validate_png
+from .fonts import validate_font
 
-ASSET_ENTRY = re.compile(r"assets/anpyra/[0-9a-f]{64}\.png\Z")
+ASSET_ENTRY = re.compile(r"assets/anpyra/[0-9a-f]{64}\.(?:png|ttf|otf)\Z")
 
 
 def valid_asset_entry(name: str) -> bool:
@@ -25,7 +26,10 @@ def build_unsigned_apk(
                 raise ValueError(f"invalid screen asset entry: {name}")
             if hashlib.sha256(payload).hexdigest() != name.rsplit("/", 1)[1][:-4]:
                 raise ValueError("screen asset name must match its PNG digest")
-            validate_png(payload)
+            if name.endswith(".png"):
+                validate_png(payload)
+            else:
+                validate_font(payload, name[-4:])
             entries.append((name, payload))
         for name, data in entries:
             info = zipfile.ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))

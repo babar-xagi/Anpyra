@@ -11,6 +11,7 @@ from ..compiler.ir import (
     SetScreenContent,
     SetText,
     SetTextColor,
+    SetTextStyle,
 )
 from .backgrounds import FRAME, SDK_FIELD, VIEW, background_methods
 from .dalvik import (
@@ -22,6 +23,7 @@ from .dalvik import (
     emit_invoke,
 )
 from .dex_types import MethodKey
+from .textview import textview_methods
 
 ACTIVITY_TYPE = "Landroid/app/Activity;"
 BUNDLE_TYPE = "Landroid/os/Bundle;"
@@ -48,7 +50,8 @@ def screen_methods(class_descriptor: str, operations=()) -> dict[str, MethodKey]
         methods["frame_content"] = MethodKey(FRAME, "addView", "V", (VIEW_TYPE,))
     if any(isinstance(op, SetTextColor) for op in operations):
         methods["text_view_color"] = MethodKey(TEXT_VIEW_TYPE, "setTextColor", "V", ("I",))
-    if any(isinstance(op, (NewScreen, SetTextColor)) for op in operations):
+    methods.update(textview_methods(operations))
+    if any(isinstance(op, (NewScreen, SetTextColor, SetTextStyle)) for op in operations):
         methods["view_force_dark"] = MethodKey(VIEW, "setForceDarkAllowed", "V", ("Z",))
     return methods
 

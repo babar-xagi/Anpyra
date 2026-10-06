@@ -107,3 +107,15 @@ Public `from anpyra import ...` and `pyandroid` authoring imports continue to wo
 7. Add protected release identity/import and tested upgrade/distribution workflows.
 
 These are planned capabilities. Loops, collections, general Python imports/runtime, interactive widgets, resources and release/store signing are not implemented by the directory cleanup. See the detailed [roadmap](roadmap.md) and [component guide](developer_guide/android_components.md).
+
+## 🔤 Expanded TextView component (unreleased)
+
+- Move the real TextView authoring class to components/textview.py; root/api/pyandroid imports re-export the same class.
+- Implement text content/constructor keywords plus foreground/background color, sp size, dp padding/dimensions, horizontal/vertical gravity, opacity, system/local fonts, bold/italic, wrapping/line limits/ellipsis, spacing, decoration, selection, shadows, direction, OpenType features and accessibility description.
+- Add ordered style IR, combined property state, runtime density conversion and unique native method references; keep legacy experiment DEX unchanged.
+- Validate and package byte-preserved standalone TTF/OTF fonts under signed content hashes; invalid fonts fail before keys/output changes.
+- Add original demo fonts, runnable typography example, detailed user/developer references, 19 new host tests and opt-in device checks.
+- All 95 host tests, docs/lint/workflow checks and local wheel/source checks passed. An isolated wheel installation built/verified the font example. Legacy experiment DEX hashes remain unchanged.
+- On TECNO BG7 / Android API 33, 30 recorded cases passed: size/letter spacing, 15 gravity combinations, dp padding/dimensions, TTF/OTF, bold/italic, decoration add/remove, uppercase, opacity, line spacing, RTL and selection focus; remaining native options passed combined launch and visible ellipsis/shadow checks. Native Copy/Share toolbar was visually confirmed after long-press; clipboard copying/sharing was not performed.
+- The device runner accounted for the OEM's clipped accessibility bounds by measuring its controlled app background. Previously captured screenshots for unchanged cases were replayed during final tail checks; device results distinguish reused captures. API 24–28 and other devices/fonts still need separate runtime coverage.
+- Published PyPI 0.1.1 remains immutable and does not include these expanded typography APIs. A future release needs a new version/tag.

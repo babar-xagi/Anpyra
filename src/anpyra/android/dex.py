@@ -12,6 +12,7 @@ from .codegen import _walk_ops, generate_methods
 from .dex_types import DexBuild, MethodKey, ProtoKey
 from .encoding import align, dex_string_sort_key, mutf8_encode, uleb128, utf16_code_units
 from .screen import ACTIVITY_TYPE, screen_methods
+from .textview import textview_fields, textview_strings
 
 DEX_MAGIC = b"dex\n035\x00"
 HEADER_SIZE = 0x70
@@ -48,7 +49,7 @@ def build_dex(app: AppIR) -> DexBuild:
     activity, void, int_t = ACTIVITY_TYPE, "V", "I"
     operations = tuple(_walk_ops(app.operations))
     screen_refs = screen_methods(cls, operations)
-    fields = background_fields(operations)
+    fields = tuple(set(background_fields(operations)) | textview_fields(operations))
     protos = [ProtoKey(method.return_type, method.parameters) for method in screen_refs.values()]
     our_ctor = screen_refs["app_constructor"]
     our_on = screen_refs["app_on_create"]
@@ -58,7 +59,7 @@ def build_dex(app: AppIR) -> DexBuild:
         p = ProtoKey(int_t, params)
         protos.append(p)
         helper_keys[fn.name] = MethodKey(cls, fn.name, int_t, params)
-    methods = [*screen_refs.values(), *helper_keys.values()]
+    methods = list({*screen_refs.values(), *helper_keys.values()})
     strings_from_main = {
         op.value
         for op in _walk_ops(app.operations)
@@ -69,6 +70,7 @@ def build_dex(app: AppIR) -> DexBuild:
         for op in operations
         if isinstance(op, ApplyScreenBackground) and op.image_asset is not None
     )
+    strings_from_main.update(textview_strings(operations))
     type_descriptors = {cls, activity, void, int_t}
     for method in methods:
         type_descriptors.update((method.owner, method.return_type, *method.parameters))

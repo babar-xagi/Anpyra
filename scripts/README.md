@@ -30,3 +30,11 @@ This read-only guard does not build, extract, upload, change versions or access 
 Opt-in real-device pixel matrix for Screen color/gradient/image/fit/alpha behavior. Run `python scripts/check_screen_device.py --serial DEVICE_ID` with an unlocked portrait device. It builds/installs its named test package, saves screenshots/results under build/, and leaves the test app installed. --adb, --package and --work-dir configure the target/tool/project; it does not uninstall apps or change device settings. Preserve its signing identity for future updates.
 
 See [implementation and runtime evidence](../docs/developer_guide/screen_styling.md). The ordinary CI suite does not run this script.
+
+## 🔤 check_text_device.py
+
+Opt-in native typography pixel/geometry matrix. Run `python scripts/check_text_device.py --serial DEVICE_ID` on an unlocked phone; --adb, --package and --work-dir configure the test. It leaves its own package installed, saves screenshots/results and keeps its visible test view awake without changing system settings. It cannot unlock a locked phone. It measures the controlled app background to account for OEM accessibility bounds. --resume-from replays saved screenshots before fresh tail captures; use only for an unchanged candidate and inspect the recorded reuse list. See [typography internals](../docs/developer_guide/textview_styling.md); normal CI does not run it.
+
+## 🔡 generate_demo_fonts.py
+
+Recreates the original TTF/OTF demonstration assets from owned block outlines. Use `uv run --no-project --with fonttools scripts/generate_demo_fonts.py` to obtain the generation tool in isolation; ordinary app builds do not require FontTools. This deliberately overwrites the two example fonts. See [font asset details](../examples/text_style/assets/README.md).

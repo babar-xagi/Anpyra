@@ -2,6 +2,10 @@
 
 These examples are **host scripts**, separate from the restricted Android app source. Host scripts can use normal Python libraries to call Anpyra. Their imports should not be copied into `app.py` unless the language reference permits them.
 
+## 🔤 Component imports
+
+TextView now has one canonical implementation in `anpyra.components.textview`, re-exported through `anpyra` and `pyandroid` for compatibility. Current source adds Font, Shadow and TextStyle plus declarative typography; see the [TextView guide](textview.md). These expanded properties are not in published 0.1.1.
+
 ## 📦 Build a configured application
 
 ```python

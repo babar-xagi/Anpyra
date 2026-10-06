@@ -2,18 +2,9 @@
 
 from __future__ import annotations
 
+from .components.textview import TextView
+
 
 class Activity:
     def set_content_view(self, view: TextView) -> None:
         raise RuntimeError("Build this app with Anpyra; Android methods cannot run on the host.")
-
-
-class TextView:
-    def __init__(self, context: Activity) -> None:
-        raise RuntimeError("Build this app with Anpyra; Android widgets cannot run on the host.")
-
-    def set_text(self, text: str) -> None:
-        raise RuntimeError("Build this app with Anpyra; Android widgets cannot run on the host.")
-
-    def set_text_color(self, color: str | int) -> None:
-        raise RuntimeError("Build this app with Anpyra; Android widgets cannot run on the host.")

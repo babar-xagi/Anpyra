@@ -15,6 +15,7 @@ from ..compiler.ir import (
     NewScreen,
     ReturnValue,
     SetTextColor,
+    SetTextStyle,
 )
 from .backgrounds import emit_background
 from .dalvik import (
@@ -37,6 +38,7 @@ from .dalvik import (
 )
 from .dex_types import MethodListing
 from .screen import emit_screen_operation
+from .textview import emit_text_style
 
 
 @dataclass(frozen=True)
@@ -66,7 +68,9 @@ def generate_methods(
     symbols = list(app.symbol_types)
     if len(symbols) + 2 > 16:
         raise ValueError("Anpyra v0.1 on_create supports at most 14 locals")
-    wide = any(isinstance(op, (NewScreen, SetTextColor)) for op in _walk_ops(app.operations))
+    wide = any(
+        isinstance(op, (NewScreen, SetTextColor, SetTextStyle)) for op in _walk_ops(app.operations)
+    )
     offset = 2 if wide else 0
     reg_of = {n: i + offset for i, (n, _) in enumerate(symbols)}
     scratch = tuple(range(offset + len(symbols), offset + len(symbols) + 7)) if wide else ()
@@ -86,6 +90,20 @@ def generate_methods(
 
     def emit_main(ops):
         for op in ops:
+            if emit_text_style(
+                op,
+                main_asm,
+                reg_of,
+                this_reg,
+                tidx,
+                sidx,
+                midx,
+                field_indexes or {},
+                screen_refs,
+                scratch,
+                argument_base,
+            ):
+                continue
             if isinstance(op, ApplyScreenBackground):
                 emit_background(
                     op,

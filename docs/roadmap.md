@@ -241,3 +241,12 @@ The starter APK has been installed successfully according to the author. Next re
 Choose one deliverable per issue/review where practical. Record implementation, tests, docs and runtime evidence. Mark a checkbox only after its contract is met. If scope changes, update dependencies and limits before changing APIs. Keep successful historical examples working at each step.
 
 Further reading: [developer guide](developer_guide/README.md), [extension workflow](developer_guide/extending.md), [release checklist](developer_guide/release.md), [changelog](../CHANGELOG.md).
+
+## 🔤 Typography implementation after 0.1.1
+
+- [x] Separate TextView authoring and native style implementation, preserving public imports.
+- [x] Implement title text, colors/size, gravity, padding/dimensions, fonts, spacing, overflow, decorations/shadows, selection and accessibility declarations.
+- [x] Validate/package standalone TTF/OTF fonts and reject malformed signed assets.
+- [x] Add focused tests, runnable example and user/developer file ownership guides.
+- [ ] Publish the expanded typography API under a new version after verification.
+- [ ] Extend rich text, arbitrary font weights/axes, automatic size and broader Android runtime coverage.

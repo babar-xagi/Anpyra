@@ -4,8 +4,16 @@ import ast
 from dataclasses import replace
 
 from ..components.screen import Background, Gradient, Image, StyleError
+from ..components.textview import Font, Shadow, TextStyle
 
-CONSTRUCTORS = {"Background": Background, "Gradient": Gradient, "Image": Image}
+CONSTRUCTORS = {
+    "Background": Background,
+    "Gradient": Gradient,
+    "Image": Image,
+    "Font": Font,
+    "Shadow": Shadow,
+    "TextStyle": TextStyle,
+}
 
 
 def style_value(node, constants=None):

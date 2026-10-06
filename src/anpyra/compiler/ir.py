@@ -79,6 +79,14 @@ class SetTextColor:
 
 
 @dataclass(frozen=True)
+class SetTextStyle:
+    receiver: str
+    property: str
+    value: object
+    font_asset: str | None = None
+
+
+@dataclass(frozen=True)
 class IfBool:
     condition_var: str
     then_ops: tuple["IROp", ...]
@@ -107,6 +115,7 @@ IROp = (
     | SetScreenContent
     | ApplyScreenBackground
     | SetTextColor
+    | SetTextStyle
     | IfBool
     | IfCompare
 )

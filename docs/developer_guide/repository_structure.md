@@ -56,7 +56,7 @@ Anpyra/
 
 ## 🧭 Where changes belong
 
-Source syntax/types belong in frontend.py; operation records belong in ir.py. Android widget calls belong in screen.py; register/control-flow rules in codegen.py; binary instructions in dalvik.py; container layout in dex.py; ZIP entries in packaging.py. Keep API stubs, source checks, IR and emitters in agreement.
+Source syntax/types belong in frontend.py; operation records belong in ir.py. Activity/construction calls belong in screen.py; typography emission belongs in android/textview.py and font validation in android/fonts.py; register/control-flow rules in codegen.py; binary instructions in dalvik.py; container layout in dex.py; ZIP entries in packaging.py. Keep API stubs, source checks, IR and emitters in agreement.
 
 There are no common/platforms/desktop/iOS placeholder packages. Root config owns the current Android project settings. Root build orchestrates actual components; android/dex.py is the only DEX writer.
 

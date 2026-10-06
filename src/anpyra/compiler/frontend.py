@@ -25,6 +25,7 @@ from .ir import (
     SetTextColor,
 )
 from .screen_style import background_assignment, style_value
+from .text_style import TextStyler
 
 
 class CompileError(ValueError):
@@ -47,7 +48,17 @@ def _is_name(node: ast.AST, name: str) -> bool:
     return isinstance(node, ast.Name) and node.id == name
 
 
-API_NAMES = {"Activity", "TextView", "Screen", "Image", "Gradient", "Background"}
+API_NAMES = {
+    "Activity",
+    "TextView",
+    "Screen",
+    "Image",
+    "Gradient",
+    "Background",
+    "Font",
+    "Shadow",
+    "TextStyle",
+}
 
 
 def _require_imports(tree: ast.Module) -> set[str]:
@@ -57,8 +68,9 @@ def _require_imports(tree: ast.Module) -> set[str]:
             modules = {
                 "anpyra": API_NAMES,
                 "pyandroid": {"Activity", "TextView"},
-                "anpyra.components": API_NAMES - {"Activity", "TextView"},
-                "anpyra.components.screen": API_NAMES - {"Activity", "TextView"},
+                "anpyra.components": API_NAMES - {"Activity"},
+                "anpyra.components.screen": {"Screen", "Image", "Gradient", "Background"},
+                "anpyra.components.textview": {"TextView", "Font", "Shadow", "TextStyle"},
             }
             if node.level or node.module not in modules:
                 raise CompileError(
@@ -296,6 +308,7 @@ class FunctionCompiler:
         self.screen_contents = {}
         self.attached = set()
         self.branch_depth = 0
+        self.text_styler = TextStyler()
 
     def declare(self, name, typ, node):
         if name in {"self", "state", *API_NAMES} or name in self.functions:
@@ -379,6 +392,8 @@ class FunctionCompiler:
         if typ == "int":
             operations = self.compile_int_value_into(name, node.value)
             self.declare(name, typ, node)
+            if _int_literal(node.value) is not None:
+                self.constants[name] = _int_literal(node.value)
             return operations
         if not isinstance(node.value, ast.Constant):
             raise CompileError(f"{_line(node)}{typ} currently requires literal constant")
@@ -396,6 +411,28 @@ class FunctionCompiler:
             while isinstance(target, ast.Attribute):
                 chain.insert(0, target.attr)
                 target = target.value
+            if isinstance(target, ast.Name) and self.symbols.get(target.id) == "TextView":
+                if chain == ["text"]:
+                    return self.compile_expr(
+                        ast.Expr(
+                            value=ast.Call(
+                                func=ast.Attribute(value=target, attr="set_text"),
+                                args=[node.value],
+                                keywords=[],
+                            ),
+                            lineno=node.lineno,
+                        )
+                    )
+                if self.branch_depth:
+                    raise StyleError("configure TextView styles outside branches")
+                value = style_value(node.value, self.constants)
+                if chain == ["style"]:
+                    return self.text_styler.whole(target.id, value)
+                if len(chain) == 2 and chain[0] == "style":
+                    return self.text_styler.assign(target.id, chain[1], value)
+                if len(chain) == 3 and chain[:2] == ["style", "font"]:
+                    return self.text_styler.font_property(target.id, chain[2], value)
+                raise StyleError("use text.style.PROPERTY, text.style.font.PROPERTY or text.text")
             if isinstance(target, ast.Name) and target.id in self.backgrounds:
                 if self.branch_depth or target.id in self.attached:
                     raise CompileError(
@@ -450,13 +487,32 @@ class FunctionCompiler:
             and _is_name(call.func, "TextView")
             and len(call.args) == 1
             and _is_name(call.args[0], "self")
-            and not call.keywords
         ):
             raise CompileError(f"{_line(node)}supported untyped assignment: name = TextView(self)")
         self.declare(target, "TextView", node)
         if "TextView" not in self.imported:
             raise CompileError(f"{_line(node)}import TextView before using it")
-        return (NewTextView(target),)
+        ops = [NewTextView(target)]
+        names = [item.arg for item in call.keywords]
+        if len(names) != len(set(names)) or any(name not in {"text", "style"} for name in names):
+            raise StyleError("TextView accepts context plus optional text= and style= keywords")
+        for item in call.keywords:
+            if item.arg == "style":
+                ops.extend(self.text_styler.whole(target, style_value(item.value, self.constants)))
+            else:
+                ops.extend(
+                    self.compile_expr(
+                        ast.Expr(
+                            value=ast.Call(
+                                func=ast.Attribute(value=ast.Name(id=target), attr="set_text"),
+                                args=[item.value],
+                                keywords=[],
+                            ),
+                            lineno=node.lineno,
+                        )
+                    )
+                )
+        return tuple(ops)
 
     def compile_expr(self, node):
         call = node.value
@@ -464,6 +520,29 @@ class FunctionCompiler:
             raise CompileError(f"{_line(node)}unsupported expression")
         receiver = call.func.value
         attr = call.func.attr
+        setters = {
+            "set_text_size": "size",
+            "set_alignment": "alignment",
+            "set_vertical_alignment": "vertical_alignment",
+            "set_font": "font",
+            "set_style": "style",
+            "set_padding": "padding",
+        }
+        if isinstance(receiver, ast.Name) and attr in setters:
+            self.require(receiver.id, "TextView", node)
+            if self.branch_depth or call.keywords:
+                raise StyleError("TextView style setters use positional arguments outside branches")
+            if attr == "set_padding" and len(call.args) in {1, 2, 4}:
+                value = tuple(style_value(arg, self.constants) for arg in call.args)
+                if len(value) == 1:
+                    value = value[0]
+            elif len(call.args) == 1:
+                value = style_value(call.args[0], self.constants)
+            else:
+                raise StyleError(f"invalid arguments for {attr}")
+            if attr == "set_style":
+                return self.text_styler.whole(receiver.id, value)
+            return self.text_styler.assign(receiver.id, setters[attr], value)
         if (
             attr == "set_text_color"
             and isinstance(receiver, ast.Name)

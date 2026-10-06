@@ -2,6 +2,16 @@
 
 This file records user-visible milestones. Planned work belongs in the [roadmap](docs/roadmap.md), not as completed release notes.
 
+## 🛠️ Unreleased
+
+### 🔤 Native TextView typography
+
+- Extract the canonical TextView class into components/textview.py with compatible public imports.
+- Add ordered text styles, native dp/sp conversion, configurable fonts/size/colors/gravity/padding/dimensions/spacing/overflow/decorations/shadows and accessibility.
+- Package validated standalone local TTF/OTF fonts with signed content hashes; preserve existing legacy DEX output.
+- Add runnable typography example, original demonstration fonts, detailed ownership/user docs, 19 host tests and opt-in device rendering checks.
+- Pass 95 host tests and 30 recorded typography device cases on Android API 33; visually confirm native selection toolbar and combined overflow/shadow rendering. Additional Android versions remain unverified.
+
 ## 📦 0.1.1 — October 6, 2026
 
 ### 🎨 Native Screen styling

@@ -11,7 +11,8 @@ from pathlib import Path
 from PIL import Image as PillowImage
 from PIL import ImageCms, ImageOps, UnidentifiedImageError
 
-from ..compiler.ir import AppIR, ApplyScreenBackground, IfBool, IfCompare
+from ..compiler.ir import AppIR, ApplyScreenBackground, IfBool, IfCompare, SetTextStyle
+from .fonts import validate_font
 
 
 class AssetError(ValueError):
@@ -52,6 +53,30 @@ def prepare_assets(app: AppIR, root: Path) -> PreparedAssets:
                 then_ops=tuple(prepare(item) for item in op.then_ops),
                 else_ops=tuple(prepare(item) for item in op.else_ops),
             )
+        if isinstance(op, SetTextStyle) and op.property == "font" and op.value.path is not None:
+            spec = op.value
+            path = (root / spec.path).resolve()
+            if not path.is_relative_to(root) or not path.is_file():
+                raise AssetError(f"font must be an existing file inside the project: {spec.path}")
+            if path.stat().st_size > 16 * 1024 * 1024:
+                raise AssetError("font exceeds 16 MiB")
+            try:
+                payload = path.read_bytes()
+                validate_font(payload, path.suffix.lower())
+            except (OSError, ValueError) as exc:
+                raise AssetError(f"invalid font {spec.path}: {exc}") from exc
+            digest = hashlib.sha256(payload).hexdigest()
+            asset = f"anpyra/{digest}{path.suffix.lower()}"
+            entry = "assets/" + asset
+            entries[entry] = payload
+            report[(spec.path, "font")] = {
+                "source": spec.path,
+                "kind": "font",
+                "entry": entry,
+                "sha256": digest,
+                "size": len(payload),
+            }
+            return replace(op, font_asset=asset)
         if not isinstance(op, ApplyScreenBackground) or op.background.image is None:
             return op
         spec = op.background.image
