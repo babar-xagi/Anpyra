@@ -113,6 +113,14 @@ The APK filename comes from `[app].package` in `anpyra.toml`; replace `dev.anpyr
 
 If the version still shows an earlier release such as `0.1.2`, compare `python -c "import sys; print(sys.executable)"` and `python -m anpyra --version` with the intended environment. On Windows, `Get-Command anpyra -All` shows which CLI executable PowerShell selects. Upgrade the interpreter that owns that installation rather than creating another environment accidentally.
 
+Immediately after publication, a cached package-index response can report that the new version is unavailable. Retry with fresh metadata in the intended environment:
+
+```powershell
+uv pip install --no-cache --refresh "anpyra==0.1.3"
+# Or pip:
+python -m pip install --no-cache-dir --upgrade "anpyra==0.1.3"
+```
+
 ## 🛠️ Editable source installation with uv
 
 Follow [uv's official installation instructions](https://docs.astral.sh/uv/getting-started/installation/) if uv is not installed. You can use its standalone installer without installing Java or another Android toolchain.

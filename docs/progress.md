@@ -9,9 +9,9 @@
 | Original experiments 001–008 | Author reported successful runs | Historical source fixtures 005–008 retained |
 | Framework source checking | Passed | Starter app produces typed IR and native method listings without writing artifacts |
 | Signed APK generation | Passed | Hello/score and fresh generated projects build and pass framework verification |
-| PyPI publication | Passed, October 6 | [0.1.2 Trusted Publishing run](https://github.com/babar-xagi/Anpyra/actions/runs/37528963281) succeeded; [PyPI 0.1.2](https://pypi.org/project/anpyra/0.1.2/) wheel/source hashes match checked CI artifacts |
-| Public-index installation | Passed | Fresh `anpyra==0.1.2` installation built/verified starter and typography/local-font APKs; typography rebuild was byte-identical |
-| Package upgrades | Passed | Separate pip/uv PyPI environments upgraded 0.1.1 → 0.1.2; app config, signing identity and starter APK bytes preserved; typography/font APKs verified and rebuilt reproducibly. Earlier 0.1.0 → 0.1.1 checks also passed |
+| PyPI publication | Passed, October 6 | [0.1.3 Trusted Publishing run](https://github.com/babar-xagi/Anpyra/actions/runs/37539219407) succeeded; [PyPI 0.1.3](https://pypi.org/project/anpyra/0.1.3/) wheel/source hashes match checked CI artifacts |
+| Public-index installation | Passed | Fresh `anpyra==0.1.3` installation built/verified starter and Button/state/ripple/icon APKs; Button rebuild was byte-identical |
+| Package upgrades | Passed | Separate pip/uv environments upgraded 0.1.2 → 0.1.3; starter APK bytes, project configuration and signing identity preserved; new Button/icon builds verified and reproducible |
 | Windows/Linux release CI | Passed | Published candidate validated on Python 3.11/3.13 |
 | Author's phone installation | **Author confirmed success** | Default starter package `dev.anpyra.app`, verified APK, adb detected an authorized device; reported installation completed |
 | Current Android-only cleanup | Host checks passed | 55 tests; four experiment DEX hashes/listings and both signed example APK hashes equal their pre-cleanup output |
@@ -139,3 +139,12 @@ Published October 6, 2026 from commit `21b8ed8aefd11c0c267734b87c4e81f84c6548fd`
 - On TECNO BG7 / Android API 33, 20 recorded Button cases passed: dimensions/density, real held press/release label/background colors, disabled presses, borders/corner radii, four gradient directions, four icon positions/tint, margins, explicit padding/native gravity, masked ripple, keyboard focus and native Button accessibility class. Screenshots/results are recorded by the opt-in device script.
 - Hover, radial/sweep fills, every font/theme and API 24–28 still need separate runtime coverage. Native press feedback works; Python click callback compilation remains a future phase.
 - Button ships under 0.1.3/v0.1.3; original PyPI 0.1.2 remains immutable. Multi-child layouts, Python callback binding, image backgrounds and additional Android runtime coverage remain planned.
+
+## 📦 Verified 0.1.3 publication
+
+Published October 6, 2026 from commit `1b064f99d75518394f5ead12df7c5aaf1d50aaf2`, tag `v0.1.3`. [Publishing run](https://github.com/babar-xagi/Anpyra/actions/runs/37539219407) and [GitHub release](https://github.com/babar-xagi/Anpyra/releases/tag/v0.1.3) provide the exact checked files. Fresh public installation and pip/uv upgrades from 0.1.2 passed, including signed Button/icon builds and retained existing project identity/output.
+
+| File | SHA-256 |
+| --- | --- |
+| `anpyra-0.1.3-py3-none-any.whl` | `bc131961c0ce9ccb031f09abd5314a1822d39e94d18d16bf1355ba042dfa0158` |
+| `anpyra-0.1.3.tar.gz` | `95bac7c3416bdb7560cbcf1bd917339560383326b540598d63e0c9845db5a591` |

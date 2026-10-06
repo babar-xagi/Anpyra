@@ -2,7 +2,7 @@
 
 This guide covers publishing the **Python framework package**: wheel (`.whl`) plus source distribution (`.tar.gz`). Android APK/store distribution is a separate workflow. A PyPI account is a starting point; you must also connect this GitHub repository as a trusted publisher.
 
-Anpyra **0.1.2** was published to PyPI on October 6, 2026 through [the successful workflow](https://github.com/babar-xagi/Anpyra/actions/runs/37528963281). Public wheel/source hashes match checked CI artifacts. Fresh installation and separate pip/uv upgrades from 0.1.1 built/verified starter and typography/local-font APKs, retaining existing app configuration and signing identity. See [release notes](https://github.com/babar-xagi/Anpyra/releases/tag/v0.1.2) and [progress evidence](../progress.md). TestPyPI rehearsal was not run for this release. Ordinary Git pushes/tags do not upload packages; the [publish workflow](../../.github/workflows/publish.yml) is explicitly dispatched from `main`.
+Anpyra **0.1.3** was published to PyPI on October 6, 2026 through [the successful workflow](https://github.com/babar-xagi/Anpyra/actions/runs/37539219407). Public wheel/source hashes match checked CI artifacts. Fresh installation and separate pip/uv upgrades from 0.1.2 built/verified starter and Button/state/ripple/icon APKs, retaining existing project configuration, signing identity and starter APK bytes. See [release notes](https://github.com/babar-xagi/Anpyra/releases/tag/v0.1.3) and [progress evidence](../progress.md). TestPyPI rehearsal was not run for this release. Ordinary pushes/tags do not upload packages; explicitly dispatch the [publish workflow](../../.github/workflows/publish.yml) from main.
 
 ## 🗂️ Release files
 

@@ -4,6 +4,12 @@ This file records user-visible milestones. Planned work belongs in the [roadmap]
 
 ## 📦 0.1.3 — October 6, 2026
 
+### 📦 Publication and upgrades
+
+- Publish wheel/source through [Trusted Publishing](https://github.com/babar-xagi/Anpyra/actions/runs/37539219407); public archive hashes match checked CI artifacts.
+- Verify fresh public installation and pip/uv upgrades from 0.1.2, preserving existing configuration, signing identity and starter APK bytes.
+- Build/verify the new Button/state/ripple/icon example from each public package environment and confirm reproducible output.
+
 ### 🟦 Native Button design
 
 - Add canonical Button/ButtonStyle/ButtonState/Border/Icon authoring and native android.widget.Button construction.

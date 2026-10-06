@@ -258,5 +258,5 @@ Further reading: [developer guide](developer_guide/README.md), [extension workfl
 - [x] Native interaction flags/enabled branches, validations and signed icon/font assets.
 - [x] Host tests, source example, user guide and file ownership map.
 - [x] Record 20 native device press/state/icon/geometry cases on Android API 33; document untested devices/options separately.
-- [ ] Verify 0.1.3 public publication, installation and pip/uv upgrades.
+- [x] Verify 0.1.3 public publication, fresh installation and separate pip/uv upgrades from 0.1.2, including native Button/icon APK builds.
 - [ ] Add typed Python click callbacks and multi-child layout composition.
