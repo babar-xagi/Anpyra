@@ -69,12 +69,21 @@ def _walk_ops(ops):
 
 
 def generate_methods(
-    app: AppIR, tidx, sidx, midx, helper_keys, screen_refs, field_indexes=None, *, chat_scroll=None
+    app: AppIR,
+    tidx,
+    sidx,
+    midx,
+    helper_keys,
+    screen_refs,
+    field_indexes=None,
+    *,
+    chat_scroll=None,
+    event_plan=None,
 ) -> GeneratedMethods:
     act_ctor = screen_refs["activity_constructor"]
     # Main register map.
     symbols = list(app.symbol_types)
-    extended = any(
+    extended = bool(app.app_fields or app.handlers) or any(
         isinstance(op, (NewLayout, NewTextInput, BindChatSession))
         for op in _walk_ops(app.operations)
     )
@@ -121,6 +130,23 @@ def generate_methods(
 
     def emit_main(ops):
         for op in ops:
+            if event_plan is not None:
+                from .events import emit_event_lifecycle
+
+                if emit_event_lifecycle(
+                    op,
+                    main_asm,
+                    reg_of,
+                    this_reg,
+                    state_reg,
+                    sidx,
+                    midx,
+                    field_indexes,
+                    screen_refs,
+                    argument_base,
+                    event_plan,
+                ):
+                    continue
             if isinstance(op, BindChatSession):
                 from .chat import emit_chat_binding
 

@@ -2,6 +2,14 @@
 
 This file records user-visible milestones. Planned work belongs in the [roadmap](docs/roadmap.md), not as completed release notes.
 
+## 🚧 Unreleased — Generic events and typed state
+
+- Compile named Button.on_click handlers and retained int/str/bool/widget fields into native Activity methods and fields.
+- Add typed callback expressions, assignments, branches, runtime text/enabled operations and safe method-call/data-flow validation.
+- Add explicit State persistence using Android instance-state Bundles, with native recreation, scalar restore and memory-only defaults.
+- Share interactive DEX composition with ChatSession while retaining released chatbot bytes and historical experiment output.
+- Add Counter Lab, independent emitted-byte behavior tests, native event checks and detailed API/file-ownership documentation.
+
 ## 📦 0.1.4 — October 6, 2026
 
 ### 📦 Publication and upgrades

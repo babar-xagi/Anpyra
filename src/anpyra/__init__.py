@@ -19,6 +19,7 @@ from .components import (
     Screen,
     ScrollView,
     Shadow,
+    State,
     StyleError,
     TextInput,
     TextStyle,
@@ -27,6 +28,7 @@ from .config import AppConfig, ConfigError, Project, load_project
 
 __version__ = "0.1.4"
 __all__ = [
+    "State",
     "Column",
     "Row",
     "ScrollView",

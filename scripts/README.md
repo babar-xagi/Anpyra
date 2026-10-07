@@ -46,3 +46,7 @@ Run `python scripts/check_chat_device.py --serial DEVICE_ID` on an unlocked phon
 ## 🟦 check_button_device.py
 
 Opt-in native Button pointer/pixel/geometry checks. Use `python scripts/check_button_device.py --serial DEVICE_ID` with an unlocked phone. --adb, --package and --work-dir select the tool/test app. The script saves screenshots/results, holds its own visible test view awake and captures press states during a continuous gesture, then releases it. It does not bind app actions or change system settings. See [Button internals](../docs/developer_guide/button_styling.md).
+
+## 🖱️ check_events_device.py
+
+Run `python scripts/check_events_device.py --serial DEVICE_ID` on an unlocked phone. It builds its own counter/input test package, validates clicks, disabled state, input and explicit Bundle restoration, and records screenshots/results under build/. Recreate is called on the test Activity; system rotation/display settings are unchanged. Keep the app foreground and avoid manual taps during testing. See [event/state internals](../docs/developer_guide/events.md).

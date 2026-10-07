@@ -37,6 +37,9 @@ def message(text):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--serial", required=True)
+    parser.add_argument(
+        "--mixed", action="store_true", help="also check generic callbacks beside ChatSession"
+    )
     parser.add_argument("--adb", default="adb")
     parser.add_argument("--work-dir", type=Path, default=Path("build/chat-device-checks"))
     args = parser.parse_args()
@@ -45,13 +48,20 @@ def main():
         raise ValueError("adb not found")
     adb = [executable, "-s", args.serial]
     root = args.work_dir.resolve()
-    package = "dev.anpyra.chatchecks"
+    package = "dev.anpyra.chatmixedchecks" if args.mixed else "dev.anpyra.chatchecks"
     project = load_project(root) if root.exists() else init_project(root, package=package)
     if project.config.package != package:
         raise ValueError("work directory belongs to another app")
-    (root / "app.py").write_text(
-        (ROOT / "examples/chatbot/app.py").read_text(encoding="utf-8"), encoding="utf-8"
-    )
+    source = (ROOT / "examples/chatbot/app.py").read_text(encoding="utf-8")
+    if args.mixed:
+        source = source.replace(
+            "        screen.set_content(page)",
+            '        self.extra_count: int = 0\n        extra = Button(self, text="Extra: 0")\n'
+            "        extra.style.all_caps = False\n        self.extra = extra\n"
+            "        extra.on_click(self.extra_click)\n        page.add(extra)\n        screen.set_content(page)",
+        )
+        source += '\n    def extra_click(self):\n        self.extra_count += 1\n        self.extra.set_text("Extra: " + str(self.extra_count))\n'
+    (root / "app.py").write_text(source, encoding="utf-8")
     requests = []
     release_first = threading.Event()
     reasoning = {
@@ -70,7 +80,7 @@ def main():
             requests.append(data)
             prompt = data["input"][-1]["content"]
             if prompt == "My name is Babar.":
-                release_first.wait(30)
+                release_first.wait(60)
                 output = [reasoning, message("Hello Babar!\n" + "Native chat line.\n" * 38)]
             elif prompt == "What is my name?":
                 output = [message("Your name is Babar.")]
@@ -191,6 +201,18 @@ def main():
         tap(button(nodes(), "Send message"))
         assert status(nodes()) == "Enter your temporary API key above."
         checks.append("missing_key")
+        if args.mixed:
+            extra = next(
+                n
+                for n in nodes()
+                if n.get("class") == "android.widget.Button"
+                and n.get("text", "").startswith("Extra: ")
+            )
+            before = int(extra["text"].split(": ")[1])
+            tap(extra)
+            assert status(nodes()) == "Enter your temporary API key above."
+            assert button(nodes(), f"Extra: {before + 1}") is not None
+            checks.append("generic_dispatch_before_chat")
         enter(0, "fixture-key")
         assert [n for n in nodes() if n.get("class") == "android.widget.EditText"][0][
             "input_masked"
@@ -206,8 +228,17 @@ def main():
         assert all(
             n["enabled"] == "false"
             for n in ns
-            if n.get("class") in {"android.widget.EditText", "android.widget.Button"}
+            if n.get("class") == "android.widget.EditText"
+            or n.get("text") in {"Send message", "New chat"}
         )
+        if args.mixed:
+            extra = next(
+                n
+                for n in ns
+                if n.get("class") == "android.widget.Button"
+                and n.get("text", "").startswith("Extra: ")
+            )
+            assert extra["enabled"] == "true"
         tap(button(ns, "Send message"))
         release_first.set()
         ns = wait_reply("Reply received • ready")
@@ -243,6 +274,17 @@ def main():
         assert all(r["model"] == "gpt-5.5" and r["store"] is False for r in requests)
         assert all(r["include"] == ["reasoning.encrypted_content"] for r in requests)
         checks.append("new_chat_reset")
+        if args.mixed:
+            extra = next(
+                n
+                for n in nodes()
+                if n.get("class") == "android.widget.Button"
+                and n.get("text", "").startswith("Extra: ")
+            )
+            before = int(extra["text"].split(": ")[1])
+            tap(extra)
+            assert button(nodes(), f"Extra: {before + 1}") is not None
+            checks.append("generic_dispatch_after_chat")
         report = {
             "model": command("shell", "getprop", "ro.product.model").strip(),
             "api": command("shell", "getprop", "ro.build.version.sdk").strip(),

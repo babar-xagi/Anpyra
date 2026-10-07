@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass, field, fields
 from typing import TYPE_CHECKING
 
@@ -275,6 +276,10 @@ class Button(TextView):
         _native_only()
 
     def set_enabled(self, enabled: bool) -> None:
+        _native_only()
+
+    def on_click(self, handler: Callable[[], None]) -> None:
+        """Bind a no-argument Activity method; compiled to a native listener."""
         _native_only()
 
     def set_style(self, style: ButtonStyle | TextStyle) -> None:

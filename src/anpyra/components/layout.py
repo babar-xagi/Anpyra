@@ -4,6 +4,12 @@ from .textview import _native_only
 
 
 class Column:
+    def set_enabled(self, enabled: bool) -> None:
+        _native_only()
+
+    def is_enabled(self) -> bool:
+        _native_only()
+
     def __init__(self, context):
         _native_only()
 
@@ -22,6 +28,12 @@ class Row(Column):
 
 
 class ScrollView:
+    def set_enabled(self, enabled: bool) -> None:
+        _native_only()
+
+    def is_enabled(self) -> bool:
+        _native_only()
+
     def __init__(self, context):
         _native_only()
 

@@ -27,6 +27,10 @@ This guide is for maintainers and contributors extending or fixing Anpyra. It de
 
 [Native chatbot implementation](chatbot.md) maps every new file, generated classes, fields, requests, response parsing and key-free device tests. This is included in 0.1.4 with focused ChatSession actions; generic Python callbacks remain future work.
 
+## 🖱️ Generic events and state
+
+The [event/state file map](events.md) traces source lowering, data-flow validation, native callback/Bundle generation, shared interactive DEX composition and independent byte/phone tests. This is an unreleased source addition.
+
 ## 🎯 Start with the problem
 
 For a source error, begin in `compiler/frontend.py`. For wrong DEX, compare IR with `android/dex.py`. For installation/signature issues, trace `android/` and its `build.py`. The [debugging guide](debugging.md) maps specific symptoms to methods and tests.

@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from ..components.screen import Background, StyleError, parse_color
-from . import interactive
+from . import events, interactive
 from .button_style import ButtonStyler
 from .ir import (
     AppIR,
@@ -62,6 +62,7 @@ API_NAMES = {
     "ScrollView",
     "TextInput",
     "ChatSession",
+    "State",
     "Button",
     "ButtonStyle",
     "ButtonState",
@@ -87,6 +88,7 @@ def _require_imports(tree: ast.Module) -> set[str]:
                 "anpyra.components.layout": {"Column", "Row", "ScrollView"},
                 "anpyra.components.textinput": {"TextInput"},
                 "anpyra.components.chat": {"ChatSession"},
+                "anpyra.components.state": {"State"},
                 "anpyra": API_NAMES,
                 "pyandroid": {"Activity", "TextView"},
                 "anpyra.components": API_NAMES - {"Activity"},
@@ -156,10 +158,8 @@ def _find_activity_class(tree: ast.Module) -> ast.ClassDef:
             f"{_line(cls)}Activity decorators, class keywords and type parameters are unsupported"
         )
     for node in cls.body:
-        if not _is_docstring(node) and not (
-            isinstance(node, ast.FunctionDef) and node.name == "on_create"
-        ):
-            raise CompileError(f"{_line(node)}Activity body supports only on_create and docstrings")
+        if not _is_docstring(node) and not (isinstance(node, ast.FunctionDef)):
+            raise CompileError(f"{_line(node)}Activity body supports methods and docstrings")
     return cls
 
 
@@ -341,6 +341,11 @@ class FunctionCompiler:
         self.text_styler = TextStyler()
         self.button_styler = ButtonStyler(self.text_styler)
         self.chat_bound = False
+        self.app_fields = {}
+        self.widget_origins = {}
+        self.event_methods = {}
+        self.event_calls = []
+        self.click_bound = set()
 
     def declare(self, name, typ, node):
         if name in {"self", "state", *API_NAMES} or name in self.functions:
@@ -586,6 +591,9 @@ class FunctionCompiler:
         return tuple(ops)
 
     def compile_expr(self, node):
+        event = events.lifecycle(self, node)
+        if event is not None:
+            return event
         call = node.value
         if not isinstance(call, ast.Call) or not isinstance(call.func, ast.Attribute):
             raise CompileError(f"{_line(node)}unsupported expression")
@@ -596,7 +604,9 @@ class FunctionCompiler:
             return special
         if isinstance(receiver, ast.Name) and self.symbols.get(receiver.id) == "Button":
             if attr in {"on_click", "set_on_click", "set_on_click_listener"}:
-                raise CompileError(f"{_line(node)}Button click callbacks are not implemented yet")
+                raise CompileError(
+                    f"{_line(node)}use button.on_click(self.handler); alternate listener methods are unsupported"
+                )
             if attr == "set_enabled" and len(call.args) == 1 and not call.keywords:
                 arg = call.args[0]
                 if isinstance(arg, ast.Name):
@@ -771,6 +781,9 @@ class FunctionCompiler:
             raise CompileError(f"{_line(node)}{exc}") from exc
 
     def _compile_statement(self, node):
+        special = events.lifecycle(self, node)
+        if special is not None:
+            return special
         if isinstance(node, ast.AnnAssign):
             return self.compile_ann_assign(node)
         if isinstance(node, ast.Assign):
@@ -812,9 +825,11 @@ def _compile_source(source: str, *, source_path: Path, package: str, label: str)
             helper_irs.append(HelperCompiler(signatures[node.name]).compile(node))
 
     fc = FunctionCompiler(signatures, imported)
+    fc.event_methods = events.collect_methods(class_node)
     operations = [CallSuperOnCreate()]
     for node in on_create.body:
         operations.extend(fc.compile_statement(node))
+    app_fields, handlers = events.finalize(fc, operations)
     if _count_content_view(operations) != 1 or not any(
         isinstance(op, SetContentView) for op in operations
     ):
@@ -831,7 +846,9 @@ def _compile_source(source: str, *, source_path: Path, package: str, label: str)
         "ScrollView",
     }.intersection(fc.symbols.values()):
         raise CompileError("on_create must create a native view")
-    extended = any(isinstance(op, (NewLayout, NewTextInput, BindChatSession)) for op in operations)
+    extended = bool(app_fields or handlers) or any(
+        isinstance(op, (NewLayout, NewTextInput, BindChatSession)) for op in operations
+    )
     if len(fc.symbols) > (48 if extended else 14):
         limit = 48 if extended else 14
         raise CompileError(
@@ -844,6 +861,8 @@ def _compile_source(source: str, *, source_path: Path, package: str, label: str)
         tuple(helper_irs),
         tuple(operations),
         tuple(fc.symbols.items()),
+        app_fields,
+        handlers,
     )
     return CompileResult(source_path, tree, ir)
 

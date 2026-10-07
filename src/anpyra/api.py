@@ -6,5 +6,8 @@ from .components.textview import TextView
 
 
 class Activity:
+    def recreate(self) -> None:
+        raise RuntimeError("Build this app with Anpyra; Android methods cannot run on the host.")
+
     def set_content_view(self, view: TextView) -> None:
         raise RuntimeError("Build this app with Anpyra; Android methods cannot run on the host.")

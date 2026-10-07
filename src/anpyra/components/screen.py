@@ -185,6 +185,12 @@ class Screen:
     style: ScreenStyle
     bg: BackgroundProperties | Background
 
+    def set_enabled(self, enabled: bool) -> None:
+        raise RuntimeError("Build this app with Anpyra; Screen runs on Android.")
+
+    def is_enabled(self) -> bool:
+        raise RuntimeError("Build this app with Anpyra; Screen runs on Android.")
+
     def __init__(self, context) -> None:
         raise RuntimeError("Build this app with Anpyra; Screen runs on Android.")
 

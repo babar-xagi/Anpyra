@@ -80,7 +80,7 @@ The original experiments were reported successful on a phone by the author. The 
 | 3 | Validation, diagnostics and binary hardening | 🧪 Phone installation reported; full runtime/independent checks pending | 1–2 |
 | 4 | Language semantics and register model | 📋 Planned | 3 |
 | 5 | Native layouts and widget surface | 🧪 Basic layouts/input included in 0.1.4 | 3–4 |
-| 6 | Events, application state and lifecycle | 🧪 Scoped native ChatSession implemented; generic callbacks planned | 4–5 |
+| 6 | Events, application state and lifecycle | 🧪 Generic callback/state milestone delivered in unreleased source | 4–5 |
 | 7 | Modules, classes and multiple Activities | 📋 Planned | 4, lifecycle contracts |
 | 8 | Assets/resources and package expansion | 📋 Planned | 5, 7 where required |
 | 9 | Release identity and distribution | 📋 Planned | Validated runtime/package contracts |
@@ -132,7 +132,7 @@ Phases are a dependency-oriented plan, not a fixed schedule. Small independent t
 **Outcome:** support practical calculations and control flow without unclear behavior.
 
 - [ ] Specify signed integer behavior, evaluation order, type stability and initialization rules.
-- [ ] Add reassignment with definite-initialization/data-flow checks.
+- [x] Add typed field/callback-local reassignment and branch definite-initialization checks in the event subset; broader lifecycle/helper reassignment remains planned.
 - [ ] Support wider constants and nested arithmetic expressions deliberately.
 - [ ] Add helper local statements and conditional returns.
 - [ ] Add helper-to-helper calls with signatures and call graph validation.
@@ -163,12 +163,12 @@ Phases are a dependency-oriented plan, not a fixed schedule. Small independent t
 
 **Outcome:** make a small interactive app.
 
-- [x] Generate scoped ChatSession listener/interface bindings; generic user-defined callback dispatch remains planned.
-- [x] Generate controller fields for widget references, busy state and successful history; general user state is not yet supported.
-- [ ] Implement a button click updating a counter and its visible text.
+- [x] Generate ChatSession and generic named Python callback dispatch; mixed-controller dispatch has separate acceptance checks.
+- [x] Generate typed scalar and widget-reference fields; explicit State persistence and source initialization checks are implemented in the unreleased event feature.
+- [x] Implement +/−/Reset counter, pause/enabled state and input-preview callbacks; record 11 API 33 event cases.
 - [x] Specify current ChatSession behavior: Activity recreation clears key/history; durable/general app persistence remains planned.
 - [ ] Add lifecycle hooks only when their source and bytecode contracts are implemented.
-- [ ] Define object lifetime/reference behavior and errors for invalid callbacks.
+- [x] Define Activity-local references, explicit scalar Bundle restore, invalid binding/capture/type errors and acyclic method-call rules; broader lifetime features remain planned.
 
 **Dependencies:** phase 4 semantics and phase 5 UI.
 
@@ -234,7 +234,7 @@ Phases are a dependency-oriented plan, not a fixed schedule. Small independent t
 
 ## 🎯 Next practical milestone
 
-The starter APK has been installed successfully according to the author. Next record its visible text/lifecycle and both score branches, plus independent inspection of hello/score. Then build a **small counter app** through phases 4–6: layout, label, button, click callback and typed mutable state. This is a proposal with dependencies, not a buildable v0.1 example.
+The counter/input milestone through phases 4–6 is implemented in the current editable source and passed native click/recreation checks on API 33. Published 0.1.4 remains unchanged. Next expand callback/widget/property contracts deliberately, then multi-file composition; full original score/lifecycle and independent ART/DEX inspection coverage also remain outstanding. See [events/state usage](user_guide/events.md).
 
 ## 🤝 How to keep the roadmap useful
 
@@ -259,4 +259,4 @@ Further reading: [developer guide](developer_guide/README.md), [extension workfl
 - [x] Host tests, source example, user guide and file ownership map.
 - [x] Record 20 native device press/state/icon/geometry cases on Android API 33; document untested devices/options separately.
 - [x] Verify 0.1.3 public publication, fresh installation and separate pip/uv upgrades from 0.1.2, including native Button/icon APK builds.
-- [ ] Add typed Python click callbacks and multi-child layout composition.
+- [x] Add typed Python click callbacks and multi-child layout composition in the unreleased event/source milestone.

@@ -26,6 +26,8 @@ It grew from the successful **PyAndroid experiments 001–008**. Experiment 008 
 
 ## ⚙️ How it works
 
+**🖱️ Unreleased events/state preview:** the current checkout adds `button.on_click(self.handler)`, typed mutable Activity fields, runtime input and opt-in `State(..., persist=True)` save/restore. The [Counter Lab example](examples/counter/README.md) passed 11 native API 33 cases. Use the editable checkout for this feature; published 0.1.4 remains unchanged. See [usage](docs/user_guide/events.md) and [file ownership](docs/developer_guide/events.md).
+
 **💬 Anpyra Chat:** version 0.1.4 includes native layouts, masked TextInput and ChatSession. The [example](examples/chatbot/README.md) calls OpenAI directly from Android with runtime key entry and in-memory history. The APIs install from PyPI; full example files are in the repository/source archive. See the [user guide](docs/user_guide/chatbot.md) and [file-by-file implementation map](docs/developer_guide/chatbot.md).
 
 ```mermaid

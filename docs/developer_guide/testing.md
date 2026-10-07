@@ -17,7 +17,7 @@
 | Regression | `tests/regression/test_functions.py` | Adapted experiment 008 typed-helper contracts |
 | Fixtures | `tests/fixtures/exp005.py` through `exp008.py` | Historical source inputs; not test runners |
 
-The current suite contains **121 tests**. Interactive/chat coverage is in `tests/unit/test_interactive.py` and `tests/integration/test_chat_build.py`. CLI coverage includes Unicode output through Windows-style legacy-encoded pipes. One exact-output regression checks all four experiment DEX hashes captured before Android component cleanup. Package `__init__.py` files allow recursive unittest discovery. Some retained regression tests build APKs, so the groups describe intent rather than strict isolation rules.
+The current suite contains **138 tests**. Interactive/chat coverage is in `tests/unit/test_interactive.py` and `tests/integration/test_chat_build.py`. CLI coverage includes Unicode output through Windows-style legacy-encoded pipes. One exact-output regression checks all four experiment DEX hashes captured before Android component cleanup. Package `__init__.py` files allow recursive unittest discovery. Some retained regression tests build APKs, so the groups describe intent rather than strict isolation rules.
 
 ## ⌨️ Run checks
 
@@ -72,3 +72,7 @@ Attach evidence in a review or release record. Update the [roadmap](../roadmap.m
 Test observable contracts or actual binary data. For a branch change, assert destinations land on instruction starts. For identity changes, assert the retained certificate remains stable and invalid material is preserved/rejected. For unsupported syntax, assert a useful error instead of merely mirroring the implementation.
 
 Use temporary directories for builds and never commit generated signing material. Keep historical fixtures stable and add a new minimal fixture/test for new semantics. Do not invent arbitrary test-count targets; close a specific coverage gap.
+
+## 🖱️ Generic event/state coverage
+
+`tests/unit/test_events.py` validates source contracts and runs generated callback/save/restore bytes through the independent test-only `tests/dex_runtime.py`. Native acceptance uses `scripts/check_events_device.py`; mixed ChatSession/controller acceptance uses `scripts/check_chat_device.py --mixed --work-dir build/chat-mixed-checks`. See the [implementation guide](events.md).

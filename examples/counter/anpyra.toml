@@ -1,0 +1,9 @@
+[app]
+package = "dev.anpyra.counter"
+label = "Counter Lab"
+entry = "app.py"
+version_code = 1
+version_name = "0.1.0"
+min_sdk = 24
+target_sdk = 36
+output_dir = "build"

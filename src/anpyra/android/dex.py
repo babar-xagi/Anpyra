@@ -53,6 +53,10 @@ def build_dex(app: AppIR) -> DexBuild:
         from .chat import build_chat_dex
 
         return build_chat_dex(app)
+    if app.app_fields or app.handlers:
+        from .interactive import build_interactive_dex
+
+        return build_interactive_dex(app)
     cls = app.class_descriptor
     activity, void, int_t = ACTIVITY_TYPE, "V", "I"
     operations = tuple(_walk_ops(app.operations))

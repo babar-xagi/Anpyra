@@ -86,6 +86,77 @@ class BindChatSession:
 
 
 @dataclass(frozen=True)
+class AppField:
+    name: str
+    type_name: str
+    persist: bool = False
+
+
+@dataclass(frozen=True)
+class StoreAppField:
+    name: str
+    value_var: str
+
+
+@dataclass(frozen=True)
+class InitAppField:
+    name: str
+    value: str | int | bool
+
+
+@dataclass(frozen=True)
+class BindClick:
+    button: str
+    handler: str
+
+
+@dataclass(frozen=True)
+class CallEvent:
+    handler: str
+
+
+@dataclass(frozen=True)
+class EventExpr:
+    kind: str
+    type_name: str
+    value: object = None
+    args: tuple = ()
+
+
+@dataclass(frozen=True)
+class EventAssign:
+    kind: str
+    name: str
+    value: EventExpr
+
+
+@dataclass(frozen=True)
+class EventAction:
+    receiver: str | None
+    method: str
+    args: tuple = ()
+
+
+@dataclass(frozen=True)
+class EventIf:
+    condition: EventExpr
+    then_ops: tuple
+    else_ops: tuple
+
+
+@dataclass(frozen=True)
+class EventReturn:
+    pass
+
+
+@dataclass(frozen=True)
+class EventHandler:
+    name: str
+    operations: tuple
+    local_types: tuple
+
+
+@dataclass(frozen=True)
 class ApplyButtonDesign:
     receiver: str
     design: ButtonDesign
@@ -177,6 +248,10 @@ IROp = (
     | AddLayoutChild
     | NewTextInput
     | BindChatSession
+    | StoreAppField
+    | InitAppField
+    | BindClick
+    | CallEvent
     | ApplyButtonDesign
     | SetButtonProperty
     | SetText
@@ -222,6 +297,8 @@ class AppIR:
     functions: tuple[FunctionIR, ...]
     operations: tuple[IROp, ...]
     symbol_types: tuple[tuple[str, str], ...]
+    app_fields: tuple[AppField, ...] = ()
+    handlers: tuple[EventHandler, ...] = ()
 
     @property
     def qualified_activity(self) -> str:
@@ -233,6 +310,11 @@ class AppIR:
 
     def pretty(self) -> str:
         lines = [f"AppIR(package={self.package!r}, class={self.class_name!r})"]
+        if self.app_fields or self.handlers:
+            lines.append("  Activity fields:")
+            lines.extend(f"    {field!r}" for field in self.app_fields)
+            lines.append("  event handlers:")
+            lines.extend(f"    {handler!r}" for handler in self.handlers)
         lines.append("  functions:")
         for fn in self.functions:
             for line in fn.pretty().splitlines():

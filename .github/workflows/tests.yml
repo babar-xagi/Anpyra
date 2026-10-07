@@ -44,5 +44,8 @@ jobs:
       - run: anpyra check examples/chatbot --dump-dalvik
       - run: anpyra build examples/chatbot
       - run: anpyra verify examples/chatbot/build/dev.anpyra.chatbot.apk
+      - run: anpyra check examples/counter --dump-dalvik
+      - run: anpyra build examples/counter
+      - run: anpyra verify examples/counter/build/dev.anpyra.counter.apk
       - run: anpyra verify examples/score/build/dev.anpyra.score.apk
       - run: python -m pip wheel --no-deps . --wheel-dir dist

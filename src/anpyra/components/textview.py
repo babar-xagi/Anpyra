@@ -274,6 +274,15 @@ class TextView:
     def set_text(self, text: str) -> None:
         _native_only()
 
+    def get_text(self) -> str:
+        _native_only()
+
+    def is_enabled(self) -> bool:
+        _native_only()
+
+    def set_enabled(self, enabled: bool) -> None:
+        _native_only()
+
     def set_text_color(self, color: str | int) -> None:
         _native_only()
 

@@ -1,22 +1,17 @@
 """Native standalone Responses client: UI listener, HTTPS worker and UI delivery."""
 
 from ..compiler.ir import (
-    ApplyScreenBackground,
     BindChatSession,
-    LoadConst,
     NewLayout,
     SetScrollContent,
 )
-from .backgrounds import SDK_FIELD, background_fields
-from .button import button_fields, button_strings
-from .classes import ClassDefinition, MethodDefinition, write_classes
-from .codegen import _walk_ops, generate_methods
+from .backgrounds import SDK_FIELD
+from .codegen import _walk_ops
 from .dalvik import OP_IF_GE, OP_IF_LT, OP_IF_NE, OP_INVOKE_VIRTUAL, emit_invoke
-from .dex_types import DexBuild, FieldKey, MethodKey, MethodListing
-from .layout import EDIT, SCROLL, layout_strings
+from .dex_types import FieldKey, MethodKey
+from .layout import EDIT, SCROLL
 from .method_builder import MethodBuilder
 from .screen import ACTIVITY_TYPE, screen_methods
-from .textview import textview_fields, textview_strings
 
 OBJECT = "Ljava/lang/Object;"
 STRING = "Ljava/lang/String;"
@@ -34,7 +29,7 @@ ENDPOINT = "https://api.openai.com/v1/responses"
 
 
 class ChatPlan:
-    def __init__(self, app, binding):
+    def __init__(self, app, binding, external_dispatch=False):
         self.app, self.binding = app, binding
         self.builders = []
         self.main = app.class_descriptor
@@ -198,7 +193,12 @@ class ChatPlan:
         self.add("ui_post", ACTIVITY_TYPE, "runOnUiThread", params=(RUNNABLE,))
         self.add("finishing", ACTIVITY_TYPE, "isFinishing", "Z")
         self.add("destroyed", ACTIVITY_TYPE, "isDestroyed", "Z")
-        self.add("on_click", self.main, "onClick", params=(VIEW,))
+        self.add(
+            "on_click",
+            self.main,
+            "anpyraChatClick" if external_dispatch else "onClick",
+            params=(VIEW,),
+        )
         self.add("on_reply", self.main, "chatReply", params=(STRING, STRING, STRING, "Z"))
         self.add("init_chat", self.main, "initChat")
         self.add("url_ctor", "Ljava/net/URL;", "<init>", params=(STRING,))
@@ -689,120 +689,6 @@ def emit_chat_binding(
 
 
 def build_chat_dex(app):
-    operations = tuple(_walk_ops(app.operations))
-    bindings = [op for op in operations if isinstance(op, BindChatSession)]
-    if len(bindings) != 1:
-        raise ValueError("chat apps require exactly one ChatSession")
-    plan = ChatPlan(app, bindings[0])
-    fields = (
-        set(background_fields(operations))
-        | button_fields(operations)
-        | textview_fields(operations)
-        | set(plan.fields.values())
-    )
-    strings = {op.value for op in operations if isinstance(op, LoadConst) and op.type_name == "str"}
-    strings.update(
-        op.image_asset
-        for op in operations
-        if isinstance(op, ApplyScreenBackground) and op.image_asset is not None
-    )
-    strings.update(button_strings(operations))
-    strings.update(textview_strings(operations))
-    strings.update(layout_strings(operations))
-    strings.update(plan.literals)
-    helper_keys = {
-        fn.name: MethodKey(app.class_descriptor, fn.name, "I", tuple("I" for _ in fn.parameters))
-        for fn in app.functions
-    }
-    generated = {}
+    from .interactive import build_interactive_dex
 
-    def lifecycle(pools, which):
-        if not generated:
-            generated["methods"] = generate_methods(
-                app,
-                pools.types,
-                pools.strings,
-                pools.methods,
-                helper_keys,
-                plan.refs,
-                pools.fields,
-                chat_scroll=plan.scroll,
-            )
-        return getattr(generated["methods"], which)
-
-    ui_methods = [
-        MethodDefinition(
-            plan.refs["app_constructor"], 0x10001, lambda p: lifecycle(p, "constructor_code"), True
-        ),
-        MethodDefinition(plan.refs["app_on_create"], 4, lambda p: lifecycle(p, "lifecycle_code")),
-        MethodDefinition(plan.refs["init_chat"], 1, plan.init),
-        MethodDefinition(plan.refs["on_click"], 1, plan.click),
-        MethodDefinition(plan.refs["on_reply"], 1, plan.reply),
-    ]
-    if plan.scroll:
-        ui_methods.append(MethodDefinition(plan.refs["scroll_run"], 1, plan.scroll_run))
-    for key in helper_keys.values():
-
-        def helper(pools, key=key):
-            lifecycle(pools, "constructor_code")
-            return next(row[2] for row in generated["methods"].helper_codes if row[0] == key)
-
-        ui_methods.append(MethodDefinition(key, 9, helper, True))
-    classes = [
-        ClassDefinition(
-            plan.main,
-            ACTIVITY_TYPE,
-            tuple(ui_methods),
-            tuple((field, 2) for field in plan.fields.values() if field.owner == plan.main),
-            (LISTENER, GLOBAL_LAYOUT) if plan.scroll else (LISTENER,),
-        ),
-        ClassDefinition(
-            plan.worker,
-            OBJECT,
-            (
-                MethodDefinition(plan.refs["worker_ctor"], 0x10001, plan.worker_constructor, True),
-                MethodDefinition(plan.refs["worker_run"], 1, plan.worker_run),
-            ),
-            tuple((field, 2) for field in plan.fields.values() if field.owner == plan.worker),
-            (RUNNABLE,),
-        ),
-        ClassDefinition(
-            plan.delivery,
-            OBJECT,
-            (
-                MethodDefinition(
-                    plan.refs["delivery_ctor"], 0x10001, plan.delivery_constructor, True
-                ),
-                MethodDefinition(plan.refs["delivery_run"], 1, plan.delivery_run),
-            ),
-            tuple((field, 1) for field in plan.fields.values() if field.owner == plan.delivery),
-            (RUNNABLE,),
-        ),
-    ]
-    data = write_classes(
-        classes, (*plan.refs.values(), *helper_keys.values()), fields, strings, (EXCEPTION,)
-    )
-    methods = generated["methods"]
-    callbacks = tuple(
-        MethodListing(
-            f"{key.owner}->{key.name}",
-            tuple(
-                (
-                    "this" if index == 0 else f"arg{index}",
-                    typ,
-                    builder.registers - builder.inputs + index,
-                )
-                for index, typ in enumerate((key.owner, *key.parameters))
-            ),
-            builder.code_units,
-            builder.assembly_listing,
-        )
-        for key, builder in plan.builders
-    )
-    return DexBuild(
-        data,
-        methods.register_map,
-        methods.code_units,
-        methods.assembly_listing,
-        (*methods.listings, *callbacks),
-    )
+    return build_interactive_dex(app)
