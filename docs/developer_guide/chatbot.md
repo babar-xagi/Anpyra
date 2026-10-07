@@ -1,6 +1,6 @@
 # 💬 Native Chatbot Implementation and File Map
 
-The chatbot is an unreleased source addition. It preserves the Python → AST → IR → DEX → APK architecture. It adds a small native interaction path rather than embedding CPython or the Python OpenAI SDK.
+The chatbot and supporting components are included in Anpyra 0.1.4. It preserves the Python → AST → IR → DEX → APK architecture. It adds a small native interaction path rather than embedding CPython or the Python OpenAI SDK.
 
 ## 🗂️ New files and ownership
 

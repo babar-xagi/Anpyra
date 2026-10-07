@@ -1,8 +1,8 @@
 # 📊 Implementation Progress and Verified Results
 
-**Updated: October 6, 2026.** Current focus: finish the Android framework. Release version: **Anpyra 0.1.3**. This version includes Android-only components, Screen styling, TextView typography and native Button design. The original 0.1.0/0.1.1 releases remain immutable.
+**Updated: October 6, 2026.** Current focus: finish the Android framework. Release candidate: **Anpyra 0.1.4**. This version includes Android-only components, Screen styling, TextView typography and native Button design. The original 0.1.0/0.1.1 releases remain immutable.
 
-## 💬 Unreleased standalone chatbot — October 6, 2026
+## 💬 Standalone chatbot (0.1.4) — October 6, 2026
 
 The current source adds Column, Row, ScrollView, TextInput and ChatSession alongside the released Screen/TextView/Button components. It generates a native Android click listener, worker thread, HTTPS/JSON request, UI delivery and in-memory history. No Python server or embedded Python/OpenAI SDK is needed.
 
@@ -15,7 +15,7 @@ The current source adds Column, Row, ScrollView, TextInput and ChatSession along
 | Controlled native acceptance | **13 checks passed**, seven synthetic requests; missing key/message, masked password, scrollable long text, busy guard, worker/delivery, full-output history, quota/malformed/incomplete recovery, refusal and New chat reset |
 | Visual review | Password dots and scrolling to the measured reply bottom confirmed; native call order/child sizing corrected after initial screenshot review |
 | Live OpenAI access | Supplied temporary key returned HTTP 429, `credit_balance_exhausted`, `insufficient_quota`; **no successful live AI answer verified** |
-| Publication | Source feature only; **not published to PyPI**. Published 0.1.3 remains immutable |
+| Publication | 0.1.4 release candidate prepared; upload/index verification pending. Published 0.1.3 remains immutable |
 
 Device automation initially sent Back while OEM keyboard visibility was stale; the test now keeps the keyboard open and uses the resized app's button bounds. Acceptance evidence is under ignored `build/chat-device-checks/` (`report.json`, synthetic requests, screenshot). Controlled responses validate native controller behavior separately from provider/model behavior.
 

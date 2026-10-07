@@ -1,6 +1,6 @@
 # 🔤 TextView Styling and Typography
 
-The expanded TextView component is included in **Anpyra 0.1.2**. Install directly from PyPI with `uv pip install "anpyra==0.1.3"` or `python -m pip install "anpyra==0.1.3"`. Existing users should follow the [upgrade instructions](installation.md). No source checkout is needed to use these typography properties.
+The expanded TextView component is included in **Anpyra 0.1.2**. Install directly from PyPI with `uv pip install "anpyra==0.1.4"` or `python -m pip install "anpyra==0.1.4"`. Existing users should follow the [upgrade instructions](installation.md). No source checkout is needed to use these typography properties.
 
 TextView is the native Android text widget. Its public implementation lives in `components/textview.py`. Existing `from anpyra import TextView` and `from pyandroid import TextView` imports stay compatible; component imports are also available.
 

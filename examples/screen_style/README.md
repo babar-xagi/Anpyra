@@ -15,4 +15,4 @@ Change the settings in [app.py](app.py) or replace [wallpaper.png](assets/wallpa
 
 Try `cover`, `contain`, `fill`, `center`, `inside`, `fit_start` and `fit_end`. For radial gradients use `Gradient(colors, kind="radial", radius=240)`; the radius is in device pixels. `screen.style.bg.opacity` applies to the composed background only; it does not fade the foreground text.
 
-The Screen component is an unreleased source feature and requires the current editable checkout; PyPI 0.1.0 does not include it. See [screen styling](../../docs/user_guide/screen.md) for exact syntax/options and limits.
+The Screen component is available in Anpyra 0.1.1 and later; use Anpyra 0.1.4 with these repository/source-distribution example files. See [screen styling](../../docs/user_guide/screen.md) for exact syntax/options and limits.

@@ -2,6 +2,8 @@
 
 Anpyra **0.1.3** was published to PyPI on October 6, 2026 through [the successful workflow](https://github.com/babar-xagi/Anpyra/actions/runs/37539219407). Public wheel/source hashes match checked CI artifacts. Fresh installation and separate pip/uv upgrades from 0.1.2 built/verified starter and Button/state/ripple/icon APKs, retaining existing project configuration, signing identity and starter APK bytes. See [release notes](https://github.com/babar-xagi/Anpyra/releases/tag/v0.1.3) and [progress evidence](../progress.md). TestPyPI rehearsal was not run for this release. Android app-store signing/distribution remains a separate future workflow; see [publishing](publishing.md) for setup and commands.
 
+The next release candidate is **0.1.4**, adding native layouts, masked TextInput, scoped ChatSession, conversation history and Unicode-safe CLI output. Publication evidence is recorded after a successful upload in [progress](../progress.md).
+
 ## 📋 Prepare a candidate
 
 - [ ] Choose a version deliberately; update `pyproject.toml` and `src/anpyra/__init__.py` together.
@@ -28,17 +30,17 @@ Complete the [manual device checklist](testing.md) before claiming device accept
 ## 📦 Build distributions
 
 ```powershell
-uv build --no-create-gitignore --out-dir dist/pypi/0.1.3
-python scripts/check_release.py --tag v0.1.3 --dist dist/pypi/0.1.3
-uvx --from twine twine check --strict dist/pypi/0.1.3/*
+uv build --no-create-gitignore --out-dir dist/pypi/0.1.4
+python scripts/check_release.py --tag v0.1.4 --dist dist/pypi/0.1.4
+uvx --from twine twine check --strict dist/pypi/0.1.4/*
 ```
 
 Use an empty output folder and the actual candidate version. uv builds both wheel and source archive. The pip alternative is:
 
 ```powershell
 python -m pip install build twine
-python -m build --outdir dist/pypi/0.1.3
-python -m twine check --strict dist/pypi/0.1.3/*
+python -m build --outdir dist/pypi/0.1.4
+python -m twine check --strict dist/pypi/0.1.4/*
 ```
 
 `MANIFEST.in` includes guides, examples, tests, maintenance scripts and repository templates in the source distribution. Wheel contents are the installable packages, metadata/license and typing marker, not the complete repository.

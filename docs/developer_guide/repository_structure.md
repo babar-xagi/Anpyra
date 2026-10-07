@@ -26,7 +26,7 @@ Anpyra/
 │   │   │   ├── screen.py         # Screen and background declarations
 │   │   │   ├── textview.py       # Typography and font declarations
 │   │   │   ├── button.py         # Button states, border and icon declarations
-│   │   │   └── layout.py, textinput.py, chat.py # Unreleased interactive authoring
+│   │   │   └── layout.py, textinput.py, chat.py # Interactive authoring (0.1.4)
 │   │   ├── compiler/
 │   │   │   ├── frontend.py       # Static Python AST → typed IR
 │   │   │   ├── ir.py             # Application/function/operation records

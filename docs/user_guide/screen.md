@@ -1,6 +1,6 @@
 # 🎨 Screen Backgrounds, Images and Gradients
 
-Screen styling is available in **Anpyra 0.1.1**. Install directly with `uv pip install "anpyra==0.1.3"` or `python -m pip install "anpyra==0.1.3"` in your environment. Existing 0.1.0 users should follow the [upgrade instructions](installation.md). Pillow is installed automatically.
+Screen styling is available in **Anpyra 0.1.1**. Install directly with `uv pip install "anpyra==0.1.4"` or `python -m pip install "anpyra==0.1.4"` in your environment. Existing 0.1.0 users should follow the [upgrade instructions](installation.md). Pillow is installed automatically.
 
 ## 🧩 Create a screen
 

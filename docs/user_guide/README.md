@@ -22,9 +22,9 @@ This guide is for people building small Android apps. You do not need to underst
 
 [Screen styling](screen.md), [TextView typography](textview.md) and [Button design](button.md) document the native components available in 0.1.3, including colors, fonts, states, ripple, geometry and icons.
 
-## 💬 Unreleased chatbot preview
+## 💬 Standalone chatbot (0.1.4)
 
-The [standalone chatbot guide](chatbot.md) explains native layouts, keyboard input, runtime API-key entry, conversation memory and error handling. Use the editable source checkout; these APIs are not part of the published 0.1.3 wheel.
+The [standalone chatbot guide](chatbot.md) explains native layouts, keyboard input, runtime API-key entry, conversation memory and error handling. Install Anpyra 0.1.4 from PyPI to use these APIs; the full example files are in the repository/source archive.
 
 ## 🎯 Buildable examples
 

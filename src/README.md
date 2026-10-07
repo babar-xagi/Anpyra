@@ -9,7 +9,7 @@ Anpyra now has a direct Android-only layout. Public API/configuration/build/CLI 
 | anpyra/scaffold.py | New Android project templates |
 | anpyra/cli.py, build.py | User commands and build orchestration |
 | anpyra/compiler/frontend.py, ir.py | Python AST validation and typed operation records |
-| anpyra/components/layout.py, textinput.py, chat.py | Unreleased layout/input/controller authoring |
+| anpyra/components/layout.py, textinput.py, chat.py | Layout/input/controller authoring |
 | anpyra/compiler/interactive.py | Layout/input/binding source contracts |
 | anpyra/android/layout.py, chat.py | Native layout/input and standalone chat behavior |
 | anpyra/android/screen.py | Native Android screen/lifecycle method calls |

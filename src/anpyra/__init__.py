@@ -25,7 +25,7 @@ from .components import (
 )
 from .config import AppConfig, ConfigError, Project, load_project
 
-__version__ = "0.1.3"
+__version__ = "0.1.4"
 __all__ = [
     "Column",
     "Row",

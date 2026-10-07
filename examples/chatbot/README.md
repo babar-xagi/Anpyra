@@ -2,10 +2,10 @@
 
 A standalone native Android chatbot using Screen, TextView, styled Buttons, Column/Row/ScrollView, TextInput and ChatSession. It calls OpenAI directly from the phone and accepts a temporary key at runtime.
 
-Use the current editable source checkout; these new APIs are not in the published 0.1.3 package yet. From the repository root:
+The APIs are included in Anpyra 0.1.4. The example files are in the repository/source distribution. From the repository root:
 
 ```powershell
-uv pip install -e ".[dev]"
+uv pip install "anpyra==0.1.4"
 anpyra check examples/chatbot
 anpyra build examples/chatbot
 anpyra install examples/chatbot/build/dev.anpyra.chatbot.apk --launch

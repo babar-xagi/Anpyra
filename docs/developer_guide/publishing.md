@@ -4,6 +4,8 @@ This guide covers publishing the **Python framework package**: wheel (`.whl`) pl
 
 Anpyra **0.1.3** was published to PyPI on October 6, 2026 through [the successful workflow](https://github.com/babar-xagi/Anpyra/actions/runs/37539219407). Public wheel/source hashes match checked CI artifacts. Fresh installation and separate pip/uv upgrades from 0.1.2 built/verified starter and Button/state/ripple/icon APKs, retaining existing project configuration, signing identity and starter APK bytes. See [release notes](https://github.com/babar-xagi/Anpyra/releases/tag/v0.1.3) and [progress evidence](../progress.md). TestPyPI rehearsal was not run for this release. Ordinary pushes/tags do not upload packages; explicitly dispatch the [publish workflow](../../.github/workflows/publish.yml) from main.
 
+The next release candidate is **0.1.4**, adding native layouts, masked TextInput, scoped ChatSession, conversation history and Unicode-safe CLI output. Publication evidence is recorded after a successful upload in [progress](../progress.md).
+
 ## 🗂️ Release files
 
 | File | Purpose |
@@ -63,7 +65,7 @@ A pending publisher does not reserve a name. PyPI determines availability when y
 
 ## 3️⃣ Prepare and push a release candidate
 
-Current release version: **0.1.3**. Commands below use this version; for subsequent releases choose a new version and tag rather than rerunning a completed upload. Keep these two values identical:
+Current release version: **0.1.4**. Commands below use this version; for subsequent releases choose a new version and tag rather than rerunning a completed upload. Keep these two values identical:
 
 - `pyproject.toml` → `[project] version`.
 - `src/anpyra/__init__.py` → `__version__`.
@@ -74,7 +76,7 @@ From the checkout on Windows:
 
 ```powershell
 uv pip install -e ".[dev]"
-.\.venv\Scripts\python.exe scripts/check_release.py --tag v0.1.3
+.\.venv\Scripts\python.exe scripts/check_release.py --tag v0.1.4
 .\.venv\Scripts\python.exe scripts/check_docs.py
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 .\.venv\Scripts\ruff.exe check src tests examples scripts
@@ -86,20 +88,20 @@ First commit and push the publishing files to `main`. Every new commit starts wi
 
 ```powershell
 git add .github/workflows/publish.yml .github/workflows/tests.yml scripts/check_release.py tests/unit/test_release.py pyproject.toml src/anpyra/__init__.py docs README.md CHANGELOG.md scripts/README.md tests/README.md
-git commit -m "📦 Prepare Anpyra 0.1.3 and document installation upgrades"
+git commit -m "📦 Prepare Anpyra 0.1.4 and document installation upgrades"
 git push origin main
-git tag -a v0.1.3 -m "📦 Anpyra 0.1.3 alpha"
-git push origin v0.1.3
+git tag -a v0.1.4 -m "📦 Anpyra 0.1.4 alpha"
+git push origin v0.1.4
 ```
 
-Replace `0.1.3` in commands with your chosen version. Create the tag after the candidate's code, workflow and docs are committed. If that tag already exists, inspect its commit rather than replacing it. Tag pushes run normal CI; they do not upload to a package index.
+Replace `0.1.4` in commands with your chosen version. Create the tag after the candidate's code, workflow and docs are committed. If that tag already exists, inspect its commit rather than replacing it. Tag pushes run normal CI; they do not upload to a package index.
 
 ## 4️⃣ Rehearse on TestPyPI
 
 In GitHub open **Actions → Publish Python package → Run workflow**:
 
 1. Choose branch `main`.
-2. Enter existing tag `v0.1.3`.
+2. Enter existing tag `v0.1.4`.
 3. Select repository `testpypi`.
 4. Start the run, follow validation/build and approve an environment deployment only if your configured rules require it.
 
@@ -107,7 +109,7 @@ Optional GitHub CLI commands, after installing/authenticating `gh`:
 
 ```powershell
 gh auth login
-gh workflow run publish.yml --repo babar-xagi/Anpyra --ref main -f tag=v0.1.3 -f repository=testpypi
+gh workflow run publish.yml --repo babar-xagi/Anpyra --ref main -f tag=v0.1.4 -f repository=testpypi
 gh run list --repo babar-xagi/Anpyra --workflow publish.yml
 gh run watch RUN_ID --repo babar-xagi/Anpyra
 ```
@@ -121,7 +123,7 @@ Create a fresh environment outside the checkout. Install dependencies from norma
 ```powershell
 uv venv --python 3.12 verify-testpypi
 uv pip install --python verify-testpypi/Scripts/python.exe "cryptography>=46.0.0" "Pillow>=11.3.0"
-uv pip install --python verify-testpypi/Scripts/python.exe --index-url https://test.pypi.org/simple/ --no-deps "anpyra==0.1.3"
+uv pip install --python verify-testpypi/Scripts/python.exe --index-url https://test.pypi.org/simple/ --no-deps "anpyra==0.1.4"
 .\verify-testpypi\Scripts\anpyra.exe --version
 .\verify-testpypi\Scripts\anpyra.exe init test-app
 .\verify-testpypi\Scripts\anpyra.exe build test-app
@@ -135,7 +137,7 @@ TestPyPI may not carry all dependencies; this keeps dependency resolution on the
 After reviewing the TestPyPI result, run the same workflow from `main`, with the same tag and repository `pypi`:
 
 ```powershell
-gh workflow run publish.yml --repo babar-xagi/Anpyra --ref main -f tag=v0.1.3 -f repository=pypi
+gh workflow run publish.yml --repo babar-xagi/Anpyra --ref main -f tag=v0.1.4 -f repository=pypi
 gh run list --repo babar-xagi/Anpyra --workflow publish.yml
 gh run watch RUN_ID --repo babar-xagi/Anpyra
 ```
@@ -146,20 +148,20 @@ Verify [the production project page](https://pypi.org/project/anpyra/) and insta
 
 ```powershell
 uv venv --python 3.12 verify-pypi
-uv pip install --python verify-pypi/Scripts/python.exe "anpyra==0.1.3"
+uv pip install --python verify-pypi/Scripts/python.exe "anpyra==0.1.4"
 .\verify-pypi\Scripts\anpyra.exe --version
 ```
 
-Users can then install that published version with `uv pip install anpyra` or `python -m pip install anpyra` in their own environment. The installation guide includes exact 0.1.3 and latest-version upgrade commands. Record public-index verification after each release. Publishing the framework does not establish Android app-store readiness.
+Users can then install that published version with `uv pip install anpyra` or `python -m pip install anpyra` in their own environment. The installation guide includes exact 0.1.4 and latest-version upgrade commands. Record public-index verification after each release. Publishing the framework does not establish Android app-store readiness.
 
 ## 🧰 Local build and package checks
 
 Use a new or empty version-specific output folder so old packages cannot be mixed into an upload:
 
 ```powershell
-uv build --no-create-gitignore --out-dir dist/pypi/0.1.3
-.\.venv\Scripts\python.exe scripts/check_release.py --tag v0.1.3 --dist dist/pypi/0.1.3
-uvx --from twine twine check --strict dist/pypi/0.1.3/*
+uv build --no-create-gitignore --out-dir dist/pypi/0.1.4
+.\.venv\Scripts\python.exe scripts/check_release.py --tag v0.1.4 --dist dist/pypi/0.1.4
+uvx --from twine twine check --strict dist/pypi/0.1.4/*
 ```
 
 `--no-create-gitignore` prevents uv from adding a housekeeping file to the release directory. The guard requires one wheel and one sdist, matching name/version metadata, the typing marker and required release source files. It rejects duplicate/unsafe paths, source links and common private/generated file names. This is a package-profile check, not a general secret scanner. It never uploads, extracts archives or reads credentials.
@@ -168,9 +170,9 @@ The pip alternative, inside an activated Python-created environment:
 
 ```powershell
 python -m pip install build twine
-python -m build --outdir dist/pypi/0.1.3
-python scripts/check_release.py --tag v0.1.3 --dist dist/pypi/0.1.3
-python -m twine check --strict dist/pypi/0.1.3/*
+python -m build --outdir dist/pypi/0.1.4
+python scripts/check_release.py --tag v0.1.4 --dist dist/pypi/0.1.4
+python -m twine check --strict dist/pypi/0.1.4/*
 ```
 
 ## 🐛 Common release failures

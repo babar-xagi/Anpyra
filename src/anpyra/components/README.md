@@ -10,7 +10,7 @@ See the [screen guide](../../../docs/user_guide/screen.md), [native component in
 
 [textview.py](textview.py) is the canonical TextView authoring implementation. It defines validated Font/Shadow/TextStyle values and writable editor property interfaces. Root and legacy imports re-export the same class. Parsing/merged state lives in compiler/text_style.py; native emission in android/textview.py; font validation in android/fonts.py and asset preparation in android/assets.py. See the [user guide](../../../docs/user_guide/textview.md) and [implementation guide](../../../docs/developer_guide/textview_styling.md).
 
-## 💬 Unreleased interactive components
+## 💬 Interactive components (0.1.4)
 
 [layout.py](layout.py) declares Column/Row/ScrollView; [textinput.py](textinput.py) declares native keyboard/password input; [chat.py](chat.py) binds the standalone ChatSession. Validation belongs in compiler/interactive.py, native layout/input calls in android/layout.py and controller behavior in android/chat.py. See the [user guide](../../../docs/user_guide/chatbot.md) and [file map](../../../docs/developer_guide/chatbot.md).
 

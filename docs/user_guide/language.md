@@ -105,13 +105,15 @@ Calls must initialize an annotated `int` in `on_create`. Arguments are int names
 | `title.set_text(value)` | `TextView.setText(CharSequence)` | Declared string or literal |
 | `self.set_content_view(title)` | `Activity.setContentView(View)` | Exactly once outside branches |
 
-Multiple TextView locals can be constructed within the register budget, but only one becomes the content view. Layout containers and adding child views are not supported.
+Multiple widgets can be arranged with Column/Row, and ScrollView provides a single scrolling child. Attach one widget or layout root to the Activity, optionally through Screen. TextInput and scoped ChatSession actions are available in 0.1.4; see the [layout/input/chat guide](chatbot.md). Generic Python callback functions remain unsupported.
 
 ## 📏 Register budget
 
 `on_create` reserves two incoming registers and permits **14 local/temporary registers**. Every declared local counts. Inline string values, comparison literals, helper literal arguments, and some copies/arithmetic also introduce temporary registers. Use `--dump-ir` to see synthetic names such as `$str0`.
 
 This is a backend limitation, not a Python limit. There is currently no lifetime-based register reuse. A short source file can exhaust the budget if it creates many temporaries.
+
+Apps containing layouts, TextInput or ChatSession permit **48 source symbols**, with at most 14 scalar int/bool symbols; object registers use the wider native invocation frame. Legacy apps retain the 14-symbol budget and historical output.
 
 ## 🚧 Common unsupported forms
 

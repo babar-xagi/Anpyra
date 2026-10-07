@@ -2,7 +2,7 @@
 
 Write small Android apps in a typed Python subset, compile them directly to DEX, and build signed APKs. Anpyra is a Python-written compiler and build framework based on the PyAndroid experiments 001–008.
 
-**Status: v0.1.3 alpha. Android is the only implemented target.** This release adds native Button shapes, state colors, ripple, placement/margins and raster icons alongside Screen styling and expanded TextView typography with system/local fonts, size, alignment, padding, spacing, overflow, decorations, shadows and selection. Screen rendering passed 25 pixel checks and typography passed 30 recorded cases and Button passed 20 native cases on Android API 33. Other Android versions, broader lifecycle behavior and independent binary verification still need recorded coverage.
+**Status: v0.1.4 alpha. Android is the only implemented target.** This release adds native Column/Row/ScrollView, masked TextInput and a scoped ChatSession with background HTTPS requests and in-memory history. Existing Screen styling, TextView typography and Button design remain available. API 33 checks include 25 Screen cases, 30 typography cases, 20 Button cases and 13 controlled chat cases. Other Android versions, broader lifecycle behavior and independent binary verification still need recorded coverage.
 
 ## 🐍 Python-based builds
 
@@ -14,13 +14,13 @@ Install from PyPI using uv (recommended):
 
 ```shell
 uv venv --python 3.12
-uv pip install "anpyra==0.1.3"
+uv pip install "anpyra==0.1.4"
 ```
 
 Or use pip inside a virtual environment:
 
 ```shell
-python -m pip install "anpyra==0.1.3"
+python -m pip install "anpyra==0.1.4"
 ```
 
 Activate your environment, then:
@@ -40,13 +40,13 @@ For checkout installation and host-specific commands, see the [installation guid
 Use the same environment where you installed Anpyra. With that environment activated, choose uv (recommended) or pip:
 
 ```shell
-uv pip install --upgrade "anpyra==0.1.3"
+uv pip install --upgrade "anpyra==0.1.4"
 # Or:
-python -m pip install --upgrade "anpyra==0.1.3"
+python -m pip install --upgrade "anpyra==0.1.4"
 python -m anpyra --version
 ```
 
-The version should print `Anpyra 0.1.3`. To upgrade to the latest compatible release, use `--upgrade anpyra` without the version pin. Keep your app's `.anpyra/` signing identity and rebuild its APK after upgrading. See the [upgrade guide](https://github.com/babar-xagi/Anpyra/blob/main/docs/user_guide/installation.md) for explicit environment paths.
+The version should print `Anpyra 0.1.4`. To upgrade to the latest compatible release, use `--upgrade anpyra` without the version pin. Keep your app's `.anpyra/` signing identity and rebuild its APK after upgrading. See the [upgrade guide](https://github.com/babar-xagi/Anpyra/blob/main/docs/user_guide/installation.md) for explicit environment paths.
 
 ## 🧩 Application example
 
@@ -94,10 +94,18 @@ class MainActivity(Activity):
 
 This example demonstrates native design and press feedback. Python click-action callbacks are not compiled in this version.
 
+## 💬 Standalone chatbot
+
+Use native layouts, TextInput, TextView and Button with ChatSession to call OpenAI directly from the phone. Enter a temporary key at runtime; it is not compiled into the APK. Successful turns retain all response output items, New chat resets history, and request controls recover after errors. No Python server or embedded OpenAI Python SDK is needed. See the [chatbot guide](https://github.com/babar-xagi/Anpyra/blob/main/docs/user_guide/chatbot.md) and [full example](https://github.com/babar-xagi/Anpyra/tree/main/examples/chatbot).
+
+The 13 phone checks used controlled responses. A live AI answer was not verified because the supplied temporary key returned exhausted quota. Streaming, cancellation, durable history and arbitrary Python callbacks remain unsupported.
+
 ## 📦 Supported features and limits
 
 - One Activity and TextView with Font/Shadow/TextStyle declarations, constructor text, typography, dp dimensions/padding, sp size and native selection.
 - Native Button design with shared typography, state colors, rounded shapes, stroke, ripple, layout/margins and signed raster icons.
+- Column/Row weighted layouts, single-child ScrollView and TextInput with placeholder/password configuration.
+- Scoped ChatSession listener, worker/delivery classes, HTTPS/JSON requests, response rendering and successful history.
 - Validated standalone local TTF/OTF fonts preserved in signed digest-named APK assets.
 - Screen colors, local raster images with seven fit modes, linear/radial/sweep gradients and transparency.
 - Initialized `str`, `int` and `bool` locals, simple integer arithmetic and comparisons.
@@ -105,7 +113,7 @@ This example demonstrates native design and press feedback. Python click-action 
 - DEX, binary manifest, signed APK and JSON report generation.
 - Retained project debug identity and local APK/DEX integrity checks.
 
-This is a restricted compiler, not general Python on Android. A Screen supports one TextView or Button content child and static styling. General layouts/multiple children, callbacks, arbitrary imports, collections, reassignment, multi-module apps and release/store signing are not implemented. Source locals/temporaries have a 14-symbol budget; rendering uses separate scratch registers. See the [Screen guide](https://github.com/babar-xagi/Anpyra/blob/main/docs/user_guide/screen.md), [TextView guide](https://github.com/babar-xagi/Anpyra/blob/main/docs/user_guide/textview.md), [Button guide](https://github.com/babar-xagi/Anpyra/blob/main/docs/user_guide/button.md) and [language guide](https://github.com/babar-xagi/Anpyra/blob/main/docs/user_guide/language.md).
+This is a restricted compiler, not general Python on Android. Screen accepts one widget or layout root; Column/Row arrange multiple children. Generic Python callbacks, arbitrary imports, collections, reassignment, multi-module apps and release/store signing remain unsupported. Layout/input/chat apps permit 48 symbols with at most 14 scalar int/bool locals; older apps retain their 14-symbol budget. See the [Screen guide](https://github.com/babar-xagi/Anpyra/blob/main/docs/user_guide/screen.md), [TextView guide](https://github.com/babar-xagi/Anpyra/blob/main/docs/user_guide/textview.md), [Button guide](https://github.com/babar-xagi/Anpyra/blob/main/docs/user_guide/button.md), [chatbot guide](https://github.com/babar-xagi/Anpyra/blob/main/docs/user_guide/chatbot.md) and [language guide](https://github.com/babar-xagi/Anpyra/blob/main/docs/user_guide/language.md).
 
 ## 📚 Documentation and contribution
 
