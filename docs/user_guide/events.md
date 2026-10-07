@@ -1,6 +1,6 @@
 # 🖱️ Button Events and Typed App State
 
-This is an **unreleased source feature**. Published Anpyra 0.1.4 includes ChatSession's built-in actions but does not include these generic callbacks or State declarations. Install the current checkout with `uv pip install -e ".[dev]"` to use this guide.
+Anpyra **0.1.5** includes named Python button callbacks, typed Activity state and explicit saved-instance persistence. Install directly with `uv pip install "anpyra==0.1.5"` (recommended) or `python -m pip install "anpyra==0.1.5"`. Full example files are in the repository/source archive; an ordinary wheel contains the framework APIs.
 
 ## ⚡ First counter
 
@@ -96,7 +96,7 @@ Generic handlers can coexist with ChatSession on separate buttons. ChatSession o
 
 ## 📱 Complete example
 
-From the editable checkout:
+From the repository/source-archive root with Anpyra 0.1.5 installed:
 
 ```powershell
 anpyra check examples/counter --dump-ir --dump-dalvik

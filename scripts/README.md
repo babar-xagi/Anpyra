@@ -17,8 +17,8 @@ Activate/install Anpyra before running it. Compiler availability is checked so s
 ## 📦 check_release.py
 
 ```powershell
-python scripts/check_release.py --tag v0.1.4
-python scripts/check_release.py --tag v0.1.4 --dist dist/pypi/0.1.4
+python scripts/check_release.py --tag v0.1.5
+python scripts/check_release.py --tag v0.1.5 --dist dist/pypi/0.1.5
 ```
 
 `check_version` reads pyproject.toml and parses the package __version__ assignment without importing framework code. The optional tag must equal vVERSION. `check_distributions` requires one wheel and one source archive, checks name/version metadata and required package/release files, and rejects duplicate/unsafe paths, tar links, common key/signing state and generated artifacts.

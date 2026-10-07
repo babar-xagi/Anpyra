@@ -26,9 +26,9 @@ This guide is for people building small Android apps. You do not need to underst
 
 The [standalone chatbot guide](chatbot.md) explains native layouts, keyboard input, runtime API-key entry, conversation memory and error handling. Install Anpyra 0.1.4 from PyPI to use these APIs; the full example files are in the repository/source archive.
 
-## 🖱️ Unreleased events/state preview
+## 🖱️ Events and typed state (0.1.5)
 
-[Button events and typed state](events.md) explains named handlers, retained widget references, runtime input, signed-32-bit expressions and opted-in saved-instance state. Use the current editable checkout; these APIs are not in published 0.1.4.
+[Button events and typed state](events.md) explains named handlers, retained widget references, runtime input, signed-32-bit expressions and opted-in saved-instance state. These APIs are included in the 0.1.5 wheel; example files are in the repository/source archive.
 
 ## 🎯 Buildable examples
 

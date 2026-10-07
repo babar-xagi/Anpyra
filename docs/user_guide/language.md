@@ -105,7 +105,7 @@ Calls must initialize an annotated `int` in `on_create`. Arguments are int names
 | `title.set_text(value)` | `TextView.setText(CharSequence)` | Declared string or literal |
 | `self.set_content_view(title)` | `Activity.setContentView(View)` | Exactly once outside branches |
 
-Multiple widgets can be arranged with Column/Row, and ScrollView provides a single scrolling child. Attach one widget or layout root to the Activity, optionally through Screen. TextInput and scoped ChatSession actions are available in 0.1.4; see the [layout/input/chat guide](chatbot.md). Generic Python callback functions remain unsupported.
+Multiple widgets can be arranged with Column/Row, and ScrollView provides a single scrolling child. Attach one widget or layout root to the Activity, optionally through Screen. TextInput and scoped ChatSession actions are available in 0.1.4; see the [layout/input/chat guide](chatbot.md). Named button callbacks and typed Activity state are included in 0.1.5; see the [events/state guide](events.md).
 
 ## 📏 Register budget
 
@@ -124,4 +124,4 @@ counter: int = 1
 counter = counter + 1  # Reassignment is not implemented.
 ```
 
-Other unavailable features include loops, lists/dictionaries, floats, exceptions, f-strings, arbitrary Python libraries, callbacks, additional lifecycle methods, multi-module projects and resources. Consult [roadmap](../roadmap.md) for planned semantics rather than guessing syntax.
+Other unavailable features include loops, lists/dictionaries, floats, exceptions, f-strings, arbitrary Python libraries, async/lambda callbacks, additional custom lifecycle methods, multi-module projects and resources. Consult [roadmap](../roadmap.md) for planned semantics rather than guessing syntax.

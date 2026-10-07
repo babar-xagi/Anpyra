@@ -1,6 +1,6 @@
 # 🗺️ Anpyra Roadmap and Development Phases
 
-**Snapshot:** October 6, 2026 · **Current package:** v0.1.4 alpha · **Direction:** Python source → typed IR → native DEX → signed APK.
+**Snapshot:** October 6, 2026 · **Current package:** v0.1.5 alpha · **Direction:** Python source → typed IR → native DEX → signed APK.
 
 **Current direction:** complete the Android framework first. Common/platform dispatch layers and other-target placeholders have been removed from the active source. The [progress record](progress.md) lists implemented components, publication, author-confirmed phone installation and remaining evidence.
 
@@ -80,7 +80,7 @@ The original experiments were reported successful on a phone by the author. The 
 | 3 | Validation, diagnostics and binary hardening | 🧪 Phone installation reported; full runtime/independent checks pending | 1–2 |
 | 4 | Language semantics and register model | 📋 Planned | 3 |
 | 5 | Native layouts and widget surface | 🧪 Basic layouts/input included in 0.1.4 | 3–4 |
-| 6 | Events, application state and lifecycle | 🧪 Generic callback/state milestone delivered in unreleased source | 4–5 |
+| 6 | Events, application state and lifecycle | 🧪 Generic callback/state milestone included in 0.1.5 | 4–5 |
 | 7 | Modules, classes and multiple Activities | 📋 Planned | 4, lifecycle contracts |
 | 8 | Assets/resources and package expansion | 📋 Planned | 5, 7 where required |
 | 9 | Release identity and distribution | 📋 Planned | Validated runtime/package contracts |
@@ -164,7 +164,7 @@ Phases are a dependency-oriented plan, not a fixed schedule. Small independent t
 **Outcome:** make a small interactive app.
 
 - [x] Generate ChatSession and generic named Python callback dispatch; mixed-controller dispatch has separate acceptance checks.
-- [x] Generate typed scalar and widget-reference fields; explicit State persistence and source initialization checks are implemented in the unreleased event feature.
+- [x] Generate typed scalar and widget-reference fields; explicit State persistence and source initialization checks are implemented in the 0.1.5 event feature.
 - [x] Implement +/−/Reset counter, pause/enabled state and input-preview callbacks; record 11 API 33 event cases.
 - [x] Specify current ChatSession behavior: Activity recreation clears key/history; durable/general app persistence remains planned.
 - [ ] Add lifecycle hooks only when their source and bytecode contracts are implemented.
@@ -234,7 +234,7 @@ Phases are a dependency-oriented plan, not a fixed schedule. Small independent t
 
 ## 🎯 Next practical milestone
 
-The counter/input milestone through phases 4–6 is implemented in the current editable source and passed native click/recreation checks on API 33. Published 0.1.4 remains unchanged. Next expand callback/widget/property contracts deliberately, then multi-file composition; full original score/lifecycle and independent ART/DEX inspection coverage also remain outstanding. See [events/state usage](user_guide/events.md).
+The counter/input milestone through phases 4–6 is included in 0.1.5 and passed native click/recreation checks on API 33. Earlier releases remain immutable. Next expand callback/widget/property contracts deliberately, then multi-file composition; full original score/lifecycle and independent ART/DEX inspection coverage also remain outstanding. See [events/state usage](user_guide/events.md).
 
 ## 🤝 How to keep the roadmap useful
 
@@ -259,4 +259,4 @@ Further reading: [developer guide](developer_guide/README.md), [extension workfl
 - [x] Host tests, source example, user guide and file ownership map.
 - [x] Record 20 native device press/state/icon/geometry cases on Android API 33; document untested devices/options separately.
 - [x] Verify 0.1.3 public publication, fresh installation and separate pip/uv upgrades from 0.1.2, including native Button/icon APK builds.
-- [x] Add typed Python click callbacks and multi-child layout composition in the unreleased event/source milestone.
+- [x] Add typed Python click callbacks and multi-child layout composition in the 0.1.5 event milestone.

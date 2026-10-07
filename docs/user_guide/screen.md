@@ -1,6 +1,6 @@
 # 🎨 Screen Backgrounds, Images and Gradients
 
-Screen styling is available in **Anpyra 0.1.1**. Install directly with `uv pip install "anpyra==0.1.4"` or `python -m pip install "anpyra==0.1.4"` in your environment. Existing 0.1.0 users should follow the [upgrade instructions](installation.md). Pillow is installed automatically.
+Screen styling is available in **Anpyra 0.1.1**. Install directly with `uv pip install "anpyra==0.1.5"` or `python -m pip install "anpyra==0.1.5"` in your environment. Existing 0.1.0 users should follow the [upgrade instructions](installation.md). Pillow is installed automatically.
 
 ## 🧩 Create a screen
 
@@ -101,7 +101,7 @@ from anpyra.components import Background, Gradient
 screen.bg = Background(color="#102030", gradient=Gradient(["#80445566", "#00112233"]), opacity=0.6)
 ```
 
-A Screen accepts one TextView content child in this first component version. General layouts/multiple children, callbacks, repeat tiling, remote images and runtime style reassignment are not implemented. Source locals/temporaries still have a 14-symbol budget; rendering scratch/argument registers are separate.
+Screen accepts one widget or layout root. Column/Row arrange multiple children, and named callbacks are supported in 0.1.5; see [events/state](events.md). Repeat tiling, remote images and arbitrary runtime style assignment remain unsupported. Interactive apps use the documented wider lifecycle budget; rendering scratch/argument registers are separate.
 
 ## ✅ Verified behavior
 

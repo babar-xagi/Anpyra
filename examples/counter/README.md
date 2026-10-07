@@ -1,6 +1,6 @@
 # 🔢 Counter Lab
 
-Unreleased source example for generic button callbacks, mutable typed state and runtime input. Install the editable checkout with `uv pip install -e ".[dev]"`; published 0.1.4 does not include these new APIs.
+This example uses Anpyra 0.1.5 generic button callbacks, mutable typed state and runtime input. Install with `uv pip install "anpyra==0.1.5"` or `python -m pip install "anpyra==0.1.5"`. Example files are in the repository/source archive.
 
 ```powershell
 anpyra check examples/counter --dump-dalvik

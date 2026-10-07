@@ -4,6 +4,8 @@ Anpyra **0.1.3** was published to PyPI on October 6, 2026 through [the successfu
 
 Anpyra **0.1.4** was published on October 6, 2026 through [Trusted Publishing](https://github.com/babar-xagi/Anpyra/actions/runs/37573611590). Public wheel/source hashes match the checked CI files attached to the [GitHub release](https://github.com/babar-xagi/Anpyra/releases/tag/v0.1.4). Fresh PyPI installation and separate pip/uv upgrades from 0.1.3 passed, preserving configuration, signing identity and starter APK bytes. Each public-package environment built/verified the new chatbot reproducibly. See [progress](../progress.md) for fingerprints and scope; TestPyPI rehearsal was not run.
 
+The 0.1.5 candidate adds generic callbacks, typed Activity state and explicit saved-instance restore. Publication/index evidence is recorded after upload in [progress](../progress.md).
+
 ## 📋 Prepare a candidate
 
 - [ ] Choose a version deliberately; update `pyproject.toml` and `src/anpyra/__init__.py` together.
@@ -30,17 +32,17 @@ Complete the [manual device checklist](testing.md) before claiming device accept
 ## 📦 Build distributions
 
 ```powershell
-uv build --no-create-gitignore --out-dir dist/pypi/0.1.4
-python scripts/check_release.py --tag v0.1.4 --dist dist/pypi/0.1.4
-uvx --from twine twine check --strict dist/pypi/0.1.4/*
+uv build --no-create-gitignore --out-dir dist/pypi/0.1.5
+python scripts/check_release.py --tag v0.1.5 --dist dist/pypi/0.1.5
+uvx --from twine twine check --strict dist/pypi/0.1.5/*
 ```
 
 Use an empty output folder and the actual candidate version. uv builds both wheel and source archive. The pip alternative is:
 
 ```powershell
 python -m pip install build twine
-python -m build --outdir dist/pypi/0.1.4
-python -m twine check --strict dist/pypi/0.1.4/*
+python -m build --outdir dist/pypi/0.1.5
+python -m twine check --strict dist/pypi/0.1.5/*
 ```
 
 `MANIFEST.in` includes guides, examples, tests, maintenance scripts and repository templates in the source distribution. Wheel contents are the installable packages, metadata/license and typing marker, not the complete repository.

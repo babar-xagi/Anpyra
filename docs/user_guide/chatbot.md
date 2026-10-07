@@ -8,13 +8,13 @@ From the repository root in PowerShell:
 
 ```powershell
 uv venv --python 3.12
-uv pip install "anpyra==0.1.4"
+uv pip install "anpyra==0.1.5"
 .\.venv\Scripts\python.exe -m anpyra check examples/chatbot --dump-ir --dump-dalvik
 .\.venv\Scripts\python.exe -m anpyra build examples/chatbot
 .\.venv\Scripts\python.exe -m anpyra install examples/chatbot/build/dev.anpyra.chatbot.apk --launch
 ```
 
-Skip `uv venv` if the environment already exists. The pip alternative is `python -m pip install "anpyra==0.1.4"` in your activated environment. Android builds require Python and Anpyra's dependencies; no Java/JDK, Kotlin, Android SDK/NDK build kit, Gradle or Android Studio. Installation needs optional adb and an authorized Android API 24+ device. The recorded component device checks use API 33.
+Skip `uv venv` if the environment already exists. The pip alternative is `python -m pip install "anpyra==0.1.5"` in your activated environment. Android builds require Python and Anpyra's dependencies; no Java/JDK, Kotlin, Android SDK/NDK build kit, Gradle or Android Studio. Installation needs optional adb and an authorized Android API 24+ device. The recorded component device checks use API 33.
 
 You do not install the Python `openai` package into the APK. Android executes generated native HTTPS/JSON calls. Ordinary Python library imports and the pasted console `while True` chatbot are outside the compiler's supported subset.
 

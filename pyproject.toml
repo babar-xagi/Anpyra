@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "anpyra"
-version = "0.1.4"
+version = "0.1.5"
 description = "Compile a typed Python subset directly to Android DEX and signed APKs"
 readme = "docs/pypi_readme.md"
 requires-python = ">=3.11"

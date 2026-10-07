@@ -2,7 +2,7 @@
 
 This file records user-visible milestones. Planned work belongs in the [roadmap](docs/roadmap.md), not as completed release notes.
 
-## 🚧 Unreleased — Generic events and typed state
+## 📦 0.1.5 — October 7, 2026
 
 - Compile named Button.on_click handlers and retained int/str/bool/widget fields into native Activity methods and fields.
 - Add typed callback expressions, assignments, branches, runtime text/enabled operations and safe method-call/data-flow validation.

@@ -7,7 +7,7 @@ Run commands from the repository root after installing Anpyra.
 | [Hello](hello/README.md) | Native Activity/TextView, simplest source/config | `Hello from Anpyra!` |
 | [Score](score/README.md) | Typed helper, integer arguments/return and comparison | `Passed from an Anpyra function!` with default values |
 | [Chatbot](chatbot/README.md) | Layouts/input, native API worker and history (0.1.4) | Dark chat screen with runtime key entry; live replies need API quota |
-| [Counter Lab](counter/README.md) | Unreleased generic callbacks, typed state and input | +/−/Reset, pause, name preview and saved-state recreation |
+| [Counter Lab](counter/README.md) | Generic callbacks, typed state and input (0.1.5) | +/−/Reset, pause, name preview and saved-state recreation |
 
 ```powershell
 anpyra check examples/hello

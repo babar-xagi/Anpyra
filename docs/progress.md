@@ -1,8 +1,8 @@
 # 📊 Implementation Progress and Verified Results
 
-**Updated: October 7, 2026.** Current focus: finish the Android framework. Release version: **Anpyra 0.1.4**. This version includes Android-only components, Screen styling, TextView typography, native Button design, layouts/input and scoped ChatSession. The original 0.1.0/0.1.1 releases remain immutable.
+**Updated: October 7, 2026.** Current focus: finish the Android framework. Release candidate: **Anpyra 0.1.5**. This version includes Android-only components, Screen styling, TextView typography, native Button design, layouts/input and scoped ChatSession. The original 0.1.0/0.1.1 releases remain immutable.
 
-## 🖱️ Unreleased generic events/state — October 7, 2026
+## 🖱️ Generic events/state (0.1.5) — October 7, 2026
 
 - Implement named `button.on_click(self.handler)`, typed mutable Activity scalar fields and retained widget references.
 - Compile integer/string/boolean expressions, reassignment, branches, runtime text/enabled operations and acyclic handler calls. Branch locals must be definitely initialized; lifecycle calls validate transitive field initialization.
@@ -10,7 +10,7 @@
 - Pass **138 host tests**, including 17 event/source/emitted-byte tests. The independent test executor reads actual DEX instructions and controlled native calls; it is not an ART verifier or an APK runtime.
 - Record **11 native event cases** on TECNO BG7 / API 33: initial state, repeated clicks, reset/decrement, disabled/boolean state, input/string preview, opted-in int/string/bool restoration, memory-only reset, new-task reset and signed-int32 boundaries.
 - Preserve the exact pre-change ChatSession DEX and historical experiment DEX hashes. Generic/chat composition passed 15 controlled native cases, including independent callback dispatch before/after chat requests and scoped busy controls.
-- Keep published 0.1.4 immutable; these new APIs require the editable checkout until the next explicit release.
+- Prepare the 0.1.5 release candidate; publication/index verification is pending. Earlier PyPI files remain immutable.
 
 Evidence: ignored `build/event-device-checks/report.json` and screenshot. Physical rotation, broader lifecycle hooks and other Android versions still need separate checks. [Usage](user_guide/events.md) and [file ownership](developer_guide/events.md) explain supported behavior and limits.
 

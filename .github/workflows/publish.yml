@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Existing version tag, for example v0.1.4
+        description: Existing version tag, for example v0.1.5
         type: string
         required: true
       repository:
@@ -86,6 +86,9 @@ jobs:
           /tmp/anpyra-release-smoke/bin/anpyra check "$GITHUB_WORKSPACE/examples/chatbot" --dump-dalvik
           /tmp/anpyra-release-smoke/bin/anpyra build "$GITHUB_WORKSPACE/examples/chatbot"
           /tmp/anpyra-release-smoke/bin/anpyra verify "$GITHUB_WORKSPACE/examples/chatbot/build/dev.anpyra.chatbot.apk"
+          /tmp/anpyra-release-smoke/bin/anpyra check "$GITHUB_WORKSPACE/examples/counter" --dump-dalvik
+          /tmp/anpyra-release-smoke/bin/anpyra build "$GITHUB_WORKSPACE/examples/counter"
+          /tmp/anpyra-release-smoke/bin/anpyra verify "$GITHUB_WORKSPACE/examples/counter/build/dev.anpyra.counter.apk"
 
       - name: Save checked distributions
         uses: actions/upload-artifact@v4

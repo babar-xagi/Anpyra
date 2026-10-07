@@ -1,6 +1,6 @@
 # 🟦 Button Design and Native States
 
-Button is included in **Anpyra 0.1.3**. Install directly with `uv pip install "anpyra==0.1.4"` or `python -m pip install "anpyra==0.1.4"`; existing users can follow the [upgrade guide](installation.md). It compiles to `android.widget.Button`, inherits TextView typography and supports native press feedback.
+Button is included in **Anpyra 0.1.3**. Install directly with `uv pip install "anpyra==0.1.5"` or `python -m pip install "anpyra==0.1.5"`; existing users can follow the [upgrade guide](installation.md). It compiles to `android.widget.Button`, inherits TextView typography and supports native press feedback.
 
 ## ✨ Create a styled button
 

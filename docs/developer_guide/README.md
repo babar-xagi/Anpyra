@@ -25,11 +25,11 @@ This guide is for maintainers and contributors extending or fixing Anpyra. It de
 
 ## 💬 Chatbot and interactive components
 
-[Native chatbot implementation](chatbot.md) maps every new file, generated classes, fields, requests, response parsing and key-free device tests. This is included in 0.1.4 with focused ChatSession actions; generic Python callbacks remain future work.
+[Native chatbot implementation](chatbot.md) maps every new file, generated classes, fields, requests, response parsing and key-free device tests. This is included in 0.1.4 with focused ChatSession actions; named Python callbacks are included in 0.1.5.
 
 ## 🖱️ Generic events and state
 
-The [event/state file map](events.md) traces source lowering, data-flow validation, native callback/Bundle generation, shared interactive DEX composition and independent byte/phone tests. This is an unreleased source addition.
+The [event/state file map](events.md) traces source lowering, data-flow validation, native callback/Bundle generation, shared interactive DEX composition and independent byte/phone tests. This is included in Anpyra 0.1.5.
 
 ## 🎯 Start with the problem
 

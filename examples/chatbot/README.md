@@ -5,7 +5,7 @@ A standalone native Android chatbot using Screen, TextView, styled Buttons, Colu
 The APIs are included in Anpyra 0.1.4. The example files are in the repository/source distribution. From the repository root:
 
 ```powershell
-uv pip install "anpyra==0.1.4"
+uv pip install "anpyra==0.1.5"
 anpyra check examples/chatbot
 anpyra build examples/chatbot
 anpyra install examples/chatbot/build/dev.anpyra.chatbot.apk --launch

@@ -1,6 +1,6 @@
 # 🖱️ Event and State Implementation Map
 
-Generic Python callbacks and typed Activity state are an unreleased source addition. They compile into native Activity fields/methods and a View.OnClickListener; no Python interpreter runs inside the APK.
+Generic Python callbacks and typed Activity state are included in Anpyra 0.1.5. They compile into native Activity fields/methods and a View.OnClickListener; no Python interpreter runs inside the APK.
 
 ## 🗂️ New files
 

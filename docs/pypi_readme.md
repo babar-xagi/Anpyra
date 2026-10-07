@@ -2,7 +2,7 @@
 
 Write small Android apps in a typed Python subset, compile them directly to DEX, and build signed APKs. Anpyra is a Python-written compiler and build framework based on the PyAndroid experiments 001–008.
 
-**Status: v0.1.4 alpha. Android is the only implemented target.** This release adds native Column/Row/ScrollView, masked TextInput and a scoped ChatSession with background HTTPS requests and in-memory history. Existing Screen styling, TextView typography and Button design remain available. API 33 checks include 25 Screen cases, 30 typography cases, 20 Button cases and 13 controlled chat cases. Other Android versions, broader lifecycle behavior and independent binary verification still need recorded coverage.
+**Status: v0.1.5 alpha. Android is the only implemented target.** This release adds named Python button callbacks, typed mutable Activity state, runtime input and explicit saved-instance save/restore. Native layouts, ChatSession and Screen/TextView/Button design remain available. API 33 acceptance includes 11 event/state cases and 15 mixed-controller cases alongside earlier component checks. Other Android versions, physical rotation/process restoration and independent ART verification still need coverage.
 
 ## 🐍 Python-based builds
 
@@ -14,13 +14,13 @@ Install from PyPI using uv (recommended):
 
 ```shell
 uv venv --python 3.12
-uv pip install "anpyra==0.1.4"
+uv pip install "anpyra==0.1.5"
 ```
 
 Or use pip inside a virtual environment:
 
 ```shell
-python -m pip install "anpyra==0.1.4"
+python -m pip install "anpyra==0.1.5"
 ```
 
 Activate your environment, then:
@@ -40,13 +40,13 @@ For checkout installation and host-specific commands, see the [installation guid
 Use the same environment where you installed Anpyra. With that environment activated, choose uv (recommended) or pip:
 
 ```shell
-uv pip install --upgrade "anpyra==0.1.4"
+uv pip install --upgrade "anpyra==0.1.5"
 # Or:
-python -m pip install --upgrade "anpyra==0.1.4"
+python -m pip install --upgrade "anpyra==0.1.5"
 python -m anpyra --version
 ```
 
-The version should print `Anpyra 0.1.4`. To upgrade to the latest compatible release, use `--upgrade anpyra` without the version pin. Keep your app's `.anpyra/` signing identity and rebuild its APK after upgrading. See the [upgrade guide](https://github.com/babar-xagi/Anpyra/blob/main/docs/user_guide/installation.md) for explicit environment paths.
+The version should print `Anpyra 0.1.5`. To upgrade to the latest compatible release, use `--upgrade anpyra` without the version pin. Keep your app's `.anpyra/` signing identity and rebuild its APK after upgrading. See the [upgrade guide](https://github.com/babar-xagi/Anpyra/blob/main/docs/user_guide/installation.md) for explicit environment paths.
 
 ## 🧩 Application example
 
@@ -92,13 +92,41 @@ class MainActivity(Activity):
         self.set_content_view(button)
 ```
 
-This example demonstrates native design and press feedback. Python click-action callbacks are not compiled in this version.
+This example demonstrates native design and press feedback. Bind named Activity click handlers using the [events/state API](https://github.com/babar-xagi/Anpyra/blob/main/docs/user_guide/events.md).
 
 ## 💬 Standalone chatbot
 
 Use native layouts, TextInput, TextView and Button with ChatSession to call OpenAI directly from the phone. Enter a temporary key at runtime; it is not compiled into the APK. Successful turns retain all response output items, New chat resets history, and request controls recover after errors. No Python server or embedded OpenAI Python SDK is needed. See the [chatbot guide](https://github.com/babar-xagi/Anpyra/blob/main/docs/user_guide/chatbot.md) and [full example](https://github.com/babar-xagi/Anpyra/tree/main/examples/chatbot).
 
-The 13 phone checks used controlled responses. A live AI answer was not verified because the supplied temporary key returned exhausted quota. Streaming, cancellation, durable history and arbitrary Python callbacks remain unsupported.
+Chat checks use controlled responses. A live AI answer was not verified because the test key returned exhausted quota. Named generic callbacks can coexist on separate buttons; streaming, cancellation and durable chat history remain unsupported.
+
+## 🖱️ Named callbacks and typed state
+
+```python
+from anpyra import Activity, Button, Column, State, TextView
+
+class MainActivity(Activity):
+    def on_create(self, state):
+        self.count: int = State(0, persist=True)
+        page = Column(self)
+        label = TextView(self, text="0")
+        self.label = label
+        button = Button(self, text="Add one")
+        button.on_click(self.increment)
+        page.add(label)
+        page.add(button)
+        self.set_content_view(page)
+        self.refresh()
+
+    def increment(self):
+        self.count += 1
+        self.refresh()
+
+    def refresh(self):
+        self.label.set_text(str(self.count))
+```
+
+State persistence is opt-in and uses Android's saved-instance Bundle. Widget references are recreated; memory-only scalar fields start from defaults. Handler integers use signed-32-bit wraparound. See [usage and limits](https://github.com/babar-xagi/Anpyra/blob/main/docs/user_guide/events.md) and [Counter Lab](https://github.com/babar-xagi/Anpyra/tree/main/examples/counter).
 
 ## 📦 Supported features and limits
 
@@ -106,6 +134,7 @@ The 13 phone checks used controlled responses. A live AI answer was not verified
 - Native Button design with shared typography, state colors, rounded shapes, stroke, ripple, layout/margins and signed raster icons.
 - Column/Row weighted layouts, single-child ScrollView and TextInput with placeholder/password configuration.
 - Scoped ChatSession listener, worker/delivery classes, HTTPS/JSON requests, response rendering and successful history.
+- Named click handlers, stable int/str/bool fields and locals, runtime text/enabled operations and opted-in saved-instance state.
 - Validated standalone local TTF/OTF fonts preserved in signed digest-named APK assets.
 - Screen colors, local raster images with seven fit modes, linear/radial/sweep gradients and transparency.
 - Initialized `str`, `int` and `bool` locals, simple integer arithmetic and comparisons.
@@ -113,7 +142,7 @@ The 13 phone checks used controlled responses. A live AI answer was not verified
 - DEX, binary manifest, signed APK and JSON report generation.
 - Retained project debug identity and local APK/DEX integrity checks.
 
-This is a restricted compiler, not general Python on Android. Screen accepts one widget or layout root; Column/Row arrange multiple children. Generic Python callbacks, arbitrary imports, collections, reassignment, multi-module apps and release/store signing remain unsupported. Layout/input/chat apps permit 48 symbols with at most 14 scalar int/bool locals; older apps retain their 14-symbol budget. See the [Screen guide](https://github.com/babar-xagi/Anpyra/blob/main/docs/user_guide/screen.md), [TextView guide](https://github.com/babar-xagi/Anpyra/blob/main/docs/user_guide/textview.md), [Button guide](https://github.com/babar-xagi/Anpyra/blob/main/docs/user_guide/button.md), [chatbot guide](https://github.com/babar-xagi/Anpyra/blob/main/docs/user_guide/chatbot.md) and [language guide](https://github.com/babar-xagi/Anpyra/blob/main/docs/user_guide/language.md).
+This is a restricted compiler, not general Python on Android. Screen accepts one widget or layout root; Column/Row arrange multiple children. Lambdas, captured lifecycle locals, async handlers, arbitrary imports, collections, multi-module apps and release/store signing remain unsupported. Interactive apps permit 48 lifecycle symbols with at most 14 scalar int/bool locals, and eight scalar locals per handler; older apps retain their 14-symbol budget. See [events/state](https://github.com/babar-xagi/Anpyra/blob/main/docs/user_guide/events.md), [Screen](https://github.com/babar-xagi/Anpyra/blob/main/docs/user_guide/screen.md), [TextView](https://github.com/babar-xagi/Anpyra/blob/main/docs/user_guide/textview.md), [Button](https://github.com/babar-xagi/Anpyra/blob/main/docs/user_guide/button.md) and [language limits](https://github.com/babar-xagi/Anpyra/blob/main/docs/user_guide/language.md).
 
 ## 📚 Documentation and contribution
 
