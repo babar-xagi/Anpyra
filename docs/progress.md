@@ -1,6 +1,6 @@
 # 📊 Implementation Progress and Verified Results
 
-**Updated: October 7, 2026.** Current focus: finish the Android framework. Release candidate: **Anpyra 0.1.5**. This version includes Android-only components, Screen styling, TextView typography, native Button design, layouts/input and scoped ChatSession. The original 0.1.0/0.1.1 releases remain immutable.
+**Updated: October 7, 2026.** Current focus: finish the Android framework. Release version: **Anpyra 0.1.5**. This version includes Android-only components, Screen styling, TextView typography, native Button design, layouts/input and scoped ChatSession. The original 0.1.0/0.1.1 releases remain immutable.
 
 ## 🖱️ Generic events/state (0.1.5) — October 7, 2026
 
@@ -10,7 +10,7 @@
 - Pass **138 host tests**, including 17 event/source/emitted-byte tests. The independent test executor reads actual DEX instructions and controlled native calls; it is not an ART verifier or an APK runtime.
 - Record **11 native event cases** on TECNO BG7 / API 33: initial state, repeated clicks, reset/decrement, disabled/boolean state, input/string preview, opted-in int/string/bool restoration, memory-only reset, new-task reset and signed-int32 boundaries.
 - Preserve the exact pre-change ChatSession DEX and historical experiment DEX hashes. Generic/chat composition passed 15 controlled native cases, including independent callback dispatch before/after chat requests and scoped busy controls.
-- Prepare the 0.1.5 release candidate; publication/index verification is pending. Earlier PyPI files remain immutable.
+- Publish 0.1.5 through Trusted Publishing and verify public fresh installation/upgrades. Earlier PyPI files remain immutable.
 
 Evidence: ignored `build/event-device-checks/report.json` and screenshot. Physical rotation, broader lifecycle hooks and other Android versions still need separate checks. [Usage](user_guide/events.md) and [file ownership](developer_guide/events.md) explain supported behavior and limits.
 
@@ -190,3 +190,14 @@ Fresh public installation and separate pip/uv 0.1.3 → 0.1.4 upgrades passed. E
 | --- | --- |
 | `anpyra-0.1.4-py3-none-any.whl` | `e85bda713d5e5ccda55a8592359a86d0ab05e5c5d593bf3d4eebeee07ba15ffa` |
 | `anpyra-0.1.4.tar.gz` | `7fa253211dfb3f21078fb656a7c6e39b961de2d547c32d33571fd24dec3f08a1` |
+
+## 📦 Verified 0.1.5 publication
+
+Published October 7, 2026 from commit `c9974a6`, tag `v0.1.5`. [Publishing run](https://github.com/babar-xagi/Anpyra/actions/runs/37586622006) passed Windows/Linux Python 3.11/3.13 validation, archive/version/description guards and installed-wheel builds including Counter Lab. [GitHub release](https://github.com/babar-xagi/Anpyra/releases/tag/v0.1.5) holds the exact files on [PyPI 0.1.5](https://pypi.org/project/anpyra/0.1.5/).
+
+Fresh public installation and separate pip/uv 0.1.4 → 0.1.5 upgrades passed. Source, configuration, signing certificate and starter APK hashes stayed unchanged. All three 0.1.5 environments built/verified Counter Lab and ChatSession, with byte-identical rebuilds. These are package/build checks; native event acceptance is recorded above.
+
+| File | SHA-256 |
+| --- | --- |
+| `anpyra-0.1.5-py3-none-any.whl` | `8da8b0e04b5cf14a1a324e415e62be81c9ace532ba9ea2c3e2f492e9ec19cf5b` |
+| `anpyra-0.1.5.tar.gz` | `a281ae68aa56b4f73c626e1afdf6f62c731c8b10aed7210e2bad25f83d0caa7d` |

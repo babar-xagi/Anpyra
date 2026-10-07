@@ -4,6 +4,14 @@ This file records user-visible milestones. Planned work belongs in the [roadmap]
 
 ## 📦 0.1.5 — October 7, 2026
 
+### 📦 Publication and upgrades
+
+- Publish checked wheel/source via [Trusted Publishing](https://github.com/babar-xagi/Anpyra/actions/runs/37586622006); PyPI and GitHub archive hashes match.
+- Verify fresh public installation and pip/uv upgrades from 0.1.4, preserving app source/config, signing identity and starter APK bytes.
+- Build/verify Counter Lab and ChatSession from all three public package environments and confirm reproducible output.
+
+### 🖱️ Callbacks and typed state
+
 - Compile named Button.on_click handlers and retained int/str/bool/widget fields into native Activity methods and fields.
 - Add typed callback expressions, assignments, branches, runtime text/enabled operations and safe method-call/data-flow validation.
 - Add explicit State persistence using Android instance-state Bundles, with native recreation, scalar restore and memory-only defaults.

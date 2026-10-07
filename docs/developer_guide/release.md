@@ -4,7 +4,7 @@ Anpyra **0.1.3** was published to PyPI on October 6, 2026 through [the successfu
 
 Anpyra **0.1.4** was published on October 6, 2026 through [Trusted Publishing](https://github.com/babar-xagi/Anpyra/actions/runs/37573611590). Public wheel/source hashes match the checked CI files attached to the [GitHub release](https://github.com/babar-xagi/Anpyra/releases/tag/v0.1.4). Fresh PyPI installation and separate pip/uv upgrades from 0.1.3 passed, preserving configuration, signing identity and starter APK bytes. Each public-package environment built/verified the new chatbot reproducibly. See [progress](../progress.md) for fingerprints and scope; TestPyPI rehearsal was not run.
 
-The 0.1.5 candidate adds generic callbacks, typed Activity state and explicit saved-instance restore. Publication/index evidence is recorded after upload in [progress](../progress.md).
+Anpyra **0.1.5** was published on October 7, 2026 through [Trusted Publishing](https://github.com/babar-xagi/Anpyra/actions/runs/37586622006). Checked CI archives match [PyPI 0.1.5](https://pypi.org/project/anpyra/0.1.5/) and the [GitHub release](https://github.com/babar-xagi/Anpyra/releases/tag/v0.1.5). Fresh public installation and separate pip/uv upgrades from 0.1.4 passed, retaining existing configuration, signing identity and starter APK bytes. Counter Lab and ChatSession APKs built/verified reproducibly in all three public-package environments. See [progress](../progress.md) for fingerprints; TestPyPI rehearsal was not run.
 
 ## 📋 Prepare a candidate
 
