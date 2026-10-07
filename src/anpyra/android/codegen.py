@@ -8,13 +8,16 @@ from ..compiler.ir import (
     AppIR,
     ApplyButtonDesign,
     ApplyScreenBackground,
+    BindChatSession,
     CallFunction,
     IfBool,
     IfCompare,
     IntBinary,
     LoadConst,
     NewButton,
+    NewLayout,
     NewScreen,
+    NewTextInput,
     ReturnValue,
     SetButtonProperty,
     SetTextColor,
@@ -41,6 +44,7 @@ from .dalvik import (
     make_code_item,
 )
 from .dex_types import MethodListing
+from .layout import emit_layout
 from .screen import emit_screen_operation
 from .textview import emit_text_style
 
@@ -65,12 +69,20 @@ def _walk_ops(ops):
 
 
 def generate_methods(
-    app: AppIR, tidx, sidx, midx, helper_keys, screen_refs, field_indexes=None
+    app: AppIR, tidx, sidx, midx, helper_keys, screen_refs, field_indexes=None, *, chat_scroll=None
 ) -> GeneratedMethods:
     act_ctor = screen_refs["activity_constructor"]
     # Main register map.
     symbols = list(app.symbol_types)
-    if len(symbols) + 2 > 16:
+    extended = any(
+        isinstance(op, (NewLayout, NewTextInput, BindChatSession))
+        for op in _walk_ops(app.operations)
+    )
+    if extended:
+        symbols.sort(key=lambda pair: pair[1] not in {"int", "bool"})
+        if sum(typ in {"int", "bool"} for _, typ in symbols) > 14:
+            raise ValueError("interactive apps support at most 14 scalar symbols")
+    if len(symbols) + 2 > (50 if extended else 16):
         raise ValueError("Anpyra v0.1 on_create supports at most 14 locals")
     wide = any(
         isinstance(
@@ -79,6 +91,9 @@ def generate_methods(
                 NewScreen,
                 SetTextColor,
                 SetTextStyle,
+                NewLayout,
+                NewTextInput,
+                BindChatSession,
                 NewButton,
                 ApplyButtonDesign,
                 SetButtonProperty,
@@ -86,6 +101,7 @@ def generate_methods(
         )
         for op in _walk_ops(app.operations)
     )
+    wide = wide or extended
     offset = 2 if wide else 0
     reg_of = {n: i + offset for i, (n, _) in enumerate(symbols)}
     scratch = tuple(range(offset + len(symbols), offset + len(symbols) + 7)) if wide else ()
@@ -105,6 +121,35 @@ def generate_methods(
 
     def emit_main(ops):
         for op in ops:
+            if isinstance(op, BindChatSession):
+                from .chat import emit_chat_binding
+
+                emit_chat_binding(
+                    op,
+                    main_asm,
+                    reg_of,
+                    this_reg,
+                    screen_refs,
+                    midx,
+                    field_indexes,
+                    argument_base,
+                    app.class_descriptor,
+                    chat_scroll,
+                )
+                continue
+            if emit_layout(
+                op,
+                main_asm,
+                reg_of,
+                this_reg,
+                tidx,
+                sidx,
+                midx,
+                screen_refs,
+                scratch,
+                argument_base,
+            ):
+                continue
             if emit_button(
                 op,
                 main_asm,

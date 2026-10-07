@@ -22,6 +22,10 @@ This guide is for people building small Android apps. You do not need to underst
 
 [Screen styling](screen.md), [TextView typography](textview.md) and [Button design](button.md) document the native components available in 0.1.3, including colors, fonts, states, ripple, geometry and icons.
 
+## 💬 Unreleased chatbot preview
+
+The [standalone chatbot guide](chatbot.md) explains native layouts, keyboard input, runtime API-key entry, conversation memory and error handling. Use the editable source checkout; these APIs are not part of the published 0.1.3 wheel.
+
 ## 🎯 Buildable examples
 
 The included [hello](../../examples/hello/README.md) and [score](../../examples/score/README.md) projects demonstrate one native Activity, TextView content, typed values, branches, arithmetic, and simple helpers.

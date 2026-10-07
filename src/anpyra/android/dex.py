@@ -12,6 +12,7 @@ from .button import button_fields, button_strings
 from .codegen import _walk_ops, generate_methods
 from .dex_types import DexBuild, MethodKey, ProtoKey
 from .encoding import align, dex_string_sort_key, mutf8_encode, uleb128, utf16_code_units
+from .layout import layout_strings
 from .screen import ACTIVITY_TYPE, screen_methods
 from .textview import textview_fields, textview_strings
 
@@ -46,6 +47,12 @@ def _shorty(p):
 
 
 def build_dex(app: AppIR) -> DexBuild:
+    from ..compiler.ir import BindChatSession
+
+    if any(isinstance(op, BindChatSession) for op in _walk_ops(app.operations)):
+        from .chat import build_chat_dex
+
+        return build_chat_dex(app)
     cls = app.class_descriptor
     activity, void, int_t = ACTIVITY_TYPE, "V", "I"
     operations = tuple(_walk_ops(app.operations))
@@ -75,6 +82,7 @@ def build_dex(app: AppIR) -> DexBuild:
     )
     strings_from_main.update(textview_strings(operations))
     strings_from_main.update(button_strings(operations))
+    strings_from_main.update(layout_strings(operations))
     type_descriptors = {cls, activity, void, int_t}
     for method in methods:
         type_descriptors.update((method.owner, method.return_type, *method.parameters))

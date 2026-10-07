@@ -25,6 +25,7 @@ from .dalvik import (
     emit_invoke,
 )
 from .dex_types import MethodKey
+from .layout import layout_methods
 from .textview import textview_methods
 
 ACTIVITY_TYPE = "Landroid/app/Activity;"
@@ -54,6 +55,7 @@ def screen_methods(class_descriptor: str, operations=()) -> dict[str, MethodKey]
         methods["text_view_color"] = MethodKey(TEXT_VIEW_TYPE, "setTextColor", "V", ("I",))
     methods.update(textview_methods(operations))
     methods.update(button_methods(operations))
+    methods.update(layout_methods(operations))
     if any(isinstance(op, (NewScreen, SetTextColor, SetTextStyle, NewButton)) for op in operations):
         methods["view_force_dark"] = MethodKey(VIEW, "setForceDarkAllowed", "V", ("Z",))
     return methods

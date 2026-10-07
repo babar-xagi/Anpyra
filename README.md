@@ -26,6 +26,8 @@ It grew from the successful **PyAndroid experiments 001–008**. Experiment 008 
 
 ## ⚙️ How it works
 
+**💬 Unreleased source preview:** the current checkout adds [Anpyra Chat](examples/chatbot/README.md), native Column/Row/ScrollView, masked TextInput and a scoped ChatSession controller. It calls OpenAI directly from Android, with runtime key entry and in-memory history. Install the editable checkout for these APIs; the published 0.1.3 wheel remains unchanged. See the [user guide](docs/user_guide/chatbot.md) and [file-by-file implementation map](docs/developer_guide/chatbot.md).
+
 ```mermaid
 flowchart LR
     A[Python source] --> B[AST validation]

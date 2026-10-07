@@ -25,11 +25,12 @@ Anpyra/
 │   │   ├── components/
 │   │   │   ├── screen.py         # Screen and background declarations
 │   │   │   ├── textview.py       # Typography and font declarations
-│   │   │   └── button.py         # Button states, border and icon declarations
+│   │   │   ├── button.py         # Button states, border and icon declarations
+│   │   │   └── layout.py, textinput.py, chat.py # Unreleased interactive authoring
 │   │   ├── compiler/
 │   │   │   ├── frontend.py       # Static Python AST → typed IR
 │   │   │   ├── ir.py             # Application/function/operation records
-│   │   │   └── screen_style.py, text_style.py, button_style.py
+│   │   │   └── screen_style.py, text_style.py, button_style.py, interactive.py
 │   │   └── android/
 │   │       ├── README.md, __init__.py
 │   │       ├── screen.py         # Native screen/lifecycle method bindings
@@ -40,13 +41,15 @@ Anpyra/
 │   │       ├── dex_types.py      # Signature and result/listing records
 │   │       ├── encoding.py       # DEX binary/string helpers
 │   │       ├── dex.py            # DEX pools, sections and checksums
+│   │       ├── classes.py, method_builder.py # Multi-class controller DEX/methods
+│   │       ├── layout.py, chat.py # Native inputs/layouts and standalone chat
 │   │       ├── manifest.py       # Binary manifest writing
 │   │       ├── manifest_inspect.py # Manifest reading
 │   │       ├── packaging.py      # Deterministic unsigned APK ZIP
 │   │       ├── signing.py        # Debug identity and APK v2 signing
 │   │       └── verify.py         # APK/content/DEX integrity inspection
 │   └── pyandroid/__init__.py     # Experiment authoring imports
-├── examples/hello/, score/       # Complete Android source/config projects
+├── examples/hello/, score/, chatbot/ # Complete Android source/config projects
 ├── tests/
 │   ├── unit/                    # Compiler/config/DEX/components/release guards
 │   ├── integration/             # CLI/build/identity workflows
@@ -65,7 +68,7 @@ Anpyra/
 
 Source syntax/types belong in frontend.py; operation records belong in ir.py. Activity/construction calls belong in screen.py; typography emission belongs in android/textview.py and font validation in android/fonts.py; register/control-flow rules in codegen.py; binary instructions in dalvik.py; container layout in dex.py; ZIP entries in packaging.py. Keep API stubs, source checks, IR and emitters in agreement.
 
-There are no common/platforms/desktop/iOS placeholder packages. Root config owns the current Android project settings. Root build orchestrates actual components; android/dex.py is the only DEX writer.
+There are no common/platforms/desktop/iOS placeholder packages. Root config owns the current Android project settings. Root build orchestrates actual components; android/dex.py is the canonical DEX entry point and chooses the legacy or multi-class chat writer. See the [interactive file map](chatbot.md).
 
 ## 🧹 Local artifacts
 

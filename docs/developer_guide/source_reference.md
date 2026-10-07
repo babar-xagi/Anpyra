@@ -43,6 +43,10 @@ HelperCompiler.synthetic/require_int/int_operand/compile_return_expr/compile imp
 
 Source is never executed or imported. Source acceptance alone does not implement a native method; IR and Android emitters must support it.
 
+## 💬 New interactive files
+
+The [chatbot file map](chatbot.md) adds components/layout.py, components/textinput.py, components/chat.py, compiler/interactive.py, android/layout.py, android/chat.py, android/classes.py and android/method_builder.py. It explains each module's code, generated fields/classes, validation and debugging ownership. NewLayout/AddLayoutChild/NewTextInput/SetScrollContent/BindChatSession extend the IR; class-qualified callback and worker listings are included in reports.
+
 ## 🧱 Intermediate representation
 
 File: [ir.py](../../src/anpyra/compiler/ir.py).

@@ -126,6 +126,7 @@ class BinaryXmlBuilder:
         version_name: str = "0.1.0",
         min_sdk: int = 24,
         target_sdk: int = 36,
+        internet: bool = False,
     ):
         self.package = package
         self.activity = activity
@@ -134,6 +135,7 @@ class BinaryXmlBuilder:
         self.version_name = version_name
         self.min_sdk = min_sdk
         self.target_sdk = target_sdk
+        self.internet = internet
 
         resource_names = [
             ("label", ANDROID_ATTR_LABEL),
@@ -165,6 +167,10 @@ class BinaryXmlBuilder:
         ]
 
         self.pool = StringPool(resource_names, strings)
+        if internet:
+            self.pool = StringPool(
+                resource_names, [*strings, "uses-permission", "android.permission.INTERNET"]
+            )
         self.line = 1
 
     def idx(self, s: str) -> int:
@@ -257,6 +263,12 @@ class BinaryXmlBuilder:
             ],
         )
         chunks += self.end_element("uses-sdk")
+        if self.internet:
+            chunks += self.start_element(
+                "uses-permission",
+                [Attr(ANDROID_NS, "name", "string", "android.permission.INTERNET")],
+            )
+            chunks += self.end_element("uses-permission")
 
         chunks += self.start_element(
             "application",
@@ -310,6 +322,7 @@ def build_manifest(
     version_name: str = "0.1.0",
     min_sdk: int = 24,
     target_sdk: int = 36,
+    internet: bool = False,
 ) -> bytes:
     return BinaryXmlBuilder(
         package,
@@ -319,4 +332,5 @@ def build_manifest(
         version_name=version_name,
         min_sdk=min_sdk,
         target_sdk=target_sdk,
+        internet=internet,
     ).build()

@@ -163,4 +163,7 @@ def inspect_manifest(data: bytes) -> dict:
         "exported": activity_attrs["exported"],
         "action": action_attrs["name"],
         "category": category_attrs["name"],
+        "permissions": tuple(
+            item.get("name") for item in attrs_by_element.get("uses-permission", [])
+        ),
     }

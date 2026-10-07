@@ -39,6 +39,10 @@ Opt-in native typography pixel/geometry matrix. Run `python scripts/check_text_d
 
 Recreates the original TTF/OTF demonstration assets from owned block outlines. Use `uv run --no-project --with fonttools scripts/generate_demo_fonts.py` to obtain the generation tool in isolation; ordinary app builds do not require FontTools. This deliberately overwrites the two example fonts. See [font asset details](../examples/text_style/assets/README.md).
 
+## 💬 check_chat_device.py
+
+Run `python scripts/check_chat_device.py --serial DEVICE_ID` on an unlocked phone. It tests native layout/input, password masking, request locking, response rendering, history, errors and reset using synthetic responses. The script creates its own test app and loopback server, forwards a temporary adb port and removes that mapping afterward. Its test-only HTTP/SDK-27 profile is scoped to the fixture build; production uses OpenAI HTTPS/SDK-36. It records no real API key and makes no paid API request. See the [implementation guide](../docs/developer_guide/chatbot.md).
+
 ## 🟦 check_button_device.py
 
 Opt-in native Button pointer/pixel/geometry checks. Use `python scripts/check_button_device.py --serial DEVICE_ID` with an unlocked phone. --adb, --package and --work-dir select the tool/test app. The script saves screenshots/results, holds its own visible test view awake and captures press states during a continuous gesture, then releases it. It does not bind app actions or change system settings. See [Button internals](../docs/developer_guide/button_styling.md).

@@ -79,8 +79,8 @@ The original experiments were reported successful on a phone by the author. The 
 | 2 | Documentation and contributor organization | ✅ Repository work implemented | 1 |
 | 3 | Validation, diagnostics and binary hardening | 🧪 Phone installation reported; full runtime/independent checks pending | 1–2 |
 | 4 | Language semantics and register model | 📋 Planned | 3 |
-| 5 | Native layouts and widget surface | 📋 Planned | 3–4 |
-| 6 | Events, application state and lifecycle | 📋 Planned | 4–5 |
+| 5 | Native layouts and widget surface | 🧪 Basic layouts/input implemented in unreleased chatbot source | 3–4 |
+| 6 | Events, application state and lifecycle | 🧪 Scoped native ChatSession implemented; generic callbacks planned | 4–5 |
 | 7 | Modules, classes and multiple Activities | 📋 Planned | 4, lifecycle contracts |
 | 8 | Assets/resources and package expansion | 📋 Planned | 5, 7 where required |
 | 9 | Release identity and distribution | 📋 Planned | Validated runtime/package contracts |
@@ -145,13 +145,13 @@ Phases are a dependency-oriented plan, not a fixed schedule. Small independent t
 
 ## 5️⃣ Phase 5 — Native layouts and widgets
 
-**Source milestone delivered:** Screen container/background color, packaged raster image/fit/alpha and linear/radial/sweep gradients, with one TextView child. 25 API 33 native pixel cases passed. General multiple-child layouts, buttons/input and events remain planned; see [Screen guide](user_guide/screen.md).
+**Delivered milestones:** released Screen backgrounds, typography and Button design; unreleased Column/Row/ScrollView and TextInput in the [standalone chatbot](user_guide/chatbot.md). Its API 33 checks cover a complete multi-widget screen, masked input and scrollable responses. Wider widget/layout contracts remain future work.
 
 **Outcome:** display a useful screen with more than one standalone text view.
 
-- [ ] Design layout/child-view authoring APIs and Android method mappings.
-- [ ] Add a vertical layout and multiple child text widgets as a first complete use case.
-- [ ] Add Button and input-widget construction/configuration after layout contracts exist.
+- [x] Design basic Column/Row/ScrollView child APIs and native mappings, with dimensions/weights/margins and parent/cycle checks.
+- [x] Add a vertical layout and multiple child text widgets in the chatbot screen.
+- [x] Add native Button and TextInput construction/configuration; broader widgets remain planned.
 - [ ] Specify text/value conversion and widget property types.
 - [ ] Keep API stubs, validation, IR and code generation in agreement.
 
@@ -163,10 +163,10 @@ Phases are a dependency-oriented plan, not a fixed schedule. Small independent t
 
 **Outcome:** make a small interactive app.
 
-- [ ] Generate listener/interface bindings and callback dispatch.
-- [ ] Provide safe mutable app state/fields instead of lifecycle locals for long-lived values.
+- [x] Generate scoped ChatSession listener/interface bindings; generic user-defined callback dispatch remains planned.
+- [x] Generate controller fields for widget references, busy state and successful history; general user state is not yet supported.
 - [ ] Implement a button click updating a counter and its visible text.
-- [ ] Specify lifecycle/recreation/state persistence behavior.
+- [x] Specify current ChatSession behavior: Activity recreation clears key/history; durable/general app persistence remains planned.
 - [ ] Add lifecycle hooks only when their source and bytecode contracts are implemented.
 - [ ] Define object lifetime/reference behavior and errors for invalid callbacks.
 

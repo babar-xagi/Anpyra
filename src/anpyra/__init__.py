@@ -9,19 +9,29 @@ from .components import (
     Button,
     ButtonState,
     ButtonStyle,
+    ChatSession,
+    Column,
     Font,
     Gradient,
     Icon,
     Image,
+    Row,
     Screen,
+    ScrollView,
     Shadow,
     StyleError,
+    TextInput,
     TextStyle,
 )
 from .config import AppConfig, ConfigError, Project, load_project
 
 __version__ = "0.1.3"
 __all__ = [
+    "Column",
+    "Row",
+    "ScrollView",
+    "TextInput",
+    "ChatSession",
     "Button",
     "ButtonStyle",
     "ButtonState",

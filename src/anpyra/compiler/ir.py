@@ -50,6 +50,42 @@ class NewButton:
 
 
 @dataclass(frozen=True)
+class NewLayout:
+    target: str
+    kind: str
+
+
+@dataclass(frozen=True)
+class AddLayoutChild:
+    receiver: str
+    view: str
+    width: object = "match_parent"
+    height: object = "wrap_content"
+    weight: float = 0
+    margin: tuple = (0, 0, 0, 0)
+
+
+@dataclass(frozen=True)
+class NewTextInput:
+    target: str
+    hint: str
+    password: bool = False
+    hint_color: int | None = None
+
+
+@dataclass(frozen=True)
+class BindChatSession:
+    target: str
+    key_input: str
+    message_input: str
+    transcript: str
+    status: str
+    send_button: str
+    clear_button: str
+    model: str
+
+
+@dataclass(frozen=True)
 class ApplyButtonDesign:
     receiver: str
     design: ButtonDesign
@@ -82,6 +118,12 @@ class NewScreen:
 
 @dataclass(frozen=True)
 class SetScreenContent:
+    receiver: str
+    view: str
+
+
+@dataclass(frozen=True)
+class SetScrollContent:
     receiver: str
     view: str
 
@@ -131,12 +173,17 @@ IROp = (
     | ReturnValue
     | NewTextView
     | NewButton
+    | NewLayout
+    | AddLayoutChild
+    | NewTextInput
+    | BindChatSession
     | ApplyButtonDesign
     | SetButtonProperty
     | SetText
     | SetContentView
     | NewScreen
     | SetScreenContent
+    | SetScrollContent
     | ApplyScreenBackground
     | SetTextColor
     | SetTextStyle

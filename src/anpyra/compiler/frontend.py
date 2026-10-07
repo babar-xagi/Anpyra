@@ -6,10 +6,12 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from ..components.screen import Background, StyleError, parse_color
+from . import interactive
 from .button_style import ButtonStyler
 from .ir import (
     AppIR,
     ApplyScreenBackground,
+    BindChatSession,
     CallFunction,
     CallSuperOnCreate,
     FunctionIR,
@@ -18,12 +20,15 @@ from .ir import (
     IntBinary,
     LoadConst,
     NewButton,
+    NewLayout,
     NewScreen,
+    NewTextInput,
     NewTextView,
     ReturnValue,
     SetButtonProperty,
     SetContentView,
     SetScreenContent,
+    SetScrollContent,
     SetText,
     SetTextColor,
 )
@@ -52,6 +57,11 @@ def _is_name(node: ast.AST, name: str) -> bool:
 
 
 API_NAMES = {
+    "Column",
+    "Row",
+    "ScrollView",
+    "TextInput",
+    "ChatSession",
     "Button",
     "ButtonStyle",
     "ButtonState",
@@ -74,6 +84,9 @@ def _require_imports(tree: ast.Module) -> set[str]:
     for node in tree.body:
         if isinstance(node, ast.ImportFrom):
             modules = {
+                "anpyra.components.layout": {"Column", "Row", "ScrollView"},
+                "anpyra.components.textinput": {"TextInput"},
+                "anpyra.components.chat": {"ChatSession"},
                 "anpyra": API_NAMES,
                 "pyandroid": {"Activity", "TextView"},
                 "anpyra.components": API_NAMES - {"Activity"},
@@ -322,9 +335,12 @@ class FunctionCompiler:
         self.backgrounds = {}
         self.screen_contents = {}
         self.attached = set()
+        self.parents = {}
+        self.text_inputs = {}
         self.branch_depth = 0
         self.text_styler = TextStyler()
         self.button_styler = ButtonStyler(self.text_styler)
+        self.chat_bound = False
 
     def declare(self, name, typ, node):
         if name in {"self", "state", *API_NAMES} or name in self.functions:
@@ -337,10 +353,31 @@ class FunctionCompiler:
         actual = self.symbols.get(name)
         if actual is None:
             raise CompileError(f"{_line(node)}undefined variable {name!r}")
-        if expected == "TextView" and actual == "Button":
+        if expected == "TextView" and actual in {"Button", "TextInput"}:
+            return
+        if expected == "View" and actual in {
+            "TextView",
+            "TextInput",
+            "Button",
+            "Column",
+            "Row",
+            "ScrollView",
+            "Screen",
+        }:
             return
         if actual != expected:
             raise CompileError(f"{_line(node)}{name!r} has type {actual}, expected {expected}")
+
+    def attach(self, child, parent, node):
+        if child in self.attached:
+            raise CompileError(f"{_line(node)}a view cannot be attached to two parents")
+        ancestor = parent
+        while ancestor is not None:
+            if ancestor == child:
+                raise CompileError(f"{_line(node)}layout parent cycle is not allowed")
+            ancestor = self.parents.get(ancestor)
+        self.parents[child] = parent
+        self.attached.add(child)
 
     def synthetic(self, typ, value):
         name = f"${typ}{self.synthetic_counter}"
@@ -432,6 +469,7 @@ class FunctionCompiler:
             if isinstance(target, ast.Name) and self.symbols.get(target.id) in {
                 "TextView",
                 "Button",
+                "TextInput",
             }:
                 if chain == ["text"]:
                     return self.compile_expr(
@@ -496,6 +534,9 @@ class FunctionCompiler:
             raise CompileError(f"{_line(node)}simple assignments only")
         target = node.targets[0].id
         call = node.value
+        special = interactive.constructor(self, node)
+        if special is not None:
+            return special
         if isinstance(call, ast.Call) and _is_name(call.func, "Screen"):
             if (
                 "Screen" not in self.imported
@@ -510,7 +551,7 @@ class FunctionCompiler:
         if not (
             isinstance(call, ast.Call)
             and isinstance(call.func, ast.Name)
-            and call.func.id in {"TextView", "Button"}
+            and call.func.id in {"TextView", "Button", "TextInput"}
             and len(call.args) == 1
             and _is_name(call.args[0], "self")
         ):
@@ -550,6 +591,9 @@ class FunctionCompiler:
             raise CompileError(f"{_line(node)}unsupported expression")
         receiver = call.func.value
         attr = call.func.attr
+        special = interactive.method(self, node, receiver, attr, call)
+        if special is not None:
+            return special
         if isinstance(receiver, ast.Name) and self.symbols.get(receiver.id) == "Button":
             if attr in {"on_click", "set_on_click", "set_on_click_listener"}:
                 raise CompileError(f"{_line(node)}Button click callbacks are not implemented yet")
@@ -571,7 +615,7 @@ class FunctionCompiler:
             "set_padding": "padding",
         }
         if isinstance(receiver, ast.Name) and attr in setters:
-            self.require(receiver.id, "TextView", node)
+            self.require(receiver.id, "View" if attr == "set_padding" else "TextView", node)
             if self.branch_depth or call.keywords:
                 raise StyleError("TextView style setters use positional arguments outside branches")
             if attr == "set_padding" and len(call.args) in {1, 2, 4}:
@@ -606,8 +650,11 @@ class FunctionCompiler:
             and isinstance(call.args[0], ast.Name)
             and not call.keywords
         ):
-            self.require(receiver.id, "Screen", node)
-            self.require(call.args[0].id, "TextView", node)
+            if self.symbols.get(receiver.id) not in {"Screen", "ScrollView"}:
+                raise StyleError("set_content requires Screen or ScrollView")
+            self.require(call.args[0].id, "View", node)
+            if self.symbols[call.args[0].id] == "Screen":
+                raise StyleError("Screen is the Activity root; use a layout or widget as content")
             if (
                 self.branch_depth
                 or receiver.id in self.attached
@@ -622,10 +669,13 @@ class FunctionCompiler:
             child = call.args[0].id
             if child in self.attached:
                 raise CompileError(f"{_line(node)}a view cannot be attached to two parents")
-            self.attached.add(child)
+            self.attach(child, receiver.id, node)
+            content_op = (
+                SetScrollContent if self.symbols[receiver.id] == "ScrollView" else SetScreenContent
+            )
             if self.symbols[child] == "Button":
-                return (*self.button_styler.apply(child), SetScreenContent(receiver.id, child))
-            return (SetScreenContent(receiver.id, child),)
+                return (*self.button_styler.apply(child), content_op(receiver.id, child))
+            return (content_op(receiver.id, child),)
         if (
             attr == "set_text"
             and isinstance(receiver, ast.Name)
@@ -652,17 +702,17 @@ class FunctionCompiler:
             if self.symbols.get(view) == "Screen":
                 if self.branch_depth:
                     raise CompileError(f"{_line(node)}screen attachment must be outside branches")
-                self.attached.add(view)
+                self.attach(view, "self", node)
                 return (ApplyScreenBackground(view, self.backgrounds[view]), SetContentView(view))
-            self.require(view, "TextView", node)
+            self.require(view, "View", node)
             if view in self.screen_contents.values():
                 raise CompileError(
                     f"{_line(node)}attach the screen rather than its already-parented content"
                 )
             if self.symbols[view] == "Button":
-                self.attached.add(view)
+                self.attach(view, "self", node)
                 return (*self.button_styler.apply(view), SetContentView(view))
-            self.attached.add(view)
+            self.attach(view, "self", node)
             return (SetContentView(view),)
         raise CompileError(f"{_line(node)}unsupported method call")
 
@@ -771,11 +821,21 @@ def _compile_source(source: str, *, source_path: Path, package: str, label: str)
         raise CompileError(
             "on_create must call self.set_content_view(view) exactly once, outside branches"
         )
-    if not {"TextView", "Screen", "Button"}.intersection(fc.symbols.values()):
-        raise CompileError("on_create must create a TextView or Screen")
-    if len(fc.symbols) > 14:
+    if not {
+        "TextView",
+        "Screen",
+        "Button",
+        "TextInput",
+        "Column",
+        "Row",
+        "ScrollView",
+    }.intersection(fc.symbols.values()):
+        raise CompileError("on_create must create a native view")
+    extended = any(isinstance(op, (NewLayout, NewTextInput, BindChatSession)) for op in operations)
+    if len(fc.symbols) > (48 if extended else 14):
+        limit = 48 if extended else 14
         raise CompileError(
-            "on_create exceeds 14 registers for locals and temporary values in Anpyra v0.1"
+            f"on_create exceeds {limit} registers for locals and temporary values in Anpyra v0.1"
         )
     ir = AppIR(
         package,

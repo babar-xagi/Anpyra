@@ -23,11 +23,15 @@ This guide is for maintainers and contributors extending or fixing Anpyra. It de
 
 [Implementation and native pixel testing](screen_styling.md) maps the component/parser/assets/DEX changes and exact validation.
 
+## 💬 Chatbot and interactive components
+
+[Native chatbot implementation](chatbot.md) maps every new file, generated classes, fields, requests, response parsing and key-free device tests. This is an unreleased source feature with focused ChatSession actions; generic Python callbacks remain future work.
+
 ## 🎯 Start with the problem
 
 For a source error, begin in `compiler/frontend.py`. For wrong DEX, compare IR with `android/dex.py`. For installation/signature issues, trace `android/` and its `build.py`. The [debugging guide](debugging.md) maps specific symptoms to methods and tests.
 
-The public import surface remains anpyra and historical pyandroid. Source analysis is in compiler/; the Android components are in android/. android/dex.py is the only DEX implementation. The former common/platforms and internal compiler.dex paths were removed intentionally. Read [progress](../progress.md) for completed work and success evidence.
+The public import surface remains anpyra and historical pyandroid. Source analysis is in compiler/; the Android components are in android/. android/dex.py is the canonical DEX entry point; it retains the legacy writer and dispatches chat apps to android/classes.py. The former common/platforms and internal compiler.dex paths were removed intentionally. Read [progress](../progress.md) for completed work and success evidence.
 
 ## 📋 Work planning
 

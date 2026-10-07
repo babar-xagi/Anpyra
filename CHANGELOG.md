@@ -2,6 +2,14 @@
 
 This file records user-visible milestones. Planned work belongs in the [roadmap](docs/roadmap.md), not as completed release notes.
 
+## 🚧 Unreleased — Standalone native chatbot
+
+- Add Column/Row/ScrollView, styled TextInput and a scoped ChatSession controller with runtime key entry.
+- Generate native listeners, fields, worker/delivery classes, HTTPS/JSON requests, complete response history and request locking.
+- Add conditional INTERNET permission, password/state handling, correctly sized scrolling content and source parent/cycle diagnostics.
+- Add independent multi-class/exception metadata tests, reproducible signed chat builds, controlled phone checks and detailed user/developer guides.
+- Live API access is separate from controller acceptance; the supplied temporary key returned exhausted quota. This source work has not been published to PyPI.
+
 ## 📦 0.1.3 — October 6, 2026
 
 ### 📦 Publication and upgrades

@@ -17,7 +17,7 @@
 | Regression | `tests/regression/test_functions.py` | Adapted experiment 008 typed-helper contracts |
 | Fixtures | `tests/fixtures/exp005.py` through `exp008.py` | Historical source inputs; not test runners |
 
-The current suite contains **76 tests**. One exact-output regression checks all four experiment DEX hashes captured before Android component cleanup. Package `__init__.py` files allow recursive unittest discovery. Some retained regression tests build APKs, so the groups describe intent rather than strict isolation rules.
+The current suite contains **120 tests**. Interactive/chat coverage is in `tests/unit/test_interactive.py` and `tests/integration/test_chat_build.py`. One exact-output regression checks all four experiment DEX hashes captured before Android component cleanup. Package `__init__.py` files allow recursive unittest discovery. Some retained regression tests build APKs, so the groups describe intent rather than strict isolation rules.
 
 ## ⌨️ Run checks
 

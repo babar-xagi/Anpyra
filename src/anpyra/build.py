@@ -15,6 +15,7 @@ from .android.packaging import build_unsigned_apk as _zip_payload
 from .android.signing import load_or_create_signer_material, sign_apk_v2
 from .android.verify import ApkReport, inspect_apk
 from .compiler.frontend import CompileResult, compile_file
+from .compiler.ir import BindChatSession
 from .config import AppConfig, Project, load_project
 
 
@@ -61,6 +62,7 @@ def build_apk(
         version_name=config.version_name,
         min_sdk=config.min_sdk,
         target_sdk=config.target_sdk,
+        internet=any(isinstance(op, BindChatSession) for op in app.operations),
     )
     dex_build = build_dex(app)
     unsigned = _zip_payload(manifest, dex_build.data, assets.entries)

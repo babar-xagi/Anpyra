@@ -31,6 +31,7 @@ OP_INVOKE_VIRTUAL = 0x6E
 OP_INVOKE_SUPER = 0x6F
 OP_INVOKE_DIRECT = 0x70
 OP_INVOKE_STATIC = 0x71
+OP_INVOKE_INTERFACE = 0x72
 OP_ADD_INT = 0x90
 OP_SUB_INT = 0x91
 
@@ -176,6 +177,27 @@ class Assembler:
                     raise ValueError("iput uses four-bit registers")
                 enc = [0x59 | (value << 8) | (receiver << 12), field_index]
                 text = f"iput v{value}, v{receiver}, {pretty}"
+            elif k in {"iget_object", "iget_boolean", "iget", "iput_object", "iput_boolean"}:
+                destination, receiver, field_index, pretty = a
+                if max(destination, receiver) > 15:
+                    raise ValueError("field access uses four-bit registers")
+                opcode = {
+                    "iget_object": 0x54,
+                    "iget_boolean": 0x55,
+                    "iget": 0x52,
+                    "iput_object": 0x5B,
+                    "iput_boolean": 0x5C,
+                }[k]
+                enc = [opcode | (destination << 8) | (receiver << 12), field_index]
+                text = f"{k.replace('_', '-')} v{destination}, v{receiver}, {pretty}"
+            elif k == "check_cast":
+                register, type_index, pretty = a
+                enc = encode_21c(0x1F, register, type_index)
+                text = f"check-cast v{register}, {pretty}"
+            elif k == "move_exception":
+                (register,) = a
+                enc = [0x0D | (register << 8)]
+                text = f"move-exception v{register}"
             elif k == "const_string":
                 r, idx, lit = a
                 enc = encode_21c(OP_CONST_STRING, r, idx)
@@ -192,12 +214,19 @@ class Assembler:
                     OP_INVOKE_SUPER: "invoke-super",
                     OP_INVOKE_VIRTUAL: "invoke-virtual",
                     OP_INVOKE_STATIC: "invoke-static",
+                    OP_INVOKE_INTERFACE: "invoke-interface",
                 }[op]
                 text = f"{mn} {{{', '.join('v' + str(r) for r in regs)}}}, {pretty}"
             elif k == "invoke_range":
                 opcode, method_index, base, count, pretty = a
                 enc = [opcode | (count << 8), method_index, base]
-                mnemonic = {0x74: "virtual", 0x75: "super", 0x76: "direct", 0x77: "static"}[opcode]
+                mnemonic = {
+                    0x74: "virtual",
+                    0x75: "super",
+                    0x76: "direct",
+                    0x77: "static",
+                    0x78: "interface",
+                }[opcode]
                 text = f"invoke-{mnemonic}/range {{v{base} .. v{base + count - 1}}}, {pretty}"
             elif k == "move_result":
                 (r,) = a

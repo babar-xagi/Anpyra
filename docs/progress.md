@@ -2,7 +2,26 @@
 
 **Updated: October 6, 2026.** Current focus: finish the Android framework. Release version: **Anpyra 0.1.3**. This version includes Android-only components, Screen styling, TextView typography and native Button design. The original 0.1.0/0.1.1 releases remain immutable.
 
-## ✅ Success evidence
+## 💬 Unreleased standalone chatbot — October 6, 2026
+
+The current source adds Column, Row, ScrollView, TextInput and ChatSession alongside the released Screen/TextView/Button components. It generates a native Android click listener, worker thread, HTTPS/JSON request, UI delivery and in-memory history. No Python server or embedded Python/OpenAI SDK is needed.
+
+| Check | Result and scope |
+| --- | --- |
+| Host regression suite | **120 tests passed**, including nine new layout/chat/source/DEX/build tests; historical DEX output preserved |
+| Source/docs quality | Ruff lint/format passed; 58 Markdown files and 11 documented Activity examples checked |
+| Isolated local wheel | New modules present, no key/APK/DEX/cache payloads; separate wheel-only environment built and verified the chatbot |
+| Production app | 8,882-byte signed `dev.anpyra.chatbot` APK built, verified, installed and launched on TECNO BG7, Android API 33 |
+| Controlled native acceptance | **13 checks passed**, seven synthetic requests; missing key/message, masked password, scrollable long text, busy guard, worker/delivery, full-output history, quota/malformed/incomplete recovery, refusal and New chat reset |
+| Visual review | Password dots and scrolling to the measured reply bottom confirmed; native call order/child sizing corrected after initial screenshot review |
+| Live OpenAI access | Supplied temporary key returned HTTP 429, `credit_balance_exhausted`, `insufficient_quota`; **no successful live AI answer verified** |
+| Publication | Source feature only; **not published to PyPI**. Published 0.1.3 remains immutable |
+
+Device automation initially sent Back while OEM keyboard visibility was stale; the test now keeps the keyboard open and uses the resized app's button bounds. Acceptance evidence is under ignored `build/chat-device-checks/` (`report.json`, synthetic requests, screenshot). Controlled responses validate native controller behavior separately from provider/model behavior.
+
+Read the [user guide](user_guide/chatbot.md) for installation/usage and [developer file map](developer_guide/chatbot.md) for every added file, implemented code and bug-fixing ownership. Generic Python callbacks, durable state, streaming, cancellation and additional Android-version coverage remain future work.
+
+## ✅ Released foundation evidence
 
 | Milestone | Result | Evidence/limits |
 | --- | --- | --- |
