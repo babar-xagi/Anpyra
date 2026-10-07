@@ -4,6 +4,14 @@ This file records user-visible milestones. Planned work belongs in the [roadmap]
 
 ## 📦 0.1.4 — October 6, 2026
 
+### 📦 Publication and upgrades
+
+- Publish wheel/source through [Trusted Publishing](https://github.com/babar-xagi/Anpyra/actions/runs/37573611590); public archive hashes match checked CI files.
+- Verify fresh public installation and separate pip/uv upgrades from 0.1.3, preserving app configuration, signing identity and starter APK bytes.
+- Build/verify the native chatbot from all three public-package environments and confirm reproducible output.
+
+### 💬 Native layouts and chatbot
+
 - Add Column/Row/ScrollView, styled TextInput and a scoped ChatSession controller with runtime key entry.
 - Generate native listeners, fields, worker/delivery classes, HTTPS/JSON requests, complete response history and request locking.
 - Add conditional INTERNET permission, password/state handling, correctly sized scrolling content and source parent/cycle diagnostics.

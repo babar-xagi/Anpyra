@@ -1,6 +1,6 @@
 # 📊 Implementation Progress and Verified Results
 
-**Updated: October 6, 2026.** Current focus: finish the Android framework. Release candidate: **Anpyra 0.1.4**. This version includes Android-only components, Screen styling, TextView typography and native Button design. The original 0.1.0/0.1.1 releases remain immutable.
+**Updated: October 6, 2026.** Current focus: finish the Android framework. Release version: **Anpyra 0.1.4**. This version includes Android-only components, Screen styling, TextView typography, native Button design, layouts/input and scoped ChatSession. The original 0.1.0/0.1.1 releases remain immutable.
 
 ## 💬 Standalone chatbot (0.1.4) — October 6, 2026
 
@@ -15,7 +15,7 @@ The current source adds Column, Row, ScrollView, TextInput and ChatSession along
 | Controlled native acceptance | **13 checks passed**, seven synthetic requests; missing key/message, masked password, scrollable long text, busy guard, worker/delivery, full-output history, quota/malformed/incomplete recovery, refusal and New chat reset |
 | Visual review | Password dots and scrolling to the measured reply bottom confirmed; native call order/child sizing corrected after initial screenshot review |
 | Live OpenAI access | Supplied temporary key returned HTTP 429, `credit_balance_exhausted`, `insufficient_quota`; **no successful live AI answer verified** |
-| Publication | 0.1.4 release candidate prepared; upload/index verification pending. Published 0.1.3 remains immutable |
+| Publication | **PyPI 0.1.4 published and public-index checks passed**; earlier releases remain immutable |
 
 Device automation initially sent Back while OEM keyboard visibility was stale; the test now keeps the keyboard open and uses the resized app's button bounds. Acceptance evidence is under ignored `build/chat-device-checks/` (`report.json`, synthetic requests, screenshot). Controlled responses validate native controller behavior separately from provider/model behavior.
 
@@ -167,3 +167,14 @@ Published October 6, 2026 from commit `1b064f99d75518394f5ead12df7c5aaf1d50aaf2`
 | --- | --- |
 | `anpyra-0.1.3-py3-none-any.whl` | `bc131961c0ce9ccb031f09abd5314a1822d39e94d18d16bf1355ba042dfa0158` |
 | `anpyra-0.1.3.tar.gz` | `95bac7c3416bdb7560cbcf1bd917339560383326b540598d63e0c9845db5a591` |
+
+## 📦 Verified 0.1.4 publication
+
+Published October 6, 2026 from commit `80bc3b4`, tag `v0.1.4`. [Publishing run](https://github.com/babar-xagi/Anpyra/actions/runs/37573611590) passed the four Windows/Linux Python 3.11/3.13 jobs, archive/version/README guards and installed-wheel starter/Screen/typography/Button/chatbot builds. [GitHub release](https://github.com/babar-xagi/Anpyra/releases/tag/v0.1.4) contains the same exact archives as [PyPI 0.1.4](https://pypi.org/project/anpyra/0.1.4/).
+
+Fresh public installation and separate pip/uv 0.1.3 → 0.1.4 upgrades passed. Existing configuration, source, signing certificate and starter APK hashes remained unchanged. All three 0.1.4 environments built/verified a three-class chatbot APK and a byte-identical rebuild. The initial pip query briefly listed only older versions immediately after upload; a subsequent public-index retry succeeded. These are installation/build checks; they do not establish a successful live AI answer.
+
+| File | SHA-256 |
+| --- | --- |
+| `anpyra-0.1.4-py3-none-any.whl` | `e85bda713d5e5ccda55a8592359a86d0ab05e5c5d593bf3d4eebeee07ba15ffa` |
+| `anpyra-0.1.4.tar.gz` | `7fa253211dfb3f21078fb656a7c6e39b961de2d547c32d33571fd24dec3f08a1` |

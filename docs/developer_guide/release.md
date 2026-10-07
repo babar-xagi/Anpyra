@@ -2,7 +2,7 @@
 
 Anpyra **0.1.3** was published to PyPI on October 6, 2026 through [the successful workflow](https://github.com/babar-xagi/Anpyra/actions/runs/37539219407). Public wheel/source hashes match checked CI artifacts. Fresh installation and separate pip/uv upgrades from 0.1.2 built/verified starter and Button/state/ripple/icon APKs, retaining existing project configuration, signing identity and starter APK bytes. See [release notes](https://github.com/babar-xagi/Anpyra/releases/tag/v0.1.3) and [progress evidence](../progress.md). TestPyPI rehearsal was not run for this release. Android app-store signing/distribution remains a separate future workflow; see [publishing](publishing.md) for setup and commands.
 
-The next release candidate is **0.1.4**, adding native layouts, masked TextInput, scoped ChatSession, conversation history and Unicode-safe CLI output. Publication evidence is recorded after a successful upload in [progress](../progress.md).
+Anpyra **0.1.4** was published on October 6, 2026 through [Trusted Publishing](https://github.com/babar-xagi/Anpyra/actions/runs/37573611590). Public wheel/source hashes match the checked CI files attached to the [GitHub release](https://github.com/babar-xagi/Anpyra/releases/tag/v0.1.4). Fresh PyPI installation and separate pip/uv upgrades from 0.1.3 passed, preserving configuration, signing identity and starter APK bytes. Each public-package environment built/verified the new chatbot reproducibly. See [progress](../progress.md) for fingerprints and scope; TestPyPI rehearsal was not run.
 
 ## 📋 Prepare a candidate
 
