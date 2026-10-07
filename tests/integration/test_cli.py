@@ -40,6 +40,17 @@ class CliTests(unittest.TestCase):
             self.assertFalse(project.output_path.exists())
             self.assertFalse(project.state_path.exists())
 
+    def test_unicode_dumps_succeed_in_a_legacy_encoded_output_pipe(self):
+        project = Path(__file__).resolve().parents[2] / "examples/chatbot"
+        buffer = io.BytesIO()
+        with io.TextIOWrapper(buffer, encoding="cp1252", errors="strict") as stream:
+            with redirect_stdout(stream), redirect_stderr(io.StringIO()):
+                self.assertEqual(main(["check", str(project), "--dump-ir", "--dump-dalvik"]), 0)
+            stream.flush()
+            output = buffer.getvalue()
+            self.assertIn(b"\\u2192", output)
+            self.assertIn(b"ChatWorker", output)
+
     def test_init_build_verify_workflow(self):
         with tempfile.TemporaryDirectory() as directory:
             project = Path(directory) / "hello"

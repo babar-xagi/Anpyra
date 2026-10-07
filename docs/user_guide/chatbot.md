@@ -93,6 +93,8 @@ Successful history retains the user message and **all** response output items, i
 
 ## 🧯 Errors and current limits
 
+CLI dumps preserve the terminal's encoding and escape unsupported Unicode characters in limited output pipes. Use `python -X utf8 -m anpyra check examples/chatbot --dump-dalvik` for UTF-8 redirected output.
+
 | Status | What to check |
 | --- | --- |
 | Enter your temporary API key | The masked field is empty |

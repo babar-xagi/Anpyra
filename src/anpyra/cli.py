@@ -31,6 +31,12 @@ def _dump(dex, ir, args):
 
 
 def main(argv: list[str] | None = None) -> int:
+    # Windows pipes may use a legacy code page. Preserve its encoding while
+    # escaping unsupported characters so valid Unicode source still succeeds.
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is not None:
+            reconfigure(errors="backslashreplace")
     parser = argparse.ArgumentParser(
         prog="anpyra", description="Compile Python directly to native Android DEX and APK."
     )

@@ -8,7 +8,7 @@ The current source adds Column, Row, ScrollView, TextInput and ChatSession along
 
 | Check | Result and scope |
 | --- | --- |
-| Host regression suite | **120 tests passed**, including nine new layout/chat/source/DEX/build tests; historical DEX output preserved |
+| Host regression suite | **121 tests passed**, including nine new layout/chat/source/DEX/build tests and a Windows Unicode-output regression; historical DEX output preserved |
 | Source/docs quality | Ruff lint/format passed; 58 Markdown files and 11 documented Activity examples checked |
 | Isolated local wheel | New modules present, no key/APK/DEX/cache payloads; separate wheel-only environment built and verified the chatbot |
 | Production app | 8,882-byte signed `dev.anpyra.chatbot` APK built, verified, installed and launched on TECNO BG7, Android API 33 |
